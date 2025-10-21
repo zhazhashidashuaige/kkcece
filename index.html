@@ -20339,6 +20339,7 @@ function findLuckyKing(packet) {
 }
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
+let state = { chats: {}, activeChatId: null, globalSettings: {}, apiConfig: {}, userStickers: [], worldBooks: [], personaPresets: [], qzoneSettings: {}, activeAlbumId: null };
 
         const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models'
         // gemini如果是多个密钥, 那么随机获取一个
@@ -21026,7 +21027,7 @@ const BLOCKED_API_SITES = [
 ];
 // ▲▲▲ 黑名单定义结束 ▲▲▲
         // --- 已修正 ---
-        let state = { chats: {}, activeChatId: null, globalSettings: {}, apiConfig: {}, userStickers: [], worldBooks: [], personaPresets: [], qzoneSettings: {}, activeAlbumId: null };
+
         // --- 修正结束 ---
     let isUserStickerSelectionMode = false;
     // ▼▼▼ 在 isUserStickerSelectionMode 变量后添加 ▼▼▼
