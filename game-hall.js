@@ -4211,9 +4211,11 @@ ${formattedLog}
 
     await showCustomAlert('转发成功', `游戏复盘已发送至与“${chat.name}”的聊天中！`);
 
-    // 打开聊天并触发AI回应
-    openChat(chat.id);
-    triggerAiResponse();
+    // ▼▼▼ 这就是本次的核心修改！ ▼▼▼
+    // 我们现在通过 window 对象来调用这两个“公共函数”
+    window.openChat(chat.id);
+    window.triggerAiResponse();
+    // ▲▲▲ 修改结束 ▲▲▲
   }
 
   // ▲▲▲ 新增代码粘贴结束 ▲▲▲
@@ -5486,9 +5488,8 @@ ${eventPrompt}
 
     await showCustomAlert('分享成功', `游戏复盘已发送至与“${chat.name}”的聊天中！`);
 
-    // 跳转到聊天界面并让AI回应
-    openChat(chat.id);
-    triggerAiResponse();
+    window.openChat(chat.id);
+    window.triggerAiResponse();
   }
 
   // ▲▲▲ 新增代码粘贴结束 ▲▲▲
