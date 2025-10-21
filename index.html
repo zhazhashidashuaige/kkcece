@@ -37,6 +37,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
     <script src="https://phoebeboo.github.io/mewoooo/pp.js" defer></script>
+    <script src="https://phoebeboo.github.io/mewoooo/pp.js" defer></script>
 
     <style>
         :root { --screen-width: 350px; --screen-height: 650px; --secondary-bg: #ffffff; --border-color: #e0e0e0; --text-primary: #1f1f1f; --text-secondary: #8a8a8a; --accent-color: #007bff;    --status-bar-text-color: var(--accent-color); }
@@ -10323,6 +10324,263 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease;
 }
 /* ▲▲▲ 样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】游戏大厅样式 ▼▼▼ */
+#game-hall-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* 每行一个游戏 */
+    gap: 15px; /* 游戏卡片之间的间距 */
+}
+
+.game-card {
+    background-color: var(--secondary-bg);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.game-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.game-card .game-icon {
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f2f5;
+    border-radius: 10px;
+}
+
+#phone-screen.dark-mode .game-card .game-icon {
+    background-color: #2c2c2e;
+}
+
+.game-card .game-info .game-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.game-card .game-info .game-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】狼人杀游戏样式 ▼▼▼ */
+
+/* 游戏设置页的玩家选择列表 */
+.player-selection-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.player-selection-item:last-child {
+    border-bottom: none;
+}
+.player-selection-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+}
+.player-selection-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.player-selection-item .name {
+    font-weight: 500;
+}
+.player-selection-item .type-tag {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background-color: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+}
+
+/* 游戏主界面布局 */
+#werewolf-game-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 玩家座位网格 */
+#werewolf-players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    flex-shrink: 0;
+}
+
+.player-seat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.player-seat .player-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+.player-seat .player-avatar.speaking {
+    border-color: #4cd964; /* 绿色边框表示正在发言 */
+    box-shadow: 0 0 10px #4cd964;
+}
+.player-seat .player-avatar.dead {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+.player-seat .player-name {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.player-seat .player-role-indicator {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #ff3b30; /* 红色代表狼人 */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    display: none; /* 默认隐藏 */
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+}
+
+/* 游戏日志区域 */
+#werewolf-log-container {
+    flex-grow: 1;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    margin: 10px 0;
+    min-height: 0; /* flex布局下滚动的关键 */
+}
+.log-entry {
+    padding: 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 14px;
+    line-height: 1.5;
+}
+.log-entry.system {
+    color: var(--accent-color);
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 123, 255, 0.05);
+    border-radius: 5px;
+}
+.log-entry.speech .speaker {
+    font-weight: 600;
+}
+
+/* 玩家操作区 */
+#werewolf-action-area {
+    flex-shrink: 0;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    min-height: 50px;
+}
+#werewolf-action-area button {
+    padding: 10px 20px;
+}
+#werewolf-action-area .vote-target-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+#werewolf-action-area .vote-target-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+    background-color: #e9ecef;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+#werewolf-action-area .vote-target-btn.selected {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+/* ▲▲▲ 狼人杀样式结束 ▲▲▲ */
+/* ▼▼▼ 【全新】狼人杀发言日志美化样式 ▼▼▼ */
+
+/* 包含头像和文字的总容器 */
+.log-entry.speech {
+    display: flex;
+    align-items: flex-start; /* 顶部对齐 */
+    gap: 10px;               /* 头像和文字的间距 */
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.05); /* 每条发言之间的分割线 */
+}
+
+/* 发言者的圆形小头像 */
+.speech-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* 完美圆形 */
+    flex-shrink: 0;     /* 防止头像被压缩 */
+    object-fit: cover;
+}
+
+/* 包裹名字和发言内容的新容器 */
+.speech-content {
+    display: flex;
+    flex-direction: column; /* 名字和内容垂直排列 */
+    gap: 2px;
+}
+
+/* 发言者名字的样式 */
+.speech-content .speaker {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-secondary); /* 使用次要文字颜色，不那么刺眼 */
+}
+
+/* 发言内容的样式 */
+.speech-content .speech-text {
+    word-break: break-word; /* 确保长篇发言能正确换行 */
+    line-height: 1.6;
+}
+
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+
+
 
 /* ▼▼▼ 【这是为你新增的X社交App图标样式】粘贴到 <style> 的末尾 ▼▼▼ */
 #second-page-x-social-app {
@@ -10340,7 +10598,684 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 /* ▲▲▲ 新增样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】海龟汤游戏样式 ▼▼▼ */
 
+.sts-log-entry {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+/* 系统消息 (谜面、提示等) */
+.sts-log-entry.system {
+    background-color: #e9ecef;
+    color: var(--text-secondary);
+    text-align: center;
+    font-weight: 500;
+}
+#phone-screen.dark-mode .sts-log-entry.system {
+    background-color: #2c2c2e;
+}
+
+/* 玩家提问 */
+.sts-log-entry.question {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+}
+#phone-screen.dark-mode .sts-log-entry.question {
+    background-color: #1c1c1e;
+}
+.sts-log-entry .speaker {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+/* ▼▼▼ 【全新】海龟汤 - 出题人回答气泡美化 ▼▼▼ */
+.sts-log-entry.answer {
+    text-align: right;
+}
+.sts-log-entry.answer .answer-text {
+    display: inline-block;
+    padding: 8px 12px; /* 增加内边距，让气泡更饱满 */
+    border-radius: 18px; /* 增加圆角 */
+    font-weight: 500; /* 字体不用太粗 */
+    background-color: #f0f2f5; /* 统一的、中性的浅灰色背景 */
+    color: var(--text-primary); /* 文字颜色使用主题的主色，适配夜间模式 */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08); /* 稍微调整阴影 */
+}
+
+/* 移除旧的、按颜色区分的样式，确保所有回答都用上面的新样式 */
+.sts-log-entry.answer .answer-text.yes,
+.sts-log-entry.answer .answer-text.no,
+.sts-log-entry.answer .answer-text.irrelevant {
+    background-color: #f0f2f5; /* 确保所有都用这个颜色 */
+}
+
+/* 夜间模式适配 */
+#phone-screen.dark-mode .sts-log-entry.answer .answer-text,
+#phone-screen.dark-mode .sts-log-entry.answer .answer-text.yes,
+#phone-screen.dark-mode .sts-log-entry.answer .answer-text.no,
+#phone-screen.dark-mode .sts-log-entry.answer .answer-text.irrelevant {
+     background-color: #3a3a3c; /* 夜间模式下的深灰色 */
+}
+/* ▲▲▲ 替换结束 ▲▲▲ */
+
+
+/* AI猜测 */
+.sts-log-entry.guess {
+    font-style: italic;
+    color: #fd7e14;
+    border-left: 3px solid #fd7e14;
+    padding-left: 12px;
+}
+
+/* 玩家座位上的身份指示器 */
+.player-seat .player-role-indicator.riddle-master {
+    background-color: #ffc107; /* 黄色代表出题人 */
+    display: flex;
+}
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】海龟汤聊天日志美化样式 ▼▼▼ */
+.sts-log-entry.question,
+.sts-log-entry.answer,
+.sts-log-entry.guess {
+    display: flex;
+    align-items: flex-start; /* 头像和气泡顶部对齐 */
+    gap: 10px;
+    max-width: 85%;
+    margin-bottom: 12px;
+}
+
+/* 提问和猜测靠左 */
+.sts-log-entry.question,
+.sts-log-entry.guess {
+    align-self: flex-start;
+}
+
+/* 回答靠右 */
+.sts-log-entry.answer {
+    align-self: flex-end;
+    flex-direction: row-reverse; /* 关键：让头像在右边 */
+}
+
+/* 头像样式 */
+.sts-log-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* ▼▼▼ 【全新】海龟汤聊天日志美化样式 (气泡透明版) ▼▼▼ */
+.sts-log-entry.question .sts-log-content,
+.sts-log-entry.guess .sts-log-content {
+    background-color: transparent; /* <-- 修改点1：背景改为透明 */
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: none; /* <-- 修改点2：移除边框，让它彻底“消失” */
+}
+
+#phone-screen.dark-mode .sts-log-entry.question .sts-log-content,
+#phone-screen.dark-mode .sts-log-entry.guess .sts-log-content {
+    background-color: #1c1c1e;
+}
+
+/* 修正回答气泡的样式，因为它不是一个完整的块 */
+.sts-log-entry.answer .answer-text {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+.player-seat .player-avatar.active-turn {
+    border-color: #007bff; /* 使用主题色作为边框颜色 */
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.7); /* 添加发光效果 */
+    animation: sts-pulse-glow 1.5s infinite ease-in-out; /* 应用动画 */
+}
+
+@keyframes sts-pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(0, 123, 255, 1);
+    }
+}
+/* ▼▼▼ 【海龟汤布局修复】请将这段新样式粘贴到 <style> 的末尾 ▼▼▼ */
+#sts-game-log {
+    display: flex;
+    flex-direction: column;
+}
+/* ▲▲▲ 修复结束 ▲▲▲ */
+/* ▼▼▼ 【全新】海龟汤聊天日志美化样式 ▼▼▼ */
+.sts-log-entry.question,
+.sts-log-entry.answer,
+.sts-log-entry.guess {
+    display: flex;
+    align-items: flex-start; /* 头像和气泡顶部对齐 */
+    gap: 10px;
+    max-width: 85%;
+    margin-bottom: 12px;
+    /* 移除旧的背景和边框，因为现在由子元素处理 */
+    background-color: transparent;
+    border: none;
+}
+
+/* 提问和猜测（猜题方）靠左 */
+.sts-log-entry.question,
+.sts-log-entry.guess {
+    align-self: flex-start;
+}
+
+/* 回答（出题人）靠右 */
+.sts-log-entry.answer {
+    align-self: flex-end;
+    flex-direction: row-reverse; /* 关键：让头像在右边 */
+}
+
+/* 头像样式 */
+.sts-log-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* 包含发言人和内容的气泡 */
+.sts-log-entry.question .sts-log-content,
+.sts-log-entry.guess .sts-log-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+}
+
+#phone-screen.dark-mode .sts-log-entry.question .sts-log-content,
+#phone-screen.dark-mode .sts-log-entry.guess .sts-log-content {
+    background-color: #1c1c1e;
+}
+
+/* 修正回答气泡的样式，因为它不是一个完整的块 */
+.sts-log-entry.answer .answer-text {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 让日志容器支持flex布局的对齐 */
+#sts-game-log {
+    display: flex;
+    flex-direction: column;
+}
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【海龟汤输入区终极修复版】 ▼▼▼ */
+
+/* 1. 强制重置整个输入区域的布局为“横向排列”并“垂直居中” */
+#sts-action-area {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important; /* 核心修正：从 flex-end 改为 center，实现垂直居中 */
+    gap: 8px !important;
+}
+
+/* 2. 强制内部的 main-row 也垂直居中，并让它填满空间 */
+#sts-action-area .chat-input-main-row {
+    flex-grow: 1 !important;
+    display: flex !important;
+    align-items: center !important; /* 核心修正：内部也保持垂直居中 */
+    gap: 8px !important;
+}
+
+/* 3. 美化输入框本身，并让它自动撑满宽度 */
+#sts-action-area #sts-question-input {
+    flex-grow: 1; 
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
+    font-size: 16px;
+    resize: none;
+    max-height: 100px; 
+    line-height: 1.5;
+}
+
+/* 4. 统一所有按钮的高度和样式，让它们和输入框完美适配 */
+#sts-action-area #guess-sts-answer-btn,
+#sts-action-area #send-sts-question-btn {
+    height: 40px; 
+    border-radius: 20px;
+    padding: 0 15px;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* 5. 夜间模式适配 */
+#phone-screen.dark-mode #sts-action-area #sts-question-input {
+    background-color: #2c2c2e;
+    color: var(--text-primary);
+}
+/* ▲▲▲ 修复结束 ▲▲▲ */
+/* ▼▼▼ 【全新】剧本杀游戏样式 ▼▼▼ */
+
+/* 游戏主界面布局 */
+#script-kill-game-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 玩家座位区 (复用狼人杀的样式) */
+#script-kill-players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    flex-shrink: 0;
+}
+
+/* 游戏日志区 (复用狼人杀的样式) */
+#script-kill-log-container {
+    flex-grow: 1;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    margin: 10px 0;
+    min-height: 0; /* flex布局下滚动的关键 */
+}
+
+/* 玩家操作区 (复用狼人杀的样式) */
+#script-kill-action-area {
+    flex-shrink: 0;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    min-height: 50px;
+}
+#script-kill-action-area button {
+    padding: 10px 20px;
+}
+
+/* 投票选项样式 */
+#sk-vote-options-list label {
+    display: block;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#sk-vote-options-list label:hover {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #sk-vote-options-list label:hover {
+    background-color: #2c2c2e;
+}
+
+/* 线索卡片样式 */
+.sk-evidence-card {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.sk-evidence-card .source {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+.sk-evidence-card .description {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ▲▲▲ 剧本杀样式结束 ▲▲▲ */
+/* ▼▼▼ 把这一整块全新的CSS，粘贴到 <style> 标签的最末尾 ▼▼▼ */
+
+/* 【全新】剧本杀可视化编辑器样式 */
+
+/* 角色/线索卡片的容器 */
+.sk-item-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f0f2f5;
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 50px;
+    border: 1px solid var(--border-color);
+}
+#phone-screen.dark-mode .sk-item-container {
+    background-color: #2c2c2e;
+}
+
+/* 单个角色/线索的卡片 */
+.sk-editor-item {
+    background-color: var(--secondary-bg);
+    padding: 10px 15px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sk-editor-item .item-info .item-name {
+    font-weight: 600;
+}
+.sk-editor-item .item-info .item-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* 卡片上的编辑/删除按钮 */
+.sk-editor-item .item-actions {
+    display: flex;
+    gap: 8px;
+}
+.sk-editor-item .item-actions button {
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】“你说我猜”游戏样式 ▼▼▼ */
+
+/* 游戏日志区域 */
+#guess-what-game-log {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 单条日志条目 */
+.guess-log-entry {
+    padding: 8px 12px;
+    border-radius: 12px;
+    line-height: 1.6;
+    max-width: 90%;
+    word-break: break-word;
+}
+
+/* 系统提示，例如游戏开始、谁的回合 */
+.guess-log-entry.system {
+    background-color: #e9ecef;
+    color: var(--text-secondary);
+    text-align: center;
+    font-weight: 500;
+    font-size: 13px;
+    align-self: center;
+}
+#phone-screen.dark-mode .guess-log-entry.system {
+    background-color: #2c2c2e;
+}
+
+/* 玩家发言的气泡（通用） */
+.guess-log-entry.user-turn,
+.guess-log-entry.ai-turn {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+/* 玩家发言内容 */
+.guess-log-entry .bubble {
+    background-color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+#phone-screen.dark-mode .guess-log-entry .bubble {
+    background-color: #2c2c2e;
+}
+
+/* AI发言气泡（靠左） */
+.guess-log-entry.ai-turn {
+    align-self: flex-start;
+}
+
+/* 用户发言气泡（靠右） */
+.guess-log-entry.user-turn {
+    align-self: flex-end;
+    flex-direction: row-reverse; /* 头像在右边 */
+}
+.guess-log-entry.user-turn .bubble {
+    background-color: #dcf8c6; /* 类似微信的绿色 */
+}
+#phone-screen.dark-mode .guess-log-entry.user-turn .bubble {
+    background-color: #3b5b32; /* 夜间模式下的绿色 */
+}
+
+/* 气泡内的头像 */
+.guess-log-entry .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* 气泡内的名字和内容 */
+.guess-log-entry .name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+/* 游戏输入区美化 */
+#guess-what-action-area {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important; /* 保持垂直居中 */
+    gap: 8px !important;
+    width: 100%; /* 新增：让整个容器撑满宽度 */
+    box-sizing: border-box; /* 新增：确保内边距和边框被正确计算在内 */
+}
+
+
+#guess-what-action-area #guess-what-user-input {
+    flex-grow: 1;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
+    font-size: 16px;
+    resize: none;
+    max-height: 100px;
+    line-height: 1.5;
+}
+#guess-what-action-area #send-guess-what-input-btn {
+    height: 40px;
+    border-radius: 20px;
+    padding: 0 15px;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+#phone-screen.dark-mode #guess-what-action-area #guess-what-user-input {
+    background-color: #2c2c2e;
+    color: var(--text-primary);
+}
+
+/* ▲▲▲ “你说我猜”游戏样式结束 ▲▲▲ */
+/* ▼▼▼ 【剧本杀AI生成器布局修复】请将这整块全新的CSS粘贴到 <style> 标签的最末尾 ▼▼▼ */
+
+/* 1. 【核心】让整个弹窗的内容区(modal-body)能够正确地撑满剩余空间并滚动 */
+#sk-ai-generator-modal .modal-body {
+    flex-grow: 1;      /* 允许内容区占据 header 和 footer 之间的所有可用垂直空间 */
+    min-height: 0;     /* 解决flex布局中一个常见的滚动条失效问题，非常关键 */
+    /* overflow-y: auto;  <-- 这个属性你的 .modal-body 已经有了，所以不用重复写 */
+}
+
+/* 2. 【核心】指定包含“预览框”的那个 form-group 也需要能够弹性增长 */
+/* 我们用 :last-of-type 精准定位到最后一个 .form-group */
+#sk-ai-generator-modal .modal-body .form-group:last-of-type {
+    flex-grow: 1;       /* 让它吃掉所有剩余的垂直空间 */
+    min-height: 0;      /* 同样是为了兼容性 */
+    display: flex;        /* 把它自己也变成flex容器 */
+    flex-direction: column; /* 让它里面的 label 和 preview 垂直排列 */
+}
+
+/* 3. 【核心】最后，确保预览框本身能够撑满它的父容器，并且在内容过多时自己滚动 */
+#sk-ai-result-preview {
+    flex-grow: 1;      /* 撑满父容器(.form-group)的空间 */
+    overflow-y: auto;  /* 当代码超出时，显示它自己的滚动条，而不是让整个弹窗滚动 */
+    
+    /* (可选美化) 给一个最小高度，防止在没内容时完全塌陷 */
+    min-height: 100px; 
+}
+
+/* ▲▲▲ 粘贴结束 ▲▲▲ */
+
+
+/* ▼▼▼ 【游戏输入区终极修复版】 ▼▼▼ */
+
+/* 1. 强制重置两个游戏输入区域的容器布局 */
+#sts-action-area,
+#guess-what-action-area {
+    display: flex !important;
+    flex-direction: row !important; /* 关键：从纵向改为横向 */
+    align-items: center !important;  /* 关键：让所有子元素垂直居中 */
+    gap: 8px !important;            /* 设置元素之间的间距 */
+    width: 100%;                     /* 新增：让整个容器宽度撑满 */
+    box-sizing: border-box;          /* 新增：确保内边距和边框被正确计算 */
+}
+
+/* 2. 强制内部的 .chat-input-main-row 也能正确伸展和对齐 */
+#sts-action-area .chat-input-main-row,
+#guess-what-action-area .chat-input-main-row {
+    flex-grow: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+/* 3. 美化输入框本身，并让它自动撑满宽度 */
+#sts-action-area #sts-question-input,
+#guess-what-action-area #guess-what-user-input {
+    flex-grow: 1; /* 核心：让输入框自动伸展，占满所有可用宽度 */
+    min-height: 40px; /* 保证最小高度 */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
+    font-size: 16px;
+    resize: none;
+    max-height: 100px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+/* 4. 统一所有按钮的高度和样式，让它们和输入框完美适配 */
+#sts-action-area button,
+#guess-what-action-area button {
+    height: 40px; 
+    border-radius: 20px;
+    padding: 0 15px;
+    flex-shrink: 0; /* 防止按钮被压缩 */
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* 5. 夜间模式适配 */
+#phone-screen.dark-mode #sts-action-area #sts-question-input,
+#phone-screen.dark-mode #guess-what-action-area #guess-what-user-input {
+    background-color: #2c2c2e;
+    color: var(--text-primary);
+}
+/* ▲▲▲ 修复结束 ▲▲▲ */
+/* === 【独家定制】隐藏游戏大厅返回按钮的 "退出" 文字 === */
+#exit-werewolf-game-btn,
+#exit-sts-game-btn,
+#exit-script-kill-game-btn,
+#exit-guess-what-game-btn,
+#exit-ludo-game-btn,
+#exit-undercover-game-btn { /* <--- 修改在这里 */
+    font-size: 0 !important;
+    color: transparent !important;
+}
+
+#exit-werewolf-game-btn::before,
+#exit-sts-game-btn::before,
+#exit-script-kill-game-btn::before,
+#exit-guess-what-game-btn::before,
+#exit-ludo-game-btn::before,
+#exit-undercover-game-btn::before { /* <--- 还有这里 */
+    content: '‹';
+    font-size: 24px !important;
+    color: var(--accent-color) !important;
+}
+
+/* ▼▼▼ 【V3最终版】游戏发言输入区通用美化样式 (已居中) ▼▼▼ */
+
+/* 1. 让所有游戏的发言区域容器都水平居中 */
+#werewolf-action-area.speaking-mode,
+#script-kill-action-area.speaking-mode,
+#undercover-action-area.speaking-mode { /* ★ 新增了 #undercover-action-area */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px !important; /* 增加上下内边距，让区域不贴底 */
+    box-sizing: border-box;
+    justify-content: center; /* ★★★ 这就是实现居中的核心代码！ ★★★ */
+}
+
+/* 2. 美化所有游戏的发言输入框 */
+#werewolf-action-area.speaking-mode #user-speech-input,
+#script-kill-action-area.speaking-mode #user-sk-speech-input,
+#undercover-action-area.speaking-mode #undercover-user-speech-input {
+    /* ★★★ 核心修改：我们移除了 flex-grow: 1; 属性！★★★ */
+    /* 这样输入框就不会无限伸展，而是保持一个自然的宽度 */
+    
+    border: 1px solid #ccc; /* 增加一个淡淡的边框，让它更清晰 */
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
+    font-size: 16px;
+    resize: none;
+    max-height: 100px;
+    line-height: 1.5;
+    width: auto; /* 确保宽度是自适应的 */
+    height: auto;
+    min-width: 200px; /* 给一个最小宽度，防止内容少时太窄 */
+}
+
+/* 3. 美化所有游戏的“发言/结束发言”按钮 */
+#werewolf-action-area.speaking-mode #end-speech-btn,
+#script-kill-action-area.speaking-mode #sk-end-speech-btn,
+#undercover-action-area.speaking-mode #undercover-end-speech-btn {
+    height: 40px;
+    border-radius: 20px;
+    padding: 0 20px; /* 增加左右内边距，让按钮更饱满 */
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 !important; 
+    width: auto !important;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+/* 4. 夜间模式适配 */
+#phone-screen.dark-mode #werewolf-action-area.speaking-mode #user-speech-input,
+#phone-screen.dark-mode #script-kill-action-area.speaking-mode #user-sk-speech-input,
+#phone-screen.dark-mode #undercover-action-area.speaking-mode #undercover-user-speech-input {
+    background-color: #2c2c2e;
+    color: var(--text-primary);
+    border-color: #444; /* 夜间模式下的边框颜色 */
+}
+
+/* ▲▲▲ 最终版样式粘贴结束 ▲▲▲ */
 /* ▼▼▼ 【全新】宠物功能样式 ▼▼▼ */
 
 #chat-pet {
@@ -12484,6 +13419,223 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     background-color: #9c27b0; /* 一个代表游戏的神秘紫色 */
 }
 /* ▲▲▲ 新增样式结束 ▲▲▲ */
+/* ▼▼▼ 【全新】心动飞行棋样式 ▼▼▼ */
+
+/* --- 游戏主界面布局 --- */
+#ludo-game-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding: 15px;
+    box-sizing: border-box;
+    gap: 15px;
+    background-color: #fff0f5; /* 温柔的淡粉色背景 */
+}
+
+#phone-screen.dark-mode #ludo-game-content {
+    background-color: #2c1e22; /* 夜间模式下的深粉紫色 */
+}
+
+/* --- 棋盘容器与棋盘本身 --- */
+#ludo-board-container {
+    position: relative;
+    width: 100%;
+    height: 280px; /* 给棋盘一个固定的高度 */
+    flex-shrink: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#ludo-board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10x6的网格布局 */
+    grid-template-rows: repeat(6, 1fr);
+    width: 100%;
+    height: 100%;
+    gap: 3px;
+}
+
+/* --- 棋盘格子样式 --- */
+.ludo-cell {
+    border-radius: 4px;
+    background-color: rgba(255, 192, 203, 0.3); /* 淡淡的粉色格子 */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #db7093;
+}
+
+/* 起点和终点格子 */
+.ludo-cell.start { background-color: #90ee90; color: #2e8b57; }
+.ludo-cell.end { background-color: #ffd700; color: #b8860b; }
+
+/* 特殊事件格子 */
+.ludo-cell.event-truth { background-color: #ffb6c1; } /* 真心话 */
+.ludo-cell.event-dare { background-color: #add8e6; }  /* 大冒险 */
+.ludo-cell.event-kiss { background-color: #ff69b4; }  /* 亲亲 */
+.ludo-cell.event-hug { background-color: #ffdab9; }   /* 抱抱 */
+
+.ludo-cell .cell-number {
+    font-size: 10px;
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    color: rgba(0,0,0,0.2);
+}
+
+/* --- 棋子样式 --- */
+.ludo-piece {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+.ludo-piece.user { border-color: #87cefa; }
+.ludo-piece.char { border-color: #ffc0cb; }
+
+/* --- 游戏日志 --- */
+#ludo-log-container {
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    min-height: 0;
+}
+#ludo-game-log .log-entry {
+    padding: 6px 8px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    line-height: 1.5;
+}
+#ludo-game-log .log-entry.system {
+    color: #db7093;
+    font-style: italic;
+    text-align: center;
+}
+#ludo-game-log .log-entry.user { color: #007bff; }
+#ludo-game-log .log-entry.char { color: #e83e8c; }
+#ludo-game-log .log-entry strong { font-weight: 900; }
+
+
+/* --- 操作区与骰子动画 --- */
+#ludo-action-area {
+    flex-shrink: 0;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60px;
+}
+#ludo-dice-container {
+    perspective: 1000px;
+}
+.dice {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+    cursor: pointer;
+}
+.dice.rolling { animation: roll-dice 1.5s ease-out; }
+@keyframes roll-dice {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    100% { transform: rotateX(1080deg) rotateY(720deg); }
+}
+.dice .face {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ccc;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+.face.front  { transform: rotateY(0deg) translateZ(25px); }
+.face.back   { transform: rotateY(180deg) translateZ(25px); }
+.face.right  { transform: rotateY(90deg) translateZ(25px); }
+.face.left   { transform: rotateY(-90deg) translateZ(25px); }
+.face.top    { transform: rotateX(90deg) translateZ(25px); }
+.face.bottom { transform: rotateX(-90deg) translateZ(25px); }
+
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】飞行棋问题类型标签样式 ▼▼▼ */
+.question-type-tag {
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 10px;
+    color: white;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+.question-type-tag.both-answer {
+    background-color: #ff8fab; /* 粉色代表共同回答 */
+}
+.question-type-tag.single-answer {
+    background-color: #87ceeb; /* 蓝色代表一人回答 */
+}
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】飞行棋结算卡片样式 ▼▼▼ */
+#ludo-summary-content h3 {
+    text-align: center;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+#ludo-summary-content .ludo-qa-log {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    max-height: 300px; /* 给问答记录一个最大高度，内容多了可以滚动 */
+    overflow-y: auto;
+}
+#ludo-summary-content h4 {
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+#ludo-summary-content .qa-item {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #eee;
+}
+#ludo-summary-content .qa-item:last-child {
+    border-bottom: none;
+}
+#ludo-summary-content .qa-question {
+    font-weight: 600;
+    color: #db7093; /* 一个可爱的粉紫色 */
+    margin-bottom: 8px;
+}
+#ludo-summary-content .qa-answer {
+    padding-left: 15px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+#ludo-summary-content .qa-answer strong {
+    color: var(--text-primary);
+}
+#phone-screen.dark-mode #ludo-summary-content .qa-answer {
+    color: #bbb;
+}
+
 
 /* ▼▼▼ 【独家定制】角色手机消息列表 - 可爱磨砂透明圆角版 v3.0 ▼▼▼ */
 
@@ -12587,6 +13739,130 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 
+/* ▼▼▼ 【独家定制】心动飞行棋输入框 - 粉色按钮版 v1.0 ▼▼▼ */
+
+/* 1. 输入区域的容器样式 (保持不变) */
+#ludo-action-area {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+}
+
+/* 2. 文本输入框的样式 (保持不变) */
+#ludo-action-area #ludo-user-speech-input {
+    flex-grow: 1; 
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
+    font-size: 16px;
+    resize: none;
+    max-height: 100px; 
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+/* 3. “确认回答”按钮的样式 (已修改为粉色) */
+#ludo-action-area .form-button {
+    width: auto !important;
+    height: 40px; 
+    border-radius: 20px;
+    padding: 0 20px;
+    flex-shrink: 0; 
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 !important;
+    border: none;
+    cursor: pointer;
+    
+    /* ★★★ 核心修改：使用可爱的粉色渐变和阴影 ★★★ */
+    background: linear-gradient(135deg, #ff8fab, #fb6f92);
+    color: white;
+    box-shadow: 0 4px 10px rgba(251, 111, 146, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+/* ★★★ 新增：为按钮添加更生动的交互效果 ★★★ */
+#ludo-action-area .form-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(251, 111, 146, 0.4);
+}
+#ludo-action-area .form-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 5px rgba(251, 111, 146, 0.3);
+}
+
+/* 4. 夜间模式适配 (保持不变) */
+#phone-screen.dark-mode #ludo-action-area #ludo-user-speech-input {
+    background-color: #2c2c2e;
+    color: var(--text-primary);
+}
+/* ▲▲▲ 美化代码结束 ▲▲▲ */
+/* ▼▼▼ 【全新】心声面板背景图样式 ▼▼▼ */
+#inner-voice-main-panel.modal-content {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* 我们给它加一个过渡效果，让背景切换更平滑 */
+    transition: background-image 0.3s ease-in-out;
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】“谁是卧底”游戏样式 ▼▼▼ */
+
+/* 玩家头像上显示角色身份的小图标 */
+.player-seat .player-role-display {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* “你说我猜”发言输入区的美化 */
+#undercover-action-area.speaking-mode {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0;
+}
+#undercover-action-area.speaking-mode #undercover-user-speech-input {
+    flex-grow: 1;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
+    font-size: 16px;
+    resize: none;
+    max-height: 100px;
+    line-height: 1.5;
+    width: auto !important; 
+    height: auto !important;
+}
+#undercover-action-area.speaking-mode #undercover-end-speech-btn {
+    height: 40px;
+    border-radius: 20px;
+    padding: 0 15px;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 !important; 
+    width: auto !important;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+}
+#phone-screen.dark-mode #undercover-action-area.speaking-mode #undercover-user-speech-input {
+    background-color: #2c2c2e;
+    color: var(--text-primary);
+}
 
 /* ▼▼▼ 第2步：将这段新样式粘贴到 <style> 的末尾 ▼▼▼ */
 
@@ -13483,14 +14759,12 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
  <!-- ▼▼▼ 在第二个 <div class="home-page"> 的闭合标签前，粘贴下面这段代码 ▼▼▼ -->
 <div style="position: absolute; top: 100px; right: 85px;">
-<!-- ▼▼▼ 核心修改：点击后直接跳转到新的游戏大厅页面 ▼▼▼ -->
-<div class="desktop-app-icon" onclick="window.location.href = 'GameLobby/game_lobby.html';">
-    <div class="icon-bg-desktop">
-        <img id="icon-img-game-hall" src="https://i.postimg.cc/P5gL5z2g/game-controller-icon.png" alt="游戏大厅">
+    <div class="desktop-app-icon" onclick="showScreen('game-hall-screen')">
+        <div class="icon-bg-desktop">
+            <img id="icon-img-game-hall" src="https://i.postimg.cc/P5gL5z2g/game-controller-icon.png" alt="游戏大厅">
+        </div>
+        <span class="label">游戏大厅</span>
     </div>
-    <span class="label">游戏大厅</span>
-</div>
-<!-- ▲▲▲ 修改结束 ▲▲▲ -->
 </div>
 <!-- ▲▲▲ 新增图标代码结束 ▲▲▲ -->
     </div>
@@ -17093,7 +18367,744 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 </div>
 
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
- 
+<!-- ▼▼▼ 【全新】这是游戏大厅的主界面，粘贴到所有 modal 的 div 之后、<script> 标签之前 ▼▼▼ -->
+<div id="game-hall-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
+        <span>游戏大厅</span>
+        <span style="width: 30px;"></span> <!-- 占位符 -->
+    </div>
+    <div class="list-container" style="padding: 20px;">
+        <p style="text-align: center; color: var(--text-secondary);">选择一个游戏开始吧！</p>
+        <div id="game-hall-grid">
+            <!-- 游戏列表将显示在这里 -->
+            <div class="game-card" data-game="werewolf">
+                <div class="game-icon">🐺</div>
+                <div class="game-info">
+                    <div class="game-title">狼人杀</div>
+                    <div class="game-desc">逻辑与谎言的对决</div>
+                </div>
+            </div>
+            <div class="game-card" data-game="sea-turtle-soup">
+                <div class="game-icon">🐢</div>
+                <div class="game-info">
+                    <div class="game-title">海龟汤</div>
+                    <div class="game-desc">揭开情景的真相</div>
+                </div>
+            </div>
+             <div class="game-card" data-game="script-kill">
+                <div class="game-icon">📜</div>
+                <div class="game-info">
+                    <div class="game-title">剧本杀</div>
+                    <div class="game-desc">扮演角色，探寻谜案</div>
+                </div>
+            </div>
+            <div class="game-card" data-game="guess-what">
+                <div class="game-icon">🗣️</div>
+                <div class="game-info">
+                    <div class="game-title">你说我猜</div>
+                    <div class="game-desc">考验默契的时候到了</div>
+                </div>
+            </div>
+<div class="game-card" data-game="ludo">
+    <div class="game-icon">🎲</div>
+    <div class="game-info">
+        <div class="game-title">心动飞行棋</div>
+        <div class="game-desc">和Ta来一场只属于你们的冒险</div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增代码结束 ▲▲▲ -->
+ <!-- ▼▼▼ 在这里粘贴新的游戏卡片 ▼▼▼ -->
+<div class="game-card" data-game="undercover">
+    <div class="game-icon">🕵️</div>
+    <div class="game-info">
+        <div class="game-title">谁是卧底</div>
+        <div class="game-desc">语言的伪装，逻辑的陷阱</div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增代码结束 ▲▲▲ -->
+             <p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); font-size: 14px; margin-top: 20px;">更多游戏正在火速开发中...</p>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】这是整个狼人杀功能的HTML，粘贴到 game-hall-screen 的 div 之后 ▼▼▼ -->
+
+<!-- 1. 狼人杀游戏设置屏幕 -->
+<div id="werewolf-setup-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('game-hall-screen')">‹</span>
+        <span>狼人杀 - 游戏设置</span>
+    </div>
+    <div class="form-container">
+        <div class="form-group">
+            <label for="werewolf-player-count">选择游戏人数</label>
+            <select id="werewolf-player-count">
+                <option value="6">6人局 (2狼, 2民, 预言家, 守卫)</option>
+                <option value="9">9人局 (3狼, 3民, 预言家, 女巫, 猎人)</option>
+                <option value="12">12人局 (4狼, 4民, 预言家, 女巫, 猎人, 白痴)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>邀请玩家 (你已自动加入)</label>
+            <div id="werewolf-player-selection" class="list-container" style="height: 300px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <!-- 玩家选择列表将由JS动态生成 -->
+            </div>
+        </div>
+        <button id="start-werewolf-game-btn" class="form-button">开始游戏</button>
+    </div>
+</div>
+
+<!-- 2. 狼人杀游戏主界面 -->
+<div id="werewolf-game-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="exit-werewolf-game-btn">‹ 退出</span>
+        <span id="werewolf-game-title">狼人杀</span>
+        <span class="action-btn" id="werewolf-my-role-btn">我的身份</span>
+    </div>
+    <!-- 游戏主内容区 -->
+    <div id="werewolf-game-content">
+        <!-- 玩家座位区 -->
+        <div id="werewolf-players-grid">
+            <!-- 玩家头像和状态将由JS动态生成 -->
+        </div>
+        <!-- 游戏日志/信息区 -->
+        <div id="werewolf-log-container">
+            <div id="werewolf-game-log">
+                <!-- 游戏过程信息会显示在这里 -->
+            </div>
+        </div>
+        <!-- 玩家操作区 -->
+        <div id="werewolf-action-area">
+            <!-- 玩家的按钮会根据游戏阶段显示在这里 -->
+        </div>
+    </div>
+</div>
+
+<!-- ▲▲▲ 狼人杀功能HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】狼人杀游戏结算卡片 ▼▼▼ -->
+<div id="werewolf-summary-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 80%;">
+        <div class="modal-header">
+            <span>游戏结算</span>
+        </div>
+        <div class="modal-body" id="werewolf-summary-content" style="white-space: pre-wrap; line-height: 1.7;">
+            <!-- 结算内容将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="repost-summary-btn">发送复盘到聊天</button>
+            <button class="save" id="back-to-hall-btn">返回大厅</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】狼人杀复盘发送目标选择器 ▼▼▼ -->
+<div id="werewolf-target-picker-modal" class="modal">
+    <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+            <span>选择要发送的玩家</span>
+        </div>
+        <div class="modal-body" id="werewolf-target-list" style="padding: 0;">
+            <!-- 玩家列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button id="wt-select-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全选</button>
+            <button id="wt-deselect-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全不选</button>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="wt-cancel-btn">取消</button>
+            <button class="save" id="wt-confirm-btn">确认发送</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】这是整个海龟汤功能的HTML，请粘贴到 </body> 标签前 ▼▼▼ -->
+
+<!-- 1. 海龟汤游戏主界面 -->
+<div id="sea-turtle-soup-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="exit-sts-game-btn">‹ 退出</span>
+        <span>海龟汤</span>
+        <span class="action-btn" id="reveal-sts-answer-btn">揭晓答案</span>
+    </div>
+    <div id="sts-game-content" style="display: flex; flex-direction: column; height: 100%; overflow: hidden; padding: 10px; box-sizing: border-box;">
+        <!-- 玩家座位区 -->
+        <div id="sts-players-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 10px; padding: 10px; flex-shrink: 0;">
+            <!-- 玩家头像和状态将由JS动态生成 -->
+        </div>
+        <!-- 游戏日志/信息区 -->
+        <div id="sts-log-container" style="flex-grow: 1; background-color: rgba(0,0,0,0.05); border-radius: 10px; padding: 10px; overflow-y: auto; margin: 10px 0; min-height: 0;">
+            <div id="sts-game-log">
+                <!-- 游戏过程信息会显示在这里 -->
+            </div>
+        </div>
+<!-- ▼▼▼ 用这块新代码替换旧的 id="sts-action-area" ▼▼▼ -->
+<div id="sts-action-area" class="chat-input-area" style="visibility: visible;">
+     <div class="chat-input-main-row">
+        <textarea id="sts-question-input" rows="1" placeholder="输入问题或答案..."></textarea>
+        <!-- 【核心修改】新增“猜答案”按钮 -->
+        <button id="guess-sts-answer-btn" class="action-button" style="background-color: #ff9800;">猜答案</button>
+        <button id="send-sts-question-btn" class="action-button">提问</button>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+    </div>
+</div>
+
+<!-- 2. 海龟汤游戏设置模态框 -->
+<div id="sea-turtle-soup-setup-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 85%;">
+        <div class="modal-header">
+            <span>海龟汤 - 游戏设置</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>邀请玩家 (你已自动加入)</label>
+                <div id="sts-player-selection" class="list-container" style="height: 200px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <!-- 玩家选择列表将由JS动态生成 -->
+                </div>
+            </div>
+            <div class="form-group">
+                <label>谁来出题？</label>
+                <select id="sts-riddle-provider-select">
+                    <option value="user">我来出题</option>
+                    <option value="random_ai">随机一位AI</option>
+                </select>
+            </div>
+            <!-- 用户出题的输入区 (默认隐藏) -->
+            <div id="sts-user-riddle-input-area" style="display: none;">
+                <div class="form-group">
+                    <label for="sts-user-riddle-surface">谜面</label>
+                    <textarea id="sts-user-riddle-surface" rows="2" placeholder="例如：一个男人走进酒吧，要了一杯水..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="sts-user-riddle-answer">谜底 (完整故事)</label>
+                    <textarea id="sts-user-riddle-answer" rows="4" placeholder="例如：男人在打嗝，他想喝水止嗝..."></textarea>
+                </div>
+            </div>
+            <!-- AI出题的输入区 (默认隐藏) -->
+            <div id="sts-ai-riddle-input-area" style="display: none;">
+                <div class="form-group">
+                    <label for="sts-ai-riddle-type">谜题类型 (可选)</label>
+                    <input type="text" id="sts-ai-riddle-type" placeholder="例如：恐怖、温情、脑洞、经典">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-sts-setup-btn">取消</button>
+            <button class="save" id="start-sts-game-btn">开始游戏</button>
+        </div>
+    </div>
+</div>
+<!-- ▼▼▼ 【全新】请将这两块代码粘贴到 </body> 标签前 ▼▼▼ -->
+
+<!-- 1. 海龟汤游戏结算卡片 -->
+<div id="sts-summary-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 80%;">
+        <div class="modal-header">
+            <span>游戏结算</span>
+        </div>
+        <div class="modal-body" id="sts-summary-content" style="white-space: pre-wrap; line-height: 1.7;">
+            <!-- 结算内容将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="share-sts-summary-btn">分享复盘</button>
+            <button class="save" id="back-to-hall-from-sts-btn">返回大厅</button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. 海龟汤复盘发送目标选择器 -->
+<div id="sts-share-target-modal" class="modal">
+    <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+            <span>选择要分享的玩家</span>
+        </div>
+        <div class="modal-body" id="sts-share-target-list" style="padding: 0;">
+            <!-- 玩家列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button id="sts-select-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全选</button>
+            <button id="sts-deselect-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全不选</button>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="sts-cancel-share-btn">取消</button>
+            <button class="save" id="sts-confirm-share-btn">确认分享</button>
+        </div>
+    </div>
+</div>
+
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】这是整个剧本杀功能的HTML，请粘贴到 </body> 标签前 ▼▼▼ -->
+
+<!-- 1. 剧本杀游戏设置屏幕 -->
+<div id="script-kill-setup-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('game-hall-screen')">‹</span>
+        <span>剧本杀 - 游戏设置</span>
+    </div>
+    <div class="form-container">
+        <div class="form-group">
+            <label>选择剧本</label>
+            <div style="display: flex; gap: 10px;">
+                <select id="script-kill-script-select" style="flex-grow: 1;"></select>
+                <button id="manage-custom-scripts-btn" class="form-button-secondary" style="margin-top: 0; padding: 0 15px;">管理</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>邀请玩家 (你已自动加入)</label>
+            <div id="script-kill-player-selection" class="list-container" style="height: 300px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <!-- 玩家选择列表将由JS动态生成 -->
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="toggle-switch-label">
+                <span class="toggle-switch-text">自由选择角色 (关闭则随机分配)</span>
+                <input type="checkbox" id="script-kill-free-choice-toggle">
+                <span class="toggle-switch-slider"></span>
+            </label>
+        </div>
+        <button id="start-script-kill-game-btn" class="form-button">开始游戏</button>
+    </div>
+</div>
+
+<!-- 2. 剧本杀游戏主界面 -->
+<div id="script-kill-game-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="exit-script-kill-game-btn">‹ 退出</span>
+        <span id="script-kill-game-title">剧本杀</span>
+        <div class="header-actions">
+            <span class="action-btn" id="script-kill-my-role-btn">我的角色</span>
+            <span class="action-btn" id="script-kill-all-evidence-btn">公共线索</span>
+        </div>
+    </div>
+    <div id="script-kill-game-content">
+        <div id="script-kill-players-grid">
+            <!-- 玩家头像和状态将由JS动态生成 -->
+        </div>
+        <div id="script-kill-log-container">
+            <div id="script-kill-game-log">
+                <!-- 游戏过程信息会显示在这里 -->
+            </div>
+        </div>
+        <div id="script-kill-action-area">
+            <!-- 玩家的按钮会根据游戏阶段显示在这里 -->
+        </div>
+    </div>
+</div>
+<!-- ▼▼▼ 把这一整块全新的HTML代码，粘贴到 </body> 标签的正上方 ▼▼▼ -->
+
+<!-- 【全新】剧本杀自定义剧本管理模态框 -->
+<div id="script-kill-manager-modal" class="modal">
+    <div class="modal-content" style="height: 70%;">
+<div class="modal-header">
+    <span>管理自定义剧本</span>
+    <div class="header-actions">
+        <!-- ▼▼▼ 在这里添加一个新按钮 ▼▼▼ -->
+        <button id="open-sk-ai-generator-btn" class="action-button" style="font-size: 14px;">AI生成</button>
+        <!-- ▲▲▲ 添加结束 ▲▲▲ -->
+        <button id="add-new-script-btn" class="action-button">添加</button>
+    </div>
+</div>
+
+        <div class="modal-body" id="custom-scripts-list" style="padding: 0;">
+            <!-- 自定义剧本列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="save" id="close-script-manager-btn" style="width: 100%;">完成</button>
+        </div>
+    </div>
+</div>
+
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
+<!-- ▼▼▼ 用下面这【一整块】全新的代码，替换掉你旧的 id="script-kill-editor-modal" ▼▼▼ -->
+
+<!-- 1. 剧本编辑器主弹窗 (可视化版) -->
+<div id="script-kill-editor-modal" class="modal">
+    <div class="modal-content" style="height: 90%;">
+        <div class="modal-header">
+            <span id="script-editor-title">剧本编辑器</span>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 15px;">
+            
+            <!-- 基础信息 -->
+            <div class="form-group">
+                <label for="script-name-input">剧本名称</label>
+                <input type="text" id="script-name-input">
+            </div>
+            <div class="form-group">
+                <label for="script-background-input">故事背景</label>
+                <textarea id="script-background-input" rows="3"></textarea>
+            </div>
+            
+            <hr style="opacity: 0.2;">
+
+            <!-- 角色设定区 -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <label style="margin: 0; font-weight: 600;">角色设定</label>
+                    <button id="sk-add-role-btn" class="form-button-secondary" style="margin: 0; padding: 5px 15px;">+ 添加角色</button>
+                </div>
+                <div id="sk-roles-container" class="sk-item-container">
+                    <!-- 角色卡片将由JS动态生成在这里 -->
+                </div>
+            </div>
+
+            <!-- 线索卡区 -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <label style="margin: 0; font-weight: 600;">线索卡</label>
+                    <button id="sk-add-clue-btn" class="form-button-secondary" style="margin: 0; padding: 5px 15px;">+ 添加线索</button>
+                </div>
+                <div id="sk-clues-container" class="sk-item-container">
+                    <!-- 线索卡片将由JS动态生成在这里 -->
+                </div>
+            </div>
+
+            <!-- 最终真相互动 -->
+            <div class="form-group">
+                <label for="sk-truth-input">最终真相</label>
+                <textarea id="sk-truth-input" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-script-editor-btn">取消</button>
+            <button class="save" id="save-script-btn">保存剧本</button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. 【全新】用于编辑单个角色/线索的子弹窗 -->
+<div id="sk-item-editor-modal" class="modal" style="z-index: 1003;">
+    <div class="modal-content" style="height: auto; max-height: 85%;">
+        <div class="modal-header">
+            <span id="sk-item-editor-title"></span>
+        </div>
+        <div class="modal-body">
+            <!-- 角色编辑字段 (默认隐藏) -->
+            <div id="sk-role-editor-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="sk-role-name-input">角色名称</label>
+                    <input type="text" id="sk-role-name-input">
+                </div>
+                <div class="form-group">
+                    <label for="sk-role-desc-input">角色介绍</label>
+                    <textarea id="sk-role-desc-input" rows="3"></textarea>
+                </div>
+<div class="form-group">
+    <label for="sk-role-storyline-input">故事线 (案发时间段的详细行动轨迹)</label>
+    <textarea id="sk-role-storyline-input" rows="5"></textarea>
+</div>
+                <div class="form-group">
+                    <label for="sk-role-tasks-input">秘密任务</label>
+                    <textarea id="sk-role-tasks-input" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="toggle-switch-label">
+                        <span class="toggle-switch-text">是凶手</span>
+                        <input type="checkbox" id="sk-role-killer-toggle">
+                        <span class="toggle-switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+            <!-- 线索编辑字段 (默认隐藏) -->
+            <div id="sk-clue-editor-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="sk-clue-owner-select">线索归属</label>
+                    <select id="sk-clue-owner-select">
+                        <!-- 选项将由JS动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sk-clue-desc-input">线索描述</label>
+                    <textarea id="sk-clue-desc-input" rows="4"></textarea>
+                </div>
+                 <div class="form-group">
+                    <label class="toggle-switch-label">
+                        <span class="toggle-switch-text">是关键线索</span>
+                        <input type="checkbox" id="sk-clue-key-toggle">
+                        <span class="toggle-switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="sk-item-editor-cancel-btn">取消</button>
+            <button class="save" id="sk-item-editor-save-btn">保存</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
+<!-- 4. 角色身份卡模态框 -->
+<div id="script-kill-role-modal" class="modal">
+    <div class="modal-content" style="height: 70%;">
+        <div class="modal-header">
+            <span id="sk-role-name">你的角色</span>
+        </div>
+        <div class="modal-body" id="sk-role-details" style="white-space: pre-wrap; line-height: 1.7;">
+            <!-- 角色介绍、任务等将显示在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="save" id="close-sk-role-modal-btn" style="width:100%;">我已了解</button>
+        </div>
+    </div>
+</div>
+
+<!-- 5. 个人线索板模态框 -->
+<div id="script-kill-evidence-modal" class="modal">
+    <div class="modal-content" style="height: 70%;">
+        <div class="modal-header">
+            <span>我的线索板</span>
+        </div>
+        <div class="modal-body" id="sk-evidence-list" style="padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+            <!-- 搜到的线索卡片会显示在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="save" id="close-sk-evidence-modal-btn" style="width:100%;">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- 6. 投票模态框 -->
+<div id="script-kill-vote-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 70%;">
+        <div class="modal-header">
+            <span id="sk-vote-title">最终投票</span>
+        </div>
+        <div class="modal-body" id="sk-vote-options-list" style="text-align: left; padding: 20px;">
+            <!-- 投票选项将由JS动态生成 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-sk-vote-btn">取消</button>
+            <button class="save" id="confirm-sk-vote-btn">确认投票</button>
+        </div>
+    </div>
+</div>
+<!-- ▼▼▼ 【全新】剧本杀游戏结算卡片 ▼▼▼ -->
+<div id="script-kill-summary-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 80%;">
+        <div class="modal-header">
+            <span>游戏结算</span>
+        </div>
+        <div class="modal-body" id="script-kill-summary-content" style="white-space: pre-wrap; line-height: 1.7;">
+            <!-- 结算内容将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="repost-sk-summary-btn">转发复盘到单聊</button>
+            <button class="save" id="back-to-hall-from-sk-btn">返回大厅</button>
+        </div>
+    </div>
+</div>
+
+<!-- ▼▼▼ 【全新】剧本杀复盘发送目标选择器 ▼▼▼ -->
+<div id="script-kill-target-picker-modal" class="modal">
+    <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+            <span>选择要转发的玩家</span>
+        </div>
+        <div class="modal-body" id="script-kill-target-list" style="padding: 0;">
+            <!-- 玩家列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button id="sk-select-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全选</button>
+            <button id="sk-deselect-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全不选</button>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="sk-cancel-share-btn">取消</button>
+            <button class="save" id="sk-confirm-share-btn">确认转发</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】这是AI剧本生成器的弹窗，粘贴到</body>前 ▼▼▼ -->
+<div id="sk-ai-generator-modal" class="modal">
+    <div class="modal-content" style="height: 90%;">
+        <div class="modal-header">
+            <span>AI 剧本生成器</span>
+        </div>
+<div class="modal-body" style="display: flex; flex-direction: column; gap: 15px;">
+            
+    <div class="form-group">
+        <label for="sk-ai-elements-input">核心要素 (用逗号分隔)</label>
+        <input type="text" id="sk-ai-elements-input" placeholder="例如：现代, 谋杀, 暴风雪山庄, 遗产">
+    </div>
+
+    <!-- ▼▼▼ 【这是你要求新增的HTML】请把它粘贴到这里 ▼▼▼ -->
+    <div class="form-group">
+        <label for="sk-ai-player-count-input">玩家人数 (包含凶手, 建议4-8人)</label>
+        <input type="number" id="sk-ai-player-count-input" value="5" min="3" max="12" style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+    </div>
+    <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
+    <div class="form-group">
+        <label for="sk-ai-summary-input">剧情梗概 (可选)</label>
+        <textarea id="sk-ai-summary-input" rows="4" placeholder="可以写一个简单的故事大纲，帮助AI更好地理解你的想法..."></textarea>
+    </div>
+    <button id="sk-trigger-ai-generation-btn" class="form-button">开始生成</button>
+          
+            <hr style="opacity: 0.2; margin: 5px 0;">
+
+            <div class="form-group" style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column;">
+                <label>AI 生成结果预览</label>
+                <div id="sk-ai-result-preview" style="flex-grow: 1; overflow-y: auto; background: #f0f2f5; padding: 10px; border-radius: 8px; white-space: pre-wrap; line-height: 1.6; color: #555;">
+                    点击“开始生成”后，结果将显示在这里...
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="sk-ai-generator-cancel-btn">关闭</button>
+            <!-- 这个保存按钮初始是禁用的，生成成功后才会激活 -->
+            <button class="save" id="sk-ai-generator-save-btn" disabled>保存剧本</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
+<!-- ▲▲▲ 剧本杀功能HTML结束 ▲▲▲ -->
+
+<!-- ▲▲▲ 海龟汤功能HTML结束 ▲▲▲ -->
+ <!-- ▼▼▼ 【全新】这是“你说我猜”游戏的所有HTML代码 ▼▼▼ -->
+
+<!-- 1. “你说我猜”游戏设置屏幕 -->
+<div id="guess-what-setup-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('game-hall-screen')">‹</span>
+        <span>你说我猜 - 游戏设置</span>
+    </div>
+    <div class="form-container">
+        <div class="form-group">
+            <label>邀请一位玩伴</label>
+            <div id="guess-what-player-selection" class="list-container" style="height: 200px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <!-- 玩家选择列表将由JS动态生成 -->
+            </div>
+        </div>
+        <div class="form-group">
+            <label>选择游戏模式</label>
+            <div style="display: flex; gap: 20px;">
+                <label><input type="radio" name="guess_what_mode" value="ai_guesses" checked> 我出题，AI猜</label>
+                <label><input type="radio" name="guess_what_mode" value="user_guesses"> AI出题，我猜</label>
+            </div>
+        </div>
+        <!-- "我出题"模式下的输入框 -->
+        <div class="form-group" id="user-word-input-container">
+            <label for="guess-what-user-word">请输入你要出的词</label>
+            <input type="text" id="guess-what-user-word" placeholder="例如：苹果、流浪地球...">
+        </div>
+        <button id="start-guess-what-game-btn" class="form-button">开始游戏</button>
+    </div>
+</div>
+
+<!-- 2. “你说我猜”游戏主界面 -->
+<div id="guess-what-game-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="exit-guess-what-game-btn">‹ 退出</span>
+        <span id="guess-what-game-title">你说我猜</span>
+        <span class="action-btn" id="give-up-guess-what-btn">放弃</span>
+    </div>
+    <!-- 游戏主内容区 -->
+    <div id="guess-what-game-content" style="display: flex; flex-direction: column; height: 100%; overflow: hidden; padding: 10px; box-sizing: border-box;">
+        <!-- 游戏日志/信息区 -->
+        <div id="guess-what-log-container" style="flex-grow: 1; background-color: rgba(0,0,0,0.05); border-radius: 10px; padding: 10px; overflow-y: auto; margin: 10px 0; min-height: 0;">
+            <div id="guess-what-game-log">
+                <!-- 游戏过程信息会显示在这里 -->
+            </div>
+        </div>
+        <!-- 玩家操作区 -->
+        <div id="guess-what-action-area" class="chat-input-area" style="visibility: visible;">
+             <div class="chat-input-main-row">
+                <textarea id="guess-what-user-input" rows="1" placeholder="输入提示或猜测..."></textarea>
+                <button id="send-guess-what-input-btn" class="action-button">发送</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ▲▲▲ “你说我猜”HTML代码结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】“你说我猜”游戏结算卡片 ▼▼▼ -->
+<div id="guess-what-summary-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 80%;">
+        <div class="modal-header">
+            <span>游戏结算</span>
+        </div>
+        <div class="modal-body" id="guess-what-summary-content" style="white-space: pre-wrap; line-height: 1.7;">
+            <!-- 结算内容将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="forward-guess-what-summary-btn">转发给Ta</button>
+            <button class="save" id="close-guess-what-summary-btn">返回大厅</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+ <!-- ▼▼▼ 【全新】这是“心动飞行棋”的所有新HTML代码 ▼▼▼ -->
+
+<!-- 1. 飞行棋游戏设置屏幕 -->
+<div id="ludo-setup-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('game-hall-screen')">‹</span>
+        <span>心动飞行棋 - 游戏设置</span>
+    </div>
+    <div class="form-container">
+        <div class="form-group">
+            <label>选择一位玩伴</label>
+            <!-- 邀请列表，我们会用JS来填充 -->
+            <div id="ludo-player-selection" class="list-container" style="height: 200px; border: 1px solid var(--border-color); border-radius: 8px;">
+            </div>
+        </div>
+        <!-- ▼▼▼ 在 #ludo-setup-screen 的 "form-container" 内，粘贴这段新代码 ▼▼▼ -->
+<div class="form-group">
+    <label>选择问题库</label>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <select id="ludo-question-bank-select" style="flex-grow: 1;"></select>
+        <button id="manage-ludo-question-banks-btn" class="form-button-secondary" style="margin-top: 0; padding: 12px; width: auto;">管理题库</button>
+    </div>
+</div>
+<!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
+
+        <button id="start-ludo-game-btn" class="form-button">开始游戏</button>
+    </div>
+</div>
+
+<!-- 2. 飞行棋游戏主界面 -->
+<div id="ludo-game-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="exit-ludo-game-btn">‹ 退出</span>
+        <span>心动飞行棋</span>
+        <!-- 这里可以放一个重置游戏的按钮 -->
+        <span class="action-btn" id="restart-ludo-game-btn" title="重新开始">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </span>
+    </div>
+    <!-- 游戏主内容区 -->
+    <div id="ludo-game-content">
+        <!-- 棋盘区域 -->
+        <div id="ludo-board-container">
+            <div id="ludo-board">
+                <!-- 棋盘格子将由JS动态生成 -->
+            </div>
+            <!-- 玩家棋子 -->
+            <div id="ludo-user-piece" class="ludo-piece user"></div>
+            <div id="ludo-char-piece" class="ludo-piece char"></div>
+        </div>
+
+        <!-- 游戏日志区域 -->
+        <div id="ludo-log-container">
+            <div id="ludo-game-log">
+                <!-- 游戏过程信息会显示在这里 -->
+            </div>
+        </div>
+        
+        <!-- 玩家操作区 -->
+        <div id="ludo-action-area">
+            <!-- 用户的按钮会根据游戏阶段显示在这里 -->
+        </div>
+    </div>
+</div>
+
+<!-- ▲▲▲ “心动飞行棋”HTML代码结束 ▲▲▲ -->
 
 <!-- ▼▼▼ 在这里找到你的微博私信列表页面 ▼▼▼ -->
 <div id="weibo-dm-list-screen" class="screen">
@@ -17312,7 +19323,94 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 <!-- ▼▼▼ 把这一整块全新的HTML，粘贴到 </body> 标签的正上方 ▼▼▼ -->
+<!-- ▼▼▼ 【全新】这是“谁是卧底”游戏的全部HTML界面，请粘贴到 </body> 标签前 ▼▼▼ -->
 
+<!-- 1. “谁是卧底”游戏设置屏幕 -->
+<div id="undercover-setup-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('game-hall-screen')">‹</span>
+        <span>谁是卧底 - 游戏设置</span>
+    </div>
+<div class="form-container">
+    <div class="form-group">
+        <label>邀请模式</label>
+        <div style="display: flex; gap: 20px;">
+            <label style="cursor: pointer;"><input type="radio" name="undercover_invite_mode" value="manual" checked> 手动邀请</label>
+            <label style="cursor: pointer;"><input type="radio" name="undercover_invite_mode" value="random"> 随机邀请</label>
+        </div>
+    </div>
+
+    <!-- 随机邀请的选项 -->
+    <div id="undercover-random-invite-options" style="display: none;">
+        <div class="form-group">
+            <label for="undercover-random-player-count">你想邀请几位AI/NPC？ (不含你自己)</label>
+            <input type="number" id="undercover-random-player-count" min="2" max="15" value="5" style="width: 100%; box-sizing: border-box; padding: 10px;">
+        </div>
+    </div>
+
+    <!-- 手动邀请的选项 -->
+    <div id="undercover-manual-invite-options">
+        <div class="form-group">
+            <label>请勾选要邀请的玩家</label>
+            <div id="undercover-player-selection" class="list-container" style="height: 350px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <!-- 玩家选择列表将由JS动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <button id="start-undercover-game-btn" class="form-button">开始游戏</button>
+    <p style="text-align: center; color: var(--text-secondary); font-size: 13px; margin-top: 15px;">
+        游戏最少需要3人。<br>
+        3-5人局：1卧底<br>
+        6-8人局：1卧底, 1白板<br>
+        9人及以上：2卧底, 1白板
+    </p>
+</div>
+</div>
+
+<!-- 2. “谁是卧底”游戏主界面 -->
+<div id="undercover-game-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="exit-undercover-game-btn">‹ 退出</span>
+        <span id="undercover-game-title">谁是卧底</span>
+        <span class="action-btn" id="undercover-my-word-btn">我的词语</span>
+    </div>
+    <!-- 游戏主内容区 -->
+    <div id="undercover-game-content" style="display: flex; flex-direction: column; height: 100%; overflow: hidden; padding: 10px; box-sizing: border-box;">
+        <!-- 玩家座位区 -->
+        <div id="undercover-players-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 15px; padding: 10px; flex-shrink: 0;">
+            <!-- 玩家头像和状态将由JS动态生成 -->
+        </div>
+        <!-- 游戏日志/信息区 -->
+        <div id="undercover-log-container" style="flex-grow: 1; background-color: rgba(0,0,0,0.05); border-radius: 10px; padding: 10px; overflow-y: auto; margin: 10px 0; min-height: 0;">
+            <div id="undercover-game-log">
+                <!-- 游戏过程信息会显示在这里 -->
+            </div>
+        </div>
+        <!-- 玩家操作区 -->
+        <div id="undercover-action-area" style="flex-shrink: 0; padding: 10px; display: flex; justify-content: center; align-items: center; gap: 15px; min-height: 50px;">
+            <!-- 玩家的按钮会根据游戏阶段显示在这里 -->
+        </div>
+    </div>
+</div>
+
+<!-- ▼▼▼ 用这整块【已修改】的代码，替换掉你旧的 undercover-summary-modal ▼▼▼ -->
+<div id="undercover-summary-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 80%;">
+        <div class="modal-header">
+            <span>游戏结算</span>
+        </div>
+        <div class="modal-body" id="undercover-summary-content" style="white-space: pre-wrap; line-height: 1.7;">
+            <!-- 结算内容将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <!-- ★★★ 核心修改：我们在这里新增了一个“分享复盘”按钮 ★★★ -->
+            <button class="cancel" id="repost-undercover-summary-btn">分享复盘到单聊</button>
+            <button class="save" id="back-to-hall-from-undercover-btn">返回大厅</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
 <!-- ▼▼▼ 【全新】这是User自己的私信功能，请粘贴到 <div id="weibo-screen">...</div> 之后 ▼▼▼ -->
 
 <!-- 1. User私信列表页面 -->
@@ -17671,7 +19769,130 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 </div>
 
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 在 </body> 标签的正上方，粘贴下面这一整块新代码 ▼▼▼ -->
 
+<!-- 【全新】飞行棋问题库管理模态框 (已修改) -->
+<div id="ludo-qbank-manager-modal" class="modal">
+    <div class="modal-content" style="height: 70%;">
+        <div class="modal-header">
+            <span>管理问题库</span>
+            <!-- ▼▼▼ 核心修改在这里 ▼▼▼ -->
+            <div class="header-actions">
+                <span class="action-btn" id="import-ludo-qbank-btn" title="导入题库">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </span>
+                <span class="action-btn" id="add-ludo-qbank-btn" style="font-size: 16px;">新建</span>
+            </div>
+            <!-- ▲▲▲ 修改结束 ▲▲▲ -->
+        </div>
+        <div class="modal-body" id="ludo-qbank-list" style="padding: 0;">
+            <!-- 问题库列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="save" id="close-qbank-manager-btn" style="width: 100%;">完成</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- 【全新】飞行棋问题编辑器模态框 -->
+<div id="ludo-question-editor-modal" class="modal">
+    <div class="modal-content" style="height: 80%;">
+        <div class="modal-header">
+            <span class="back-btn" id="back-to-qbank-manager-btn">‹</span>
+            <span id="ludo-question-editor-title">编辑问题</span>
+            <span class="action-btn" id="add-ludo-question-btn" style="font-size: 28px; font-weight: 300;">+</span>
+        </div>
+        <div class="modal-body" id="ludo-question-list" style="padding: 10px;">
+            <!-- 问题列表将由JS动态生成在这里 -->
+        </div>
+    </div>
+</div>
+
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 在 </body> 标签的正上方，粘贴下面这一整块新代码 ▼▼▼ -->
+<!-- 【全新】飞行棋单个问题编辑器模态框 -->
+<div id="ludo-single-question-editor-modal" class="modal">
+    <div class="modal-content" style="height: auto;">
+        <div class="modal-header">
+            <span id="ludo-single-question-title">编辑问题</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="ludo-question-text-input">问题内容</label>
+                <textarea id="ludo-question-text-input" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label>问题类型</label>
+                <div style="display: flex; gap: 20px;">
+                    <label><input type="radio" name="ludo_question_type" value="both_answer" checked> 共同回答</label>
+                    <label><input type="radio" name="ludo_question_type" value="single_answer"> 一人回答,一人评价</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-single-question-btn">取消</button>
+            <button class="save" id="save-single-question-btn">保存</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】这是飞行棋游戏结算卡片，请粘贴到 </body> 标签前 ▼▼▼ -->
+<div id="ludo-summary-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 80%;">
+        <div class="modal-header">
+            <span>游戏结算</span>
+        </div>
+        <div class="modal-body" id="ludo-summary-content" style="text-align: left; line-height: 1.7;">
+            <!-- 结算内容将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="share-ludo-summary-btn">分享给Ta</button>
+            <button class="save" id="back-to-hall-from-ludo-btn">返回大厅</button>
+        </div>
+    </div>
+</div>
+<!-- ▼▼▼ 【全新】“谁是卧底”游戏结算卡片 ▼▼▼ -->
+<div id="undercover-summary-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 80%;">
+        <div class="modal-header">
+            <span>游戏结算</span>
+        </div>
+        <div class="modal-body" id="undercover-summary-content" style="white-space: pre-wrap; line-height: 1.7;">
+            <!-- 结算内容将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <!-- 这是我们新增的“分享复盘”按钮 -->
+            <button class="cancel" id="repost-undercover-summary-btn">分享复盘到单聊</button>
+            <button class="save" id="back-to-hall-from-undercover-btn">返回大厅</button>
+        </div>
+    </div>
+</div>
+<!-- ▼▼▼ 在 </body> 标签前，粘贴下面这整块【全新的】HTML代码 ▼▼▼ -->
+<!-- “谁是卧底”复盘发送目标选择器 -->
+<div id="undercover-target-picker-modal" class="modal">
+    <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+            <span>选择要发送的玩家</span>
+        </div>
+        <div class="modal-body" id="undercover-target-list" style="padding: 0;">
+            <!-- 玩家列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button id="uc-select-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全选</button>
+            <button id="uc-deselect-all-btn" class="form-button-secondary" style="width: 45%; margin: 0;">全不选</button>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="uc-cancel-share-btn">取消</button>
+            <button class="save" id="uc-confirm-share-btn">确认发送</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 <!-- ▼▼▼ 【全新】群公告模态框 ▼▼▼ -->
 <div id="group-announcement-modal" class="modal">
     <div class="modal-content">
@@ -18866,8 +21087,9 @@ let waimaiTimers = {}; // 用于存储外卖倒计时
 let activeMessageTimestamp = null;
 
 
+const LUDO_BOARD_SIZE = 42; // 总格子数，可以根据你的棋盘布局调整
 
-let tempGeneratedScriptData = null;
+
 let currentReplyContext = null; // <--- 新增这行，用来存储当前正在引用的消息信息
 let currentSearchKeyword = ''; // 用于在搜索结果中高亮关键词
 let activePostId = null; // <-- 新增：用于存储当前操作的动态ID
@@ -19568,7 +21790,6 @@ const DEFAULT_APP_LABELS = {
     'taobao': '桃宝'
 };
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
-
 
 
 // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
@@ -20588,34 +22809,47 @@ function getEventCoords(e) {
 }
 
 
-        function showScreen(screenId) {
-              // 如果当前激活的不是物流页面，就清空所有物流更新的定时器
+// ▼▼▼ 用这块【最终修复版】的代码，完整替换你旧的 showScreen 函数 ▼▼▼
+function showScreen(screenId) {
     if (!document.getElementById('logistics-screen').classList.contains('active')) {
         logisticsUpdateTimers.forEach(timerId => clearTimeout(timerId));
         logisticsUpdateTimers = [];
     }
-    // ▲▲▲ 添加结束 ▲▲▲
-            if (screenId === 'chat-list-screen') {
-                window.renderChatListProxy(); 
-                switchToChatListView('messages-view');
-            }
-            if (screenId === 'api-settings-screen') window.renderApiSettingsProxy();
-            if (screenId === 'wallpaper-screen') window.renderWallpaperScreenProxy();
-            if (screenId === 'world-book-screen') window.renderWorldBookScreenProxy();
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const screenToShow = document.getElementById(screenId);
-            if (screenToShow) screenToShow.classList.add('active');
-            if (screenId === 'chat-interface-screen') window.updateListenTogetherIconProxy(state.activeChatId);
-            if (screenId === 'font-settings-screen') {
-                // 更新全局字体预览
-                document.getElementById('font-preview').style.fontFamily = '';
-                applyCustomFont(state.globalSettings.fontUrl || '', true);
-                
-                // 渲染5个预设卡槽
-                renderFontPresets();
-            }
 
-        }
+    // 【核心修改】我们现在直接调用真正的函数，不再需要 "Proxy"
+    if (screenId === 'chat-list-screen') {
+        renderChatList(); 
+        switchToChatListView('messages-view');
+    }
+    if (screenId === 'api-settings-screen') {
+        renderApiSettings();
+    }
+    if (screenId === 'wallpaper-screen') {
+        renderWallpaperScreen();
+    }
+    if (screenId === 'world-book-screen') {
+        renderWorldBookScreen();
+    }
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screenToShow = document.getElementById(screenId);
+    if (screenToShow) {
+        screenToShow.classList.add('active');
+    }
+
+    if (screenId === 'chat-interface-screen') {
+        updateListenTogetherIcon(state.activeChatId);
+    }
+    
+    if (screenId === 'font-settings-screen') {
+        document.getElementById('font-preview').style.fontFamily = '';
+        applyCustomFont(state.globalSettings.fontUrl || '', true);
+        renderFontPresets();
+    }
+}
+window.showScreen = showScreen; // 确保 showScreen 自己也是全局的
+// ▲▲▲ 替换结束 ▲▲▲
+
         window.updateListenTogetherIconProxy = () => {};
 
         function switchToChatListView(viewId) {
@@ -42577,6 +44811,9 @@ async function applyForumFilter() {
 
 // ▲▲▲ 新增函数结束 ▲▲▲
 
+
+
+
 // ▼▼▼ 【全新】宠物功能核心函数 ▼▼▼
 
 let currentPetData = null; // 用于暂存正在编辑的宠物数据
@@ -48494,7 +50731,6 @@ ${requirements || '无特殊要求，请自由发挥。'}
         // 4. 初始化函数 init()
         // ===================================================================
         async function init() {
-await migrateDefaultLudoQuestions();
     // ▼▼▼ 在 init()    // ▼▼▼ 在这里粘贴下面这几行新代码 ▼▼▼
     // 更新小组件的月份显示
     const monthElement = document.getElementById('widget-month-display');
@@ -54142,412 +56378,11 @@ document.getElementById('reset-forum-filter-btn').addEventListener('click', asyn
     await applyForumFilter();
 });
 // ▲▲▲ 新增事件监听结束 ▲▲▲
-// ▼▼▼ 用这块【已添加飞行棋】的代码，替换旧的 game-hall-grid 事件监听器 ▼▼▼
-document.getElementById('game-hall-grid').addEventListener('click', (e) => {
-    const gameCard = e.target.closest('.game-card');
-    if (!gameCard) return;
 
-    const gameId = gameCard.dataset.game;
-    if (gameId === 'werewolf') {
-        openWerewolfSetup();
-    } else if (gameId === 'sea-turtle-soup') {
-        openSeaTurtleSoupSetup();
-    } else if (gameId === 'script-kill') {
-        openScriptKillSetup();
-    } else if (gameId === 'guess-what') {
-        openGuessWhatSetup();
-    } 
-    // ★★★ 这就是我们新增的分支 ★★★
-    else if (gameId === 'ludo') {
-        openLudoSetup(); // 调用我们新写的函数
-    } 
-    // ★★★ 新增结束 ★★★
-        // ▼▼▼ 在这里添加新的 else if 分支 ▼▼▼
-    else if (gameId === 'undercover') {
-        openUndercoverSetup();
-    } 
-    // ▲▲▲ 新增代码结束 ▲▲▲
-    else {
-        alert(`“${gameCard.querySelector('.game-title').textContent}”还在开发中，敬请期待！`);
-    }
-});
-// ▲▲▲ 替换结束 ▲▲▲
 
 
 // ▲▲▲ 新增事件监听结束 ▲▲▲
-// ▼▼▼ 【全新】狼人杀游戏事件监听器 ▼▼▼
-document.getElementById('start-werewolf-game-btn').addEventListener('click', startWerewolfGame);
 
-document.getElementById('exit-werewolf-game-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('退出游戏', '确定要中途退出游戏吗？当前进度不会保存。');
-    if (confirmed) {
-        werewolfGameState.isActive = false; // 停止游戏循环
-        showScreen('game-hall-screen');
-    }
-});
-
-document.getElementById('werewolf-my-role-btn').addEventListener('click', () => {
-    if (werewolfGameState.isActive) {
-        const me = werewolfGameState.players.find(p => p.isUser);
-        if (me) {
-            alert(`你的身份是：【${me.role}】`);
-        }
-    }
-});
-// ▲▲▲ 新增事件监听结束 ▲▲▲
-// ▼▼▼ 【全新】海龟汤游戏事件监听器 ▼▼▼
-
-// 1. 设置弹窗内的交互
-document.getElementById('cancel-sts-setup-btn').addEventListener('click', () => {
-    document.getElementById('sea-turtle-soup-setup-modal').classList.remove('visible');
-});
-document.getElementById('start-sts-game-btn').addEventListener('click', startSeaTurtleSoupGame);
-
-// 监听“出题人”下拉框的变化
-document.getElementById('sts-riddle-provider-select').addEventListener('change', (e) => {
-    const userArea = document.getElementById('sts-user-riddle-input-area');
-    const aiArea = document.getElementById('sts-ai-riddle-input-area');
-    userArea.style.display = 'none';
-    aiArea.style.display = 'none';
-    if (e.target.value === 'user') {
-        userArea.style.display = 'block';
-    } else if (e.target.value === 'random_ai') {
-        aiArea.style.display = 'block';
-    }
-});
-
-// 2. 游戏主界面的按钮
-document.getElementById('exit-sts-game-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('退出游戏', '确定要中途退出游戏吗？');
-    if (confirmed) {
-        seaTurtleSoupState.isActive = false;
-        showScreen('game-hall-screen');
-    }
-});
-document.getElementById('reveal-sts-answer-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('揭晓答案', '确定要提前揭晓答案并结束游戏吗？');
-    if (confirmed) {
-        revealStsAnswer();
-    }
-});
-document.getElementById('send-sts-question-btn').addEventListener('click', handleStsUserQuestion);
-// ▼▼▼ 在 init() 的事件监听器区域末尾添加 ▼▼▼
-document.getElementById('guess-sts-answer-btn').addEventListener('click', handleStsUserGuess);
-// ▲▲▲ 添加结束 ▲▲▲
-document.getElementById('sts-question-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        document.getElementById('send-sts-question-btn').click();
-    }
-});
-
-// ▲▲▲ 新事件监听器结束 ▲▲▲
-// ▼▼▼ 【全新】剧本杀游戏事件监听器 ▼▼▼
-document.getElementById('start-script-kill-game-btn').addEventListener('click', startScriptKillGame);
-document.getElementById('exit-script-kill-game-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('退出游戏', '确定要中途退出游戏吗？当前进度不会保存。');
-    if (confirmed) {
-        scriptKillGameState.isActive = false; // 停止游戏循环
-        showScreen('game-hall-screen');
-    }
-});
-// 剧本杀游戏事件监听器
-document.getElementById('script-kill-my-role-btn').addEventListener('click', () => {
-    if (!scriptKillGameState.isActive) return;
-    const myPlayer = scriptKillGameState.players.find(p => p.isUser);
-    if (myPlayer) {
-        const modal = document.getElementById('script-kill-role-modal');
-        document.getElementById('sk-role-name').textContent = `你的角色：${myPlayer.role.name}`;
-        // ▼▼▼ 核心修改在这里 ▼▼▼
-        document.getElementById('sk-role-details').innerHTML = `
-            <p><strong>角色介绍:</strong><br>${myPlayer.role.description}</p>
-            <p><strong>你的时间线:</strong><br>${myPlayer.role.storyline || '（暂无时间线信息）'}</p>
-            <p><strong>你的任务:</strong><br>${myPlayer.role.tasks}</p>
-        `;
-        // ▲▲▲ 修改结束 ▲▲▲
-        modal.classList.add('visible');
-    }
-});
-document.getElementById('close-sk-role-modal-btn').addEventListener('click', () => {
-    document.getElementById('script-kill-role-modal').classList.remove('visible');
-});
-
-// 查看线索板
-document.getElementById('script-kill-all-evidence-btn').addEventListener('click', () => {
-    if (!scriptKillGameState.isActive) return;
-    const modal = document.getElementById('script-kill-evidence-modal');
-    const listEl = document.getElementById('sk-evidence-list');
-    listEl.innerHTML = '';
-
-    const myPlayer = scriptKillGameState.players.find(p => p.isUser);
-    if (myPlayer.evidence.length === 0) {
-        listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">你还没有搜到任何线索。</p>';
-    } else {
-        myPlayer.evidence.forEach(clue => {
-            const card = document.createElement('div');
-            card.className = 'sk-evidence-card';
-            card.innerHTML = `
-                <div class="source">来源: ${clue.source}</div>
-                <div class="description">${clue.description}</div>
-            `;
-            listEl.appendChild(card);
-        });
-    }
-    modal.classList.add('visible');
-});
-document.getElementById('close-sk-evidence-modal-btn').addEventListener('click', () => {
-    document.getElementById('script-kill-evidence-modal').classList.remove('visible');
-});
-
-// ▼▼▼ 【最终流程版】请用这整块代码，完整替换旧的 script-kill-action-area 事件监听器 ▼▼▼
-document.getElementById('script-kill-action-area').addEventListener('click', async (e) => {
-    const phase = scriptKillGameState.gamePhase;
-
-// ▼▼▼ 从这里开始复制，替换掉你旧的 'sk-search-evidence-btn' 的 if 代码块 ▼▼▼
-if (e.target.id === 'sk-search-evidence-btn') {
-    const user = scriptKillGameState.players.find(p => p.isUser);
-    const script = scriptKillGameState.script;
-    
-    const searchCount = scriptKillGameState.evidenceCounts[user.id] || 0;
-    const phase = scriptKillGameState.gamePhase;
-
-    // 检查搜证次数限制
-    if ((phase === 'evidence_round_1' && searchCount >= 2) || (phase === 'evidence_round_2' && searchCount >= 3)) {
-        alert("本轮搜证次数已用完！");
-        return;
-    }
-    
-    // 消耗一次搜证机会并更新UI
-    scriptKillGameState.evidenceCounts[user.id] = searchCount + 1;
-    updateActionAreaSK();
-
-    let foundMessage = '';
-
-    // 找出所有还未被发现的线索
-    const uncollectedClues = script.clues.filter(c => !scriptKillGameState.collectedClueIds.has(c.description));
-
-    if (uncollectedClues.length > 0) {
-        // 随机找到一条新线索
-        const foundClue = uncollectedClues[Math.floor(Math.random() * uncollectedClues.length)];
-        const clueSource = foundClue.owner === '公共' ? '公共区域' : `角色 ${foundClue.owner} 的私人物品`;
-        
-        // 无论如何，线索都会先加入玩家手牌，并标记为已发现
-        user.evidence.push({ description: foundClue.description, source: clueSource });
-        scriptKillGameState.collectedClueIds.add(foundClue.description);
-
-        // --- ★★★ 核心修改逻辑开始 ★★★ ---
-
-        // 判断这条线索是不是关于玩家自己的
-        if (foundClue.owner === user.role.name) {
-            // 如果是，弹出一个选择框让玩家决定
-            const choice = await showChoiceModal(
-                '发现个人线索',
-                [
-                    { text: '公开这条线索', value: 'public' },
-                    { text: '隐藏这条线索', value: 'private' }
-                ]
-            );
-
-            if (choice === 'public') {
-                // 玩家选择【公开】
-                foundMessage = `在【${clueSource}】发现并公开了线索：“${foundClue.description}”`;
-                logToScriptKillGame(`${user.name} 完成了一次搜证: ${foundMessage}`);
-                await showCustomAlert("搜证结果", foundMessage);
-            } else {
-                // 玩家选择【隐藏】或关闭了弹窗
-                foundMessage = `你在【${clueSource}】发现了一条关于自己的线索，并选择将其隐藏。`;
-                // 只给玩家自己一个弹窗提示，告诉他已经拿到了线索
-                await showCustomAlert("搜证结果", `你已将线索“${foundClue.description}”收入囊中。`);
-                // 在公共日志里只显示一个模糊的信息，告诉大家你搜过证了
-                logToScriptKillGame(`${user.name} 完成了一次搜证。`);
-            }
-        } else {
-            // 如果线索是公共的，或者关于其他人的，就按原来的逻辑直接公开
-            foundMessage = `在【${clueSource}】发现线索：“${foundClue.description}”`;
-            logToScriptKillGame(`${user.name} 完成了一次搜证: ${foundMessage}`);
-            await showCustomAlert("搜证结果", foundMessage);
-        }
-        
-        // --- ★★★ 核心修改逻辑结束 ★★★ ---
-
-    } else {
-        // 如果已经没有新线索了
-        foundMessage = "没有发现更多新线索了。";
-        logToScriptKillGame(`${user.name} 完成了一次搜证: ${foundMessage}`);
-        await showCustomAlert("搜证结果", foundMessage);
-    }
-}
-// ▲▲▲ 复制到这里结束 ▲▲▲
-
-
-    // --- 2. 处理“结束搜证”按钮 ---
-    if (e.target.id === 'sk-end-search-btn') {
-        if (phase === 'evidence_round_1') {
-            scriptKillGameState.gamePhase = 'discussion_round_1';
-            await processScriptKillTurn();
-        } else if (phase === 'evidence_round_2') {
-            // 【核心修改】第二轮搜证后，进入第二轮讨论
-            scriptKillGameState.gamePhase = 'discussion_round_2';
-            await processScriptKillTurn();
-        }
-    }
-
-    // --- 3. 处理“我要发言”按钮 ---
-    if (e.target.id === 'sk-speak-btn') {
-        const speech = await waitForUserActionSK('轮到你发言了', 'speak', '请输入你的发言...');
-        const userPlayer = scriptKillGameState.players.find(p => p.isUser);
-        logToScriptKillGame({ player: userPlayer, speech: speech }, 'speech');
-        
-        for (const player of scriptKillGameState.players.filter(p => !p.isUser)) {
-             await sleep(2000);
-             renderScriptKillGameScreen({ speakingPlayerId: player.id });
-             const aiSpeech = await triggerScriptKillAiAction(player.id, 'discuss');
-             logToScriptKillGame({ player: player, speech: aiSpeech }, 'speech');
-        }
-        renderScriptKillGameScreen();
-        
-        // 【核心修改】根据当前讨论轮次，决定下一个阶段
-        if (phase === 'discussion_round_1') {
-            scriptKillGameState.gamePhase = 'evidence_round_2';
-            await processScriptKillTurn();
-        } else if (phase === 'discussion_round_2') {
-            // 第二轮讨论后，进入第三轮（最终）讨论
-            scriptKillGameState.gamePhase = 'discussion_round_3';
-            await processScriptKillTurn();
-        } else if (phase === 'discussion_round_3') {
-            // 最终讨论后，才进入投票
-            scriptKillGameState.gamePhase = 'voting';
-            await processScriptKillTurn();
-        }
-    }
-});
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-
-// ▼▼▼ 【全新 | 已修复】剧本杀管理功能事件监听器 ▼▼▼
-document.getElementById('manage-custom-scripts-btn').addEventListener('click', openScriptManager);
-
-// 管理器弹窗的按钮
-document.getElementById('add-new-script-btn').addEventListener('click', () => {
-    document.getElementById('script-kill-manager-modal').classList.remove('visible');
-    openScriptEditorForCreate();
-});
-document.getElementById('close-script-manager-btn').addEventListener('click', () => {
-    document.getElementById('script-kill-manager-modal').classList.remove('visible');
-    // 关闭后刷新一下设置页面的剧本下拉框
-    openScriptKillSetup();
-    showScreen('script-kill-setup-screen');
-});
-
-// 编辑器弹窗的按钮
-document.getElementById('save-script-btn').addEventListener('click', saveCustomScript);
-document.getElementById('cancel-script-editor-btn').addEventListener('click', () => {
-    document.getElementById('script-kill-editor-modal').classList.remove('visible');
-    // 如果是从管理界面进来的，就返回管理界面
-    if (document.getElementById('script-kill-manager-modal').classList.contains('visible') === false) {
-       openScriptManager();
-    }
-});
-// ▲▲▲ 修复结束 ▲▲▲
-// ▼▼▼ 【全新】剧本杀可视化编辑器事件监听器 ▼▼▼
-document.getElementById('sk-add-role-btn').addEventListener('click', () => openRoleEditor());
-document.getElementById('sk-add-clue-btn').addEventListener('click', () => openClueEditor());
-
-document.getElementById('sk-item-editor-cancel-btn').addEventListener('click', () => {
-    document.getElementById('sk-item-editor-modal').classList.remove('visible');
-});
-document.getElementById('sk-item-editor-save-btn').addEventListener('click', saveItemFromEditor);
-
-// 使用事件委托处理角色和线索卡片上的按钮点击
-document.getElementById('script-kill-editor-modal').addEventListener('click', (e) => {
-    const target = e.target;
-    if (target.classList.contains('edit-role-btn')) {
-        openRoleEditor(parseInt(target.dataset.index));
-    }
-    if (target.classList.contains('delete-role-btn')) {
-        const index = parseInt(target.dataset.index);
-        currentEditingScriptData.roles.splice(index, 1);
-        renderVisualScriptEditor();
-    }
-    if (target.classList.contains('edit-clue-btn')) {
-        openClueEditor(parseInt(target.dataset.index));
-    }
-    if (target.classList.contains('delete-clue-btn')) {
-        const index = parseInt(target.dataset.index);
-        currentEditingScriptData.clues.splice(index, 1);
-        renderVisualScriptEditor();
-    }
-});
-// ▲▲▲ 新增事件监听结束 ▲▲▲
-// ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴这块新代码 ▼▼▼
-
-// 【全新】剧本杀复盘分享功能事件绑定
-document.getElementById('sk-cancel-share-btn').addEventListener('click', () => {
-    document.getElementById('script-kill-target-picker-modal').classList.remove('visible');
-});
-document.getElementById('sk-select-all-btn').addEventListener('click', () => {
-    document.querySelectorAll('.script-kill-target-checkbox').forEach(cb => cb.checked = true);
-});
-document.getElementById('sk-deselect-all-btn').addEventListener('click', () => {
-    document.querySelectorAll('.script-kill-target-checkbox').forEach(cb => cb.checked = false);
-});
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
-// ▼▼▼ 【全新】AI剧本生成器事件监听器 ▼▼▼
-document.getElementById('open-sk-ai-generator-btn').addEventListener('click', openAiScriptGenerator);
-document.getElementById('sk-ai-generator-cancel-btn').addEventListener('click', () => {
-    document.getElementById('sk-ai-generator-modal').classList.remove('visible');
-    // 返回到剧本管理界面
-    openScriptManager();
-});
-document.getElementById('sk-trigger-ai-generation-btn').addEventListener('click', generateSkScriptWithAI);
-document.getElementById('sk-ai-generator-save-btn').addEventListener('click', saveAiGeneratedScript);
-// ▲▲▲ 新事件监听器结束 ▲▲▲
-
-// ▲▲▲ 剧本杀事件监听器结束 ▲▲▲
-// ▼▼▼ 【全新】“你说我猜”游戏事件监听器 ▼▼▼
-
-// 1. 设置界面的交互
-document.querySelectorAll('input[name="guess_what_mode"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        document.getElementById('user-word-input-container').style.display = this.value === 'ai_guesses' ? 'block' : 'none';
-    });
-});
-document.getElementById('start-guess-what-game-btn').addEventListener('click', startGuessWhatGame);
-
-// 2. 游戏界面的交互
-document.getElementById('exit-guess-what-game-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('退出游戏', '确定要中途退出游戏吗？谜底将会揭晓。');
-    if (confirmed) {
-        endGuessWhatGame('none', '游戏被中途放弃。');
-        // 延迟一点再返回大厅，让玩家能看到结果
-        setTimeout(() => {
-            showScreen('game-hall-screen');
-        }, 3000);
-    }
-});
-
-document.getElementById('give-up-guess-what-btn').addEventListener('click', () => {
-    endGuessWhatGame(guessWhatGameState.currentTurn === 'user' ? 'ai' : 'user', '玩家放弃了游戏。');
-});
-
-document.getElementById('send-guess-what-input-btn').addEventListener('click', () => {
-    const input = document.getElementById('guess-what-user-input');
-    const text = input.value.trim();
-    if (text) {
-        processGuessWhatTurn(text);
-        input.value = '';
-    }
-});
-
-document.getElementById('guess-what-user-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        document.getElementById('send-guess-what-input-btn').click();
-    }
-});
-
-// ▲▲▲ “你说我猜”事件监听器结束 ▲▲▲
 // ▼▼▼ 【全新】宠物功能事件监听器 ▼▼▼
 
 // 1. 绑定输入框上方的宠物图标按钮
@@ -55300,70 +57135,7 @@ document.getElementById('remove-char-phone-app-wallpaper-btn').addEventListener(
 });
 
 // ▲▲▲ 新事件绑定结束 ▲▲▲
-// ▼▼▼ 在这里粘贴下面这整块【全新的】事件监听器代码 ▼▼▼
-// ▼▼▼ 用这整块新代码，替换旧的飞行棋事件监听器 ▼▼▼
-/* --- 【全新 | V2分类版】心动飞行棋功能事件监听器 --- */
 
-// 1. 设置页面的按钮
-document.getElementById('start-ludo-game-btn').addEventListener('click', startLudoGame);
-document.getElementById('manage-ludo-question-banks-btn').addEventListener('click', openLudoQuestionBankManager);
-
-// 2. 游戏主界面的按钮
-document.getElementById('exit-ludo-game-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('退出游戏', '确定要中途退出游戏吗？');
-    if (confirmed) {
-        ludoGameState.isActive = false;
-        showScreen('game-hall-screen');
-    }
-});
-document.getElementById('restart-ludo-game-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('重新开始', '确定要重新开始这一局吗？');
-    if (confirmed) {
-        startLudoGame(); 
-    }
-});
-
-// 3. 问题库管理弹窗的按钮
-document.getElementById('close-qbank-manager-btn').addEventListener('click', async () => {
-    document.getElementById('ludo-qbank-manager-modal').classList.remove('visible');
-    // 如果设置页面还开着，就刷新一下下拉框
-    if(document.getElementById('ludo-setup-screen').classList.contains('active')) {
-        await openLudoSetup();
-    }
-});
-document.getElementById('add-ludo-qbank-btn').addEventListener('click', addNewLudoQuestionBank);
-
-// 4. 问题编辑器弹窗的按钮
-document.getElementById('back-to-qbank-manager-btn').addEventListener('click', () => {
-    document.getElementById('ludo-question-editor-modal').classList.remove('visible');
-    openLudoQuestionBankManager(); // 返回到题库管理列表
-});
-document.getElementById('add-ludo-question-btn').addEventListener('click', () => openSingleQuestionEditor(null));
-
-// 5. 单个问题编辑/添加弹窗的按钮
-document.getElementById('cancel-single-question-btn').addEventListener('click', () => {
-    document.getElementById('ludo-single-question-editor-modal').classList.remove('visible');
-});
-document.getElementById('save-single-question-btn').addEventListener('click', saveSingleQuestion);
-// ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
-/* --- 【全新】飞行棋题库导入功能事件监听 --- */
-document.getElementById('import-ludo-qbank-btn').addEventListener('click', () => {
-    // 点击“导入”按钮时，触发隐藏的文件选择框
-    document.getElementById('ludo-qbank-import-input').click();
-});
-
-document.getElementById('ludo-qbank-import-input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        // 当用户选择了文件后，调用我们的导入处理函数
-        importLudoQuestionBank(file);
-    }
-    e.target.value = null; // 清空，以便下次能选择同一个文件
-});
-/* --- 事件监听结束 --- */
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
-
-/* --- 飞行棋事件监听器结束 --- */
 // ▲▲▲ 替换结束 ▲▲▲
     // 【全新】心声背景更换功能事件监听
     document.getElementById('change-inner-voice-bg-btn').addEventListener('click', handleInnerVoiceBgChange);
@@ -55387,26 +57159,7 @@ document.getElementById('ludo-qbank-import-input').addEventListener('change', (e
     });
 
 // ▲▲▲ 新增代码结束 ▲▲▲
-// ▼▼▼ 【全新】“谁是卧底”游戏事件监听器 ▼▼▼
-document.getElementById('start-undercover-game-btn').addEventListener('click', startUndercoverGame);
-document.getElementById('exit-undercover-game-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm('退出游戏', '确定要中途退出游戏吗？当前进度不会保存。');
-    if (confirmed) {
-        undercoverGameState.isActive = false; // 停止游戏循环
-        showScreen('game-hall-screen');
-    }
-});
-document.getElementById('undercover-my-word-btn').addEventListener('click', () => {
-    if (undercoverGameState.isActive) {
-        const me = undercoverGameState.players.find(p => p.isUser);
-        if (me) {
-            const roleName = { undercover: '卧底', civilian: '平民', whiteboard: '白板' }[me.role] || '未知';
-            const wordText = me.word ? `你的词语是：【${me.word}】` : '你是一个白板，需要根据他人描述猜测平民词语。';
-            showCustomAlert(`你的身份是：【${roleName}】`, wordText);
-        }
-    }
-});
-// ▲▲▲ 新增事件监听器结束 ▲▲▲
+
 // 情侣空间取消和解除▼▼▼
 document.getElementById('ls-cancel-space-btn').addEventListener('click', handleCancelLoversSpace);
 document.getElementById('ls-disconnect-space-btn').addEventListener('click', handleDisconnectLoversSpace);
