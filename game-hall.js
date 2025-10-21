@@ -86,7 +86,42 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   // ▲▲▲ 替换结束 ▲▲▲
 
+  // ...（上面是 undercoverGameState 的定义）...
+
+  // ▲▲▲ 替换结束 ▲▲▲
+  // ▼▼▼ 【全新】万能Markdown渲染函数 (带安全过滤和遮挡效果) ▼▼▼
+
+  /**
+   * 将Markdown文本安全地渲染为HTML
+   * @param {string} markdownText - 原始的Markdown文本
+   * @returns {string} - 处理和净化后的安全HTML字符串
+   */
+  function renderMarkdown(markdownText) {
+    if (!markdownText) return '';
+
+    // 1. 【预处理】支持自定义的“遮挡/剧透”语法 ||spoiler||
+    // 我们在 marked.js 处理之前，手动把 ||text|| 替换成带特定class的HTML标签
+    let processedText = markdownText.replace(/\|\|(.*?)\|\|/g, '<span class="spoiler">$1</span>');
+
+    // 2. 【核心】使用 marked.js 将Markdown转换为HTML
+    // gfm: true 开启GitHub风格的Markdown，支持删除线等
+    // breaks: true 让回车符也能变成<br>，更符合聊天习惯
+    let rawHtml = marked.parse(processedText, { gfm: true, breaks: true });
+
+    // 3. 【安全】使用 DOMPurify 清洗HTML，防止XSS攻击
+    let sanitizedHtml = DOMPurify.sanitize(rawHtml);
+
+    return sanitizedHtml;
+  }
+
+  // ▲▲▲ 新函数粘贴结束 ▲▲▲
+
   let tempGeneratedScriptData = null;
+
+  // ▼▼▼ 游戏功能函数 ▼▼▼
+
+  // --- 狼人杀 Werewolf ---
+  // ...（后面的代码）...
 
   // ▼▼▼ 游戏功能函数 ▼▼▼
 
