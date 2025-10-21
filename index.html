@@ -21831,7 +21831,8 @@ const productSearchBtn = document.getElementById('product-search-btn');
             if (modalResolve) modalResolve(null); 
         }
 
-        function showCustomConfirm(title, message, options = {}) {
+        window.showCustomConfirm = function(title, message, options = {}) {
+
             return new Promise(resolve => {
                 modalResolve = resolve;
                 modalTitle.textContent = title;
@@ -21845,7 +21846,8 @@ const productSearchBtn = document.getElementById('product-search-btn');
             });
         }
 
-        function showCustomAlert(title, message) {
+        window.showCustomAlert = function(title, message) {
+
             return new Promise(resolve => {
                 modalResolve = resolve;
                 modalTitle.textContent = title;
@@ -21887,7 +21889,8 @@ function stripHtmlAndCode(text) {
 // ▲▲▲ 粘贴结束 ▲▲▲
 
 // ▼▼▼ 请用这个【功能增强版】替换旧的 showCustomPrompt 函数 ▼▼▼
-function showCustomPrompt(title, placeholder, initialValue = '', type = 'text', extraHtml = '') {
+window.showCustomPrompt = function(title, placeholder, initialValue = '', type = 'text', extraHtml = '') {
+
     return new Promise(resolve => {
         modalResolve = resolve;
         modalTitle.textContent = title;
