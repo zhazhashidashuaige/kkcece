@@ -26126,6 +26126,8 @@ async function openChat(chatId) {
         await db.chats.put(chat); // 别忘了把这个改变同步到数据库
         // 我们稍后会在渲染列表时重新渲染，所以这里不需要立即重绘列表
     }
+// ↓↓↓ 把 openChat 函数挂载到全局 window 对象上
+window.openChat = openChat;
 
     renderChatInterface(chatId);
     showScreen('chat-interface-screen');
@@ -32264,9 +32266,8 @@ let videoCallState = {
 
 let callTimerInterval = null; // 用于存储计时器的ID
 
-// ▼▼▼ 用这整块【最终通话修复版】的代码，完整替换掉上一个版本的 handleInitiateCall 函数 ▼▼▼
 /**
- * 【总入口】用户点击“发起视频通话”或“发起群视频”按钮 (V3 - 通话决策修复版)
+ * 【总入口】用户点击“发起视频通话”或“发起群视频”按钮 (V3.1 - 修复版)
  */
 async function handleInitiateCall() {
     if (!state.activeChatId || videoCallState.isActive || videoCallState.isAwaitingResponse) return;
@@ -32288,21 +32289,22 @@ async function handleInitiateCall() {
     }
     document.querySelector('#outgoing-call-screen .caller-text').textContent = chat.isGroup ? "正在呼叫所有成员..." : "正在呼叫...";
     showScreen('outgoing-call-screen');
-        // 【核心修改1】在构建成员列表时，同时检查禁言状态
-    const membersList = chat.members.map(m => {
-        const muteStatus = m.isMuted ? ' (【状态：已被禁言】)' : ''; // 如果被禁言，就加上标记
-        return `- **${m.originalName}**: ${m.persona}${muteStatus}`;
-    }).join('\n');
-            
-    const myNickname = chat.settings.myNickname || '我';
-    // 2. 【核心修复】重新构建一个信息更丰富、指令更明确的API请求
+    
+    // ★★★ 核心修复：导致错误的 `const membersList = ...` 代码块已从这里移除 ★★★
+
+    // 【新增】在发起通话时，提前准备好通话前的聊天记录上下文
+    videoCallState.preCallContext = chat.history
+        .slice(-20) // 获取最近20条消息
+        .map(msg => `${msg.role === 'user' ? (chat.settings.myNickname || '我') : (msg.senderName || chat.name)}: ${String(msg.content).substring(0, 50)}...`)
+        .join('\n');
+
+    // 2. 重新构建一个信息更丰富、指令更明确的API请求
     try {
         const { proxyUrl, apiKey, model } = state.apiConfig;
         if (!proxyUrl || !apiKey || !model) {
             throw new Error('API未配置，无法发起通话。');
         }
     
-        // 构建一个强大且明确的系统指令(System Prompt)
         let systemPromptForCall;
         if (chat.isGroup) {
             systemPromptForCall = `
@@ -32341,7 +32343,6 @@ ${videoCallState.preCallContext}
 `;
         }
         
-        // 准备发送给API的消息体
         const messagesForApi = [{ role: 'user', content: "请根据你在系统指令中读到的规则，立即做出你的决策。" }];
         
         let isGemini = proxyUrl === GEMINI_API_URL;
@@ -32368,7 +32369,6 @@ ${videoCallState.preCallContext}
         const aiResponseContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content).replace(/^```json\s*|```$/g, '');
         const responseArray = JSON.parse(aiResponseContent);
 
-        // 3. 处理AI的决策 (与上一版相同)
         if (chat.isGroup) {
             responseArray.forEach(action => {
                 if (action.type === 'group_call_response' && action.decision === 'join') {
@@ -32391,14 +32391,13 @@ ${videoCallState.preCallContext}
         }
 
     } catch (error) {
-        // 4. 统一处理所有失败情况 (与上一版相同)
         console.error("发起通话失败:", error);
         await showCustomAlert("呼叫失败", error.message);
         videoCallState.isAwaitingResponse = false;
         showScreen('chat-interface-screen');
     }
 }
-// ▲▲▲ 替换结束 ▲▲▲
+
 
 
 
@@ -57502,6 +57501,19 @@ if (lockScreenEnabled) {
         }
 
         init();
+
+// ▼▼▼ 在这里添加下面这个“全局接口”部分 ▼▼▼
+
+/*
+ * ===================================================================
+ * === 全局接口 (Public API for other scripts) ===
+ * ===================================================================
+ * 将主应用的核心功能暴露给其他脚本文件（如 game-hall.js）使用
+ */
+window.openChat = openChat;
+window.triggerAiResponse = triggerAiResponse;
+
+// ▲▲▲ 添加结束 ▲▲▲
  // ▼▼▼ 把这【一整块】全新的代码，粘贴到 <script> 标签内的【变量定义区域】的末尾 ▼▼▼
 
 const avatarFrames = [
