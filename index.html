@@ -39,7 +39,7 @@
     <script src="https://phoebeboo.github.io/mewoooo/pp.js" defer></script>
     <script src="main-app.js" defer></script>
     <script src="game-hall.js" defer></script>
-
+    <script src="forum-features.js" defer></script>
     <style>
         :root { --screen-width: 350px; --screen-height: 650px; --secondary-bg: #ffffff; --border-color: #e0e0e0; --text-primary: #1f1f1f; --text-secondary: #8a8a8a; --accent-color: #007bff;    --status-bar-text-color: var(--accent-color); }
 /* ▼▼▼ 用这块终极代码，替换掉你现有的 html 和 body 样式 ▼▼▼ */
@@ -626,7 +626,13 @@ body {
         #notification-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
         #notification-content .name { font-weight: 600; font-size: 15px; color: #000; }
         #notification-content .message { font-size: 14px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-        .sticker-image { max-width: 100px; max-height: 100px; display: block; object-fit: contain; }
+.sticker-image {
+    /* 核心修改：将最大宽高从 100px 增加到 140px，让聊天中的表情包变大 */
+    max-width: 140px; 
+    max-height: 140px;
+    display: block;
+    object-fit: contain;
+}
         .message-bubble.is-sticker .content, .message-bubble.is-voice-message .content { padding: 0; background-color: transparent; box-shadow: none; border: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
         #chat-input-actions-top { display: flex; gap: 8px; padding: 0 5px; }
         .chat-action-icon-btn { font-size: 24px; padding: 0; width: 38px; height: 38px; line-height: 38px; text-align: center; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); color: var(--text-primary); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border: 1px solid rgba(0,0,0,0.05); cursor: pointer; display:flex; justify-content:center; align-items:center; }
@@ -635,7 +641,15 @@ body {
         #sticker-panel-header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-bottom: 1px solid var(--border-color); }
         #sticker-panel-header .title { font-weight: 600; }
         #sticker-panel-header .panel-btn { font-size: 16px; padding: 5px 10px; cursor: pointer; color: var(--accent-color); }
-        #sticker-grid, #exclusive-sticker-grid, #common-sticker-grid { flex-grow: 1; overflow-y: auto; padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; }
+#sticker-grid, #exclusive-sticker-grid, #common-sticker-grid {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: grid;
+    /* 核心修改：将 80px 增大到 100px，让每个表情格子变大 */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    gap: 15px;
+}
         .sticker-item { position: relative; aspect-ratio: 1 / 1; background-color: white; border-radius: 10px; background-size: contain; background-repeat: no-repeat; background-position: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .sticker-item .delete-btn { display: none; position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background-color: #ff3b30; color: white; border-radius: 50%; text-align: center; line-height: 20px; font-size: 14px; cursor: pointer; border: 2px solid white; }
         #input-actions-wrapper { position: static; display: flex; align-items: flex-end; gap: 8px; flex-shrink: 0; }
@@ -15252,8 +15266,9 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     background: linear-gradient(135deg, #ff8fab, #fb6f92); /* 粉色渐变 */
 }
 .card-front.passionate {
-    background: linear-gradient(135deg, #ffda79, #ffb142); /* 黄色渐变 */
+    background: linear-gradient(135deg, #FFF9C4, #FFF176); /* 全新修改：这是一个非常漂亮的淡黄色渐变 */
 }
+
 /* ▼▼▼ 这是为你定制的“完美之夜”薰衣草色，请用它替换旧的 .card-front.perfect 样式 ▼▼▼ */
 .card-front.perfect {
     /* 核心修改：这里使用了从淡紫到略深紫色的优雅渐变，营造出浪漫梦幻的感觉 */
@@ -15400,23 +15415,41 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
 /* --- 【全新】约会历史记录功能样式 --- */
 
-/* 历史记录页面的主容器 */
+/* --- 【全新 | 已修复布局】约会历史记录功能样式 --- */
+
+/* 历史记录页面的主容器，现在负责滚动和布局 */
 #dating-history-list {
-    background-color: #f0f2f5;
+    background-color: #f0f2f5; /* 保持原有的背景色 */
+    
+    /* ▼▼▼ 这是解决拥挤和重叠问题的核心代码 ▼▼▼ */
+    display: flex;             /* 1. 使用 Flex 布局，让卡片们听话地排列 */
+    flex-direction: column;    /* 2. 设置为垂直方向，从上到下堆叠 */
+    gap: 15px;                 /* 3. 在每张卡片之间创建 15px 的垂直间距 */
+    padding: 20px 15px;        /* 4. 在列表的上下(20px)和左右(15px)都加上内边距，让整体不拥挤 */
+    box-sizing: border-box;    /* (推荐) 确保内边距不会影响布局计算 */
+    
+    /* 
+       滚动条的功能由它的父容器 .list-container 提供，
+       我们在这里正确地设置了布局，父容器就能正常滚动了！
+    */
 }
+
 #phone-screen.dark-mode #dating-history-list {
-    background-color: #1c1c1e;
+    background-color: #1c1c1e; /* 夜间模式的背景色 */
 }
 
 /* 历史列表中的卡片，我们让它更适合列表显示 */
 #dating-history-list .dating-summary-card {
-    width: 100%; /* 卡片宽度撑满 */
-    height: 180px; /* 给一个固定的高度，让列表更整齐 */
+    width: 100%; /* 卡片宽度撑满 (保持不变) */
+    height: 180px; /* 给一个固定的高度，让列表更整齐 (保持不变) */
     position: relative; 
     transform: none;
     left: auto;
     top: auto;
-    margin: 0; /* 移除模态框的居中外边距 */
+    margin: 0; /* (保持不变) */
+    
+    /* 【新增】防止卡片在 Flex 布局中被意外压缩变形 */
+    flex-shrink: 0; 
 }
 
 /* 历史列表中的卡片，正面样式微调 */
@@ -15456,7 +15489,169 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
 /* ▲▲▲ 新增CSS样式结束 ▲▲▲ */
 
+/* ▼▼▼ 【V4 - 终极修复版】请用这整块代码，替换所有旧的Sticker相关样式 ▼▼▼ */
 
+/* 1. 这是每个表情的“格子”，现在它是一个flex容器，负责让图片和文字垂直居中排列 */
+.sticker-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px; /* 图片和文字之间的间距 */
+    cursor: pointer;
+}
+
+/* ▼▼▼ 这是修改后的代码 ▼▼▼ */
+/* 2. 【核心】这是专门用来显示“图片”的div */
+.sticker-image {
+    width: 100px;  /* ★ 修改：从 80px 增大到 100px */
+    height: 100px; /* ★ 修改：从 80px 增大到 100px */
+    position: relative; 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 10px;
+    background-color: white; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+
+/* 3. 这是描述文字的样式 (支持最多2行) */
+.sticker-name {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    width: 100%;
+    line-height: 1.4;
+    height: calc(12px * 1.4 * 2); /* 预留两行的高度，防止布局跳动 */
+    
+    /* 实现最多两行的省略号效果 */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-break: break-all;
+}
+
+/* 4. 删除按钮的样式，现在它的父级是 .sticker-image */
+.sticker-image .delete-btn {
+    display: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background-color: #ff3b30;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 2px solid white;
+    z-index: 10;
+}
+
+/* 5. 【已修复】选择模式下的勾选标记样式 */
+.sticker-image.in-selection-mode::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(120, 120, 128, 0.4);
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+}
+
+.sticker-image.selected::before {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 18px;
+}
+
+/* ▲▲▲ V4 修复版CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】表情面板分类功能样式 ▼▼▼ */
+
+/* 1. 分类页签栏容器 */
+#sticker-category-tabs {
+    flex-shrink: 0;
+    padding: 10px 15px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    
+    /* 隐藏滚动条，让界面更干净 */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
+#sticker-category-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+/* 2. 单个分类胶囊按钮 */
+.sticker-category-btn {
+    padding: 6px 15px;
+    border: 1px solid transparent;
+    border-radius: 16px; /* 圆润的胶囊形状 */
+    background-color: #e9ecef;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap; /* 防止文字换行 */
+    transition: all 0.2s ease-in-out;
+}
+
+/* 夜间模式适配 */
+#phone-screen.dark-mode .sticker-category-btn {
+    background-color: #3a3a3c;
+}
+
+/* 3. 激活状态的胶囊按钮 */
+.sticker-category-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* 4. 分类管理弹窗内的列表项 */
+#sticker-category-list label {
+    display: block;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+#sticker-category-list label input {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+#sticker-category-list label:hover {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #sticker-category-list label:hover {
+    background-color: #2c2c2e;
+}
+
+/* 5. 编辑模式下底部操作栏的布局 */
+#sticker-panel-footer {
+    display: flex;
+    gap: 10px;
+}
+#sticker-panel-footer button {
+    flex: 1; /* 让两个按钮平分宽度 */
+}
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
 
     </style>
     <!-- ▼▼▼ 在这里添加下面这行 ▼▼▼ -->
@@ -15647,7 +15842,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 <!-- ▼▼▼ 在这里粘贴下面这块新代码 ▼▼▼ -->
 <!-- 这是我们新增的“约会大作战”App图标 -->
-<div style="position: absolute; bottom: 75px; left: 105px;">
+<div style="position: absolute; bottom: 75px; left: 120px;">
     <div class="desktop-app-icon" id="date-a-live-app-icon">
         <div class="icon-bg-desktop"><img id="icon-img-date-a-live" src="https://i.postimg.cc/W36mYgP5/DAL-icon.jpg" alt="约会大作战"></div>
         <span class="label" style="color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">约会大作战</span>
@@ -16340,9 +16535,17 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
     <div id="sticker-grid"></div>
     <!-- 【核心修改2】在底部新增一个用于批量删除的操作栏，默认隐藏 -->
-    <div id="sticker-panel-footer" style="display: none;">
-        <button id="delete-selected-user-stickers-btn">删除已选 (0)</button>
-    </div>
+<!-- 在 #sticker-panel 中，找到 id="sticker-panel-footer" -->
+<!-- ▼▼▼ 用下面这整块代码，替换掉你旧的 #sticker-panel-footer ▼▼▼ -->
+<div id="sticker-category-tabs">
+    <!-- 分类胶囊将由JS动态生成在这里 -->
+</div>
+<div id="sticker-panel-footer" style="display: none;">
+    <!-- ★ 新增：“移动到分类”按钮 -->
+    <button id="move-selected-stickers-btn">移动到分类...</button>
+    <!-- 这是你已有的删除按钮 -->
+    <button id="delete-selected-user-stickers-btn">删除已选 (0)</button>
+</div>
 </div>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
 <input type="file" id="sticker-upload-input" accept="image/*" style="display: none;" multiple>
@@ -20940,7 +21143,8 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     <div class="dating-game-ui-overlay">
 <!-- ▼▼▼ 请用这块【已添加心形UI】的代码，完整替换掉你旧的 id="dating-game-screen" 里的那个 .header ▼▼▼ -->
 <div class="header">
-    <span class="back-btn" id="end-date-btn">结束约会</span>
+    <span class="back-btn" id="end-date-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+
     <span id="dating-game-char-name"></span>
     <div class="header-actions">
 
@@ -20970,7 +21174,10 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         <div class="dating-game-textbox">
             <p id="dating-game-text-content">约会即将开始...</p>
         </div>
-
+<div id="dating-completion-bar-container">
+    <div id="dating-completion-bar-fill"></div>
+    <span id="dating-completion-text">0%</span>
+</div>
         <!-- 3c. 玩家操作区 -->
         <div id="dating-game-choices" class="dating-game-choices">
             <!-- 选项按钮将由JS动态生成在这里 -->
@@ -20978,10 +21185,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
-    <div id="dating-completion-bar-container">
-        <div id="dating-completion-bar-fill"></div>
-        <span id="dating-completion-text">0%</span>
-    </div>
+
 
 
 <!-- ▼▼▼ 【全新】借钱对象选择弹窗（带滚动和头像）▼▼▼ -->
@@ -21176,6 +21380,32 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】在 </body> 前粘贴这个新的表情分类管理模态框 ▼▼▼ -->
+<div id="sticker-category-modal" class="modal">
+    <div class="modal-content" style="height: auto; max-height: 70%;">
+        <div class="modal-header">
+            <span>移动表情到分类</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>选择一个现有分类</label>
+                <div id="sticker-category-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px;">
+                    <!-- 分类列表将由JS动态生成 -->
+                </div>
+            </div>
+            <p style="text-align: center; color: var(--text-secondary); margin: 10px 0;">或</p>
+            <div class="form-group">
+                <label for="new-sticker-category-input">创建一个新分类</label>
+                <input type="text" id="new-sticker-category-input" placeholder="输入新分类的名称...">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-sticker-category-btn">取消</button>
+            <button class="save" id="confirm-sticker-category-btn">确认移动</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 
 
 
@@ -22516,6 +22746,8 @@ const BLOCKED_API_SITES = [
 
         // --- 修正结束 ---
     let isUserStickerSelectionMode = false;
+    let activeStickerCategoryId = 'uncategorized'; 
+let userStickerCategories = [];      // 用于缓存用户的所有分类
     // ▼▼▼ 在 isUserStickerSelectionMode 变量后添加 ▼▼▼
 let isCharStickerSelectionMode = false;
 let selectedCharStickers = new Set();
@@ -22576,7 +22808,7 @@ let editingSpriteGroupId = null;
 let activeMessageTimestamp = null;
 
 
-const LUDO_BOARD_SIZE = 42; // 总格子数，可以根据你的棋盘布局调整
+
 
 
 let currentReplyContext = null; // <--- 新增这行，用来存储当前正在引用的消息信息
@@ -22997,12 +23229,7 @@ async function searchAndPlaySong(name, artist) {
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
-// ▲▲▲ 新增函数粘贴结束 ▲▲▲
-let activeForumFilters = { 
-    global: [], // 用于主页小组列表的筛选
-    group: {}   // 用于存储每个小组内部帖子的筛选, e.g., { 1: ['科幻'], 2: ['剧情'] }
-};
-let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
+
 
         let photoViewerState = {
             isOpen: false,
@@ -23467,12 +23694,13 @@ function getRandomItem(arr) {
         // 2. 数据库结构定义
         // ===================================================================
 
-// ▼▼▼ 【V47修复版】请用这块新代码替换旧的 db.version(...).stores(...) ▼▼▼
-db.version(47).stores({ // 版本号 +1 = 47
+// ▼▼▼ 使用这块新代码替换旧的 db.version(...).stores(...) ▼▼▼
+db.version(48).stores({ // 版本号从 47 升级到 48
     chats: '&id, isGroup, groupId, ownerId, isPinned, characterPhoneData, latestInnerVoice, innerVoiceHistory, loversSpaceData.emotionDiaries, settings.summary, settings.weiboNickname, settings.innerVoiceHideHeaderBorder, settings.innerVoiceAdopterLabelFormat', 
     apiConfig: '&id',
     globalSettings: '&id, activeThemeId', 
-    userStickers: '&id, url, name', 
+    userStickers: '&id, url, name, categoryId', // ★★★ 在这里新增了 categoryId 索引 ★★★
+    userStickerCategories: '++id, &name',     // ★★★ 这是我们新增的分类表 ★★★
     charStickers: '&id, url, name', 
     worldBooks: '&id, name, categoryId', 
     worldBookCategories: '++id, name',
@@ -23511,10 +23739,10 @@ db.version(47).stores({ // 版本号 +1 = 47
     datingPresets: '++id, name, settings.spriteGroupId',
     datingSpriteGroups: '++id, name',
     datingSprites: '++id, groupId, description, url',
-    // ★★★ 在这里添加我们的新表格 ★★★
     datingHistory: '++id, characterId, timestamp'
 });
 // ▲▲▲ 替换结束 ▲▲▲
+
 
 
 
@@ -25166,7 +25394,8 @@ async function loadAllDataFromDB() {
         initialFavorites,
         apiPresets,
         bubbleStylePresets,
-        datingScenes // <--- 在这里新增
+        datingScenes, // <--- 在这里新增
+        localUserStickerCategories
     ] = await Promise.all([
         db.chats.toArray(),
         db.apiConfig.get('main'),
@@ -25180,7 +25409,8 @@ async function loadAllDataFromDB() {
         db.favorites.orderBy('timestamp').reverse().toArray(),
         db.apiPresets.toArray(),
         db.bubbleStylePresets.toArray(),
-        db.datingScenes.toArray() // <--- 在这里新增
+        db.datingScenes.toArray(), // <--- 在这里新增
+        db.userStickerCategories.toArray()
     ]);
 
     state.chats = chatsArr.reduce((acc, chat) => {
@@ -25606,6 +25836,7 @@ if (!state.globalSettings.appLabels) {
 state.globalSettings.appIcons = { ...DEFAULT_APP_ICONS, ...(state.globalSettings.appIcons || {}) };
 
     state.userStickers = userStickers || [];
+    userStickerCategories = localUserStickerCategories || []; 
     state.charStickers = charStickers || []; 
     state.worldBooks = worldBooks || [];
     currentDatingScenes = datingScenes || [];
@@ -26609,71 +26840,110 @@ async function openWorldBookEditor(bookId) {
     showScreen('world-book-editor-screen');
 }
 
-// ▼▼▼ 用这块【增强版】代码，完整替换旧的 renderStickerPanel 函数 ▼▼▼
+// ▼▼▼ 使用这块【适配未分类】的新代码替换旧的 renderStickerPanel 函数 ▼▼▼
 function renderStickerPanel() {
     const grid = document.getElementById('sticker-grid');
     grid.innerHTML = '';
     
-    if (state.userStickers.length === 0) {
-        grid.innerHTML = '<p style="text-align:center; color: var(--text-secondary); grid-column: 1 / -1;">大人请点击右上角“添加”或“上传”来添加你的第一个表情吧！</p>';
-        return;
+    let stickersToRender;
+
+    // ★ 核心修改：更新这里的筛选逻辑 ★
+    if (activeStickerCategoryId === 'uncategorized') {
+        // 如果是“未分类”，就筛选出 categoryId 不存在或为空的表情
+        stickersToRender = state.userStickers.filter(sticker => !sticker.categoryId);
+    } else {
+        // 否则，按具体的分类ID筛选
+        stickersToRender = state.userStickers.filter(sticker => sticker.categoryId === activeStickerCategoryId);
     }
 
-    state.userStickers.forEach(sticker => {
-        const item = document.createElement('div');
-        item.className = 'sticker-item';
-        item.style.backgroundImage = `url(${sticker.url})`;
-        item.title = sticker.name;
+    if (stickersToRender.length === 0) {
+        // 根据当前选中的分类，显示不同的提示语
+        let message;
+        if (activeStickerCategoryId === 'uncategorized') {
+            // 如果所有表情都有分类了，这里也会是空的
+            message = '没有未分类的表情哦~';
+        } else {
+            // 如果是在某个具体分类下，但是里面没表情
+            message = '这个分类下还没有表情哦~';
+        }
+        // 如果整个表情库都是空的，给一个初始引导
+        if(state.userStickers.length === 0) {
+             message = '大人请点击右上角“添加”或“上传”来添加你的第一个表情吧！';
+        }
         
-        if (isUserStickerSelectionMode) {
-            // 【选择模式】下的逻辑
-            item.classList.add('in-selection-mode');
-            if (selectedUserStickers.has(sticker.id)) {
-                item.classList.add('selected');
+        grid.innerHTML = `<p style="text-align:center; color: var(--text-secondary); grid-column: 1 / -1;">${message}</p>`;
+    } else {
+        stickersToRender.forEach(sticker => {
+            // 这部分是你原来的渲染逻辑，保持不变
+            const itemContainer = document.createElement('div');
+            itemContainer.className = 'sticker-item';
+            
+            const imageEl = document.createElement('div');
+            imageEl.className = 'sticker-image';
+            imageEl.style.backgroundImage = `url(${sticker.url})`;
+            
+            const nameEl = document.createElement('span');
+            nameEl.className = 'sticker-name';
+            nameEl.textContent = sticker.name;
+            nameEl.title = sticker.name;
+            
+            if (isUserStickerSelectionMode) {
+                imageEl.classList.add('in-selection-mode');
+                if (selectedUserStickers.has(sticker.id)) {
+                    imageEl.classList.add('selected');
+                }
+                itemContainer.addEventListener('click', () => {
+                    imageEl.classList.toggle('selected');
+                    if (selectedUserStickers.has(sticker.id)) {
+                        selectedUserStickers.delete(sticker.id);
+                    } else {
+                        selectedUserStickers.add(sticker.id);
+                    }
+                    const deleteBtn = document.getElementById('delete-selected-user-stickers-btn');
+                    deleteBtn.textContent = `删除已选 (${selectedUserStickers.size})`;
+                    deleteBtn.disabled = selectedUserStickers.size === 0;
+
+                    const moveBtn = document.getElementById('move-selected-stickers-btn');
+                    moveBtn.disabled = selectedUserStickers.size === 0;
+                });
+            } else {
+                itemContainer.addEventListener('click', () => sendSticker(sticker));
+                addLongPressListener(imageEl, () => {
+                    const existingDeleteBtn = imageEl.querySelector('.delete-btn');
+                    if (existingDeleteBtn) return;
+                    
+                    const deleteBtn = document.createElement('div');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.innerHTML = '&times;';
+                    deleteBtn.style.display = 'block';
+                    deleteBtn.onclick = async (e) => {
+                        e.stopPropagation();
+                        const confirmed = await showCustomConfirm('删除表情', `确定要删除表情 "${sticker.name}" 吗？`, { confirmButtonClass: 'btn-danger' });
+                        if (confirmed) {
+                            await db.userStickers.delete(sticker.id);
+                            state.userStickers = state.userStickers.filter(s => s.id !== sticker.id);
+                            renderStickerPanel();
+                        }
+                    };
+                    imageEl.appendChild(deleteBtn);
+                    const removeDeleteBtn = () => { if(deleteBtn) deleteBtn.remove(); imageEl.removeEventListener('mouseleave', removeDeleteBtn); };
+                    imageEl.addEventListener('mouseleave', removeDeleteBtn);
+                });
             }
             
-            item.addEventListener('click', () => {
-                item.classList.toggle('selected');
-                if (selectedUserStickers.has(sticker.id)) {
-                    selectedUserStickers.delete(sticker.id);
-                } else {
-                    selectedUserStickers.add(sticker.id);
-                }
-                const deleteBtn = document.getElementById('delete-selected-user-stickers-btn');
-                deleteBtn.textContent = `删除已选 (${selectedUserStickers.size})`;
-                deleteBtn.disabled = selectedUserStickers.size === 0;
-            });
-
-        } else {
-            // 【正常模式】下的逻辑（发送和长按删除）
-            item.addEventListener('click', () => sendSticker(sticker));
-            
-            addLongPressListener(item, () => {
-                const existingDeleteBtn = item.querySelector('.delete-btn');
-                if (existingDeleteBtn) return;
-                
-                const deleteBtn = document.createElement('div');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.innerHTML = '&times;';
-                deleteBtn.onclick = async (e) => {
-                    e.stopPropagation();
-                    const confirmed = await showCustomConfirm('删除表情', `确定要删除表情 "${sticker.name}" 吗？`, { confirmButtonClass: 'btn-danger' });
-                    if (confirmed) {
-                        await db.userStickers.delete(sticker.id);
-                        state.userStickers = state.userStickers.filter(s => s.id !== sticker.id);
-                        renderStickerPanel();
-                    }
-                };
-                item.appendChild(deleteBtn);
-                deleteBtn.style.display = 'block';
-                setTimeout(() => item.addEventListener('mouseleave', () => deleteBtn.remove(), { once: true }), 3000);
-            });
-        }
-        grid.appendChild(item);
-    });
+            itemContainer.appendChild(imageEl);
+            itemContainer.appendChild(nameEl);
+            grid.appendChild(itemContainer);
+        });
+    }
+    
+    // 每次渲染表情列表后，都更新一次分类页签栏
+    renderStickerCategories();
 }
 // ▲▲▲ 替换结束 ▲▲▲
-// ▼▼▼ 在 renderStickerPanel 函数后，粘贴这个新函数 ▼▼▼
+
+
+
 /**
  * 处理批量删除选中的用户表情
  */
@@ -26932,7 +27202,32 @@ if (chat.isGroup) {
             </div>
         `;
     }
+// ... 其他 case ...
+else if (msg.type === 'dating_summary_card') {
+    bubble.classList.add('is-dating-summary');
+    const payload = msg.payload;
+    let cardClass = '';
 
+    if (payload.ratingType === 'romantic') {
+        cardClass = 'romantic';
+    } else if (payload.ratingType === 'passionate') {
+        cardClass = 'passionate';
+    } else if (payload.ratingType === 'perfect') {
+        cardClass = 'perfect';
+    }
+
+    // ▼▼▼【核心修复】我们不再存储复杂的JSON字符串 ▼▼▼
+    contentHtml = `
+        <div class="dating-summary-chat-card ${cardClass}" data-timestamp="${msg.timestamp}">
+            <div class="rating">${payload.rating}</div>
+            <div class="tip">点击查看详情</div>
+        </div>
+    `;
+}
+// ... 其他 case ...
+
+
+    // ▲▲▲ 新代码粘贴结束 ▲▲▲
 else if (msg.type === 'share_card') {
     bubble.classList.add('is-link-share'); // 复用链接分享的卡片样式
     // 【核心】把时间戳加到卡片上，方便后面点击时识别
@@ -31986,7 +32281,59 @@ function stopBackgroundSimulation() {
     }
 }
 // ▲▲▲ 粘贴结束 ▲▲▲
+// ▼▼▼ 用这块【已修复】的代码，完整替换你旧的 migrateDefaultLudoQuestions 函数 ▼▼▼
+  /**
+   * 【数据迁移】在首次加载时，将旧的硬编码问题迁移到数据库
+   */
+  async function migrateDefaultLudoQuestions() {
+    const defaultBankName = '默认题库';
+    const existingBank = await db.ludoQuestionBanks.where('name').equals(defaultBankName).first();
+    // 如果“默认题库”已经存在，就说明迁移过了，直接返回
+    if (existingBank) return;
 
+    console.log('正在迁移飞行棋默认问题到数据库...');
+
+    // 创建默认题库
+    const bankId = await db.ludoQuestionBanks.add({ name: defaultBankName });
+
+    // ★★★ 核心修改：将问题库改为对象数组，并为每个问题添加类型 ★★★
+    const defaultQuestions = [
+      // --- 类型1: 共同回答 (双方都需要回答) ---
+      { type: 'both_answer', text: '如果我们一起去旅行，你最想去哪里，为什么？' },
+      { type: 'both_answer', text: '你认为一段完美的关系中，最不可或缺的三个要素是什么？' },
+      { type: 'both_answer', text: '分享一件最近因为我而让你感到心动或开心的小事。' },
+      { type: 'both_answer', text: '回忆一下，我们第一次见面时，你对我的第一印象是什么？' },
+      { type: 'both_answer', text: '如果我们可以一起学习一项新技能，你希望是什么？' },
+      { type: 'both_answer', text: '描述一个你最希望和我一起度过的完美周末。' },
+      { type: 'both_answer', text: '你觉得我们之间最有默契的一件事是什么？' },
+      { type: 'both_answer', text: '如果用一种动物来形容我，你觉得是什么？为什么？' },
+      { type: 'both_answer', text: '在未来的一年里，你最想和我一起完成的一件事是什么？' },
+      { type: 'both_answer', text: '分享一部你最近很喜欢、并且想推荐给我一起看的电影或剧。' },
+      { type: 'both_answer', text: '我们下次约会，你希望穿什么风格的衣服？' },
+
+      // --- 类型2: 一人回答，对方评价 ---
+      { type: 'single_answer', text: '描述一下我最让你心动的一个瞬间。' },
+      { type: 'single_answer', text: '诚实地说，我做的哪件事曾经让你偷偷生过气？' },
+      { type: 'single_answer', text: '如果我有一种超能力，你希望是什么？' },
+      { type: 'single_answer', text: '给我三个最贴切的标签。' },
+      { type: 'single_answer', text: '在你心里，我的形象和你的理想型有多接近？' },
+      { type: 'single_answer', text: '分享一个你觉得我可能不知道的，关于你的小秘密。' },
+      { type: 'single_answer', text: '如果我们的故事是一首歌，你觉得歌名应该叫什么？' },
+      { type: 'single_answer', text: '说一件你觉得我做得比你好/更擅长的事情。' },
+      { type: 'single_answer', text: '如果可以回到我们认识的任意一天，你会选择哪一天，想做什么？' },
+      { type: 'single_answer', text: '用三个词来形容你眼中的我们的关系。' },
+    ];
+
+    const questionsToAdd = defaultQuestions.map(q => ({
+      bankId: bankId,
+      text: q.text,
+      type: q.type, // <-- 关键修复：把类型也存进去！
+    }));
+
+    await db.ludoQuestions.bulkAdd(questionsToAdd);
+    console.log(`成功迁移了 ${questionsToAdd.length} 条默认问题。`);
+  }
+  // ▲▲▲ 替换结束 ▲▲▲
 /**
  * 这是模拟器的“心跳”，每次定时器触发时运行
  */
@@ -32275,9 +32622,44 @@ async function triggerInactiveAiAction(chatId) {
 你和用户（${userNickname}）已经有一段时间没有互动了。你的任务是回顾你们最近的对话，并根据你的人设，【自然地延续对话】或【开启一个新的、相关的话题】来主动联系用户。
 请不要发送一整段！
 # 【【【输出铁律：这是最高指令】】】
-你的回复【必须且只能】是一个严格的JSON数组格式的字符串，例如 \`[{"type": "text", "content": "你好呀"}]\`。
+你的回复【必须且只能】是一个严格的JSON数组格式的字符串，必须多发几条，禁止全部杂糅在一条，是在线上，例如 \`[{"type": "text", "content": "你好呀"}]\`。
 【绝对禁止】返回任何JSON以外的文本、解释、分析或你自己的思考过程。你不是分析师，你就是角色本人。
+**1. JSON对象结构:**
+该JSON对象【**必须**】包含两个顶级键: "chatResponse" 和 "innerVoice"。
 
+**2. "chatResponse" 键:**
+- **类型**: JSON数组 []。
+- **内容**: 包含一条或多条你希望发送给用户的消息对象。这允许你模拟真人的聊天习惯，一次性发送多条短消息。
+- **格式**: 消息对象的具体格式见下方的【第五部分：可使用的操作指令】。
+
+**3. "innerVoice" 键:**
+- **类型**: JSON对象 {}。
+- **内容**: 描绘你此刻未曾说出口的内心活动。
+- **必含字段**:
+    - "clothing": (字符串) 详细描述你当前从头到脚的**全身服装**。
+    - "behavior": (字符串) 描述你当前符合聊天情景的**细微动作或表情**。
+    - "thoughts": (字符串) 描述你此刻**丰富、细腻的内心真实想法**（50字左右）。
+    - "naughtyThoughts": (字符串) 描述你此刻与情境相关的**腹黑或色色的坏心思**，必须符合人设。
+
+**4. 标准输出格式示例:**
+{
+  "chatResponse": [
+    {
+      "type": "text",
+      "content": ""
+    },
+    {
+      "type": "sticker",
+      "sticker_name": ""
+    }
+  ],
+  "innerVoice": {
+    "clothing": "",
+    "behavior": "",
+    "thoughts": "",
+    "naughtyThoughts": ""
+  }
+}
 # 你的可选行动 (请根据你的人设【选择一项】执行，并输出对应的JSON):
 1.  **发普通消息**: 直接给用户发消息，开启新话题。
 2.  **改变状态**: 去做点别的事情，然后给用户发条消息。
@@ -32330,7 +32712,6 @@ ${postsContext}
         { role: 'system', content: systemPrompt },
         { role: 'user', content: "请严格按照system prompt中的所有规则，特别是输出格式铁律，立即开始你的行动。" }
     ];
-
     try {
         let isGemini = proxyUrl === GEMINI_API_URL;
         let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesPayload, isGemini);
@@ -32357,6 +32738,8 @@ ${postsContext}
             console.warn(`API为空回或格式不正确（可能因安全设置被拦截），角色 "${chat.name}" 的本次后台活动跳过。返回数据:`, data);
             return;
         }
+        console.log(`【后台角色实时活动 - AI 原始输出】\n角色 "${chat.name}" 的原始回复:\n`, aiResponseContent);
+
         const responseArray = parseAiResponse(aiResponseContent);
         for (const action of responseArray) {
             if (!action) continue;
@@ -35870,7 +36253,8 @@ const appLabels = {
     'lovers-space': '情侣空间',
     'game-hall': '游戏大厅',
     'x-social': 'X社交',
-    'taobao': '桃宝'
+    'taobao': '桃宝',
+    'date-a-live':'约会大作战'
 };
 // ▲▲▲ 替换结束 ▲▲▲
 
@@ -42634,1408 +43018,9 @@ function showCharStickerTab(type) {
 // 这里应该是你已有的其他函数，比如 renderCharStickers, bulkAddCharStickers 等...
 // ▼▼▼ 【全新 | 修复版】这里是所有论坛/小组功能的核心代码 ▼▼▼
 
-let activeGroupId = null; // 记录当前打开的小组ID
-let activeForumPostId = null; // 记录当前打开的帖子ID
 
-// ▼▼▼ 用这块【已添加梦角小组】的代码，完整替换掉你旧的 initializeDefaultGroups 函数 ▼▼▼
 
-/**
- * 初始化默认的小组
- */
-async function initializeDefaultGroups() {
-    const groupCount = await db.forumGroups.count();
-    if (groupCount === 0) {
-        const defaultGroups = [
-            { name: '娱乐小组', description: '分享八卦和快乐', icon: '🍿' },
-            { name: '灵异小组', description: '分享你的灵异经历', icon: '👻' },
-            { name: '今天我crush了吗', description: '记录心动瞬间', icon: '💖' },
-            { name: '请帮我选择小组', description: '选择困难症患者互助', icon: '🤔' },
-            { name: '同人文小组', description: '为爱发电，创作故事', icon: '✍️' },
-            // ▼▼▼ 就是新增了下面这一行！ ▼▼▼
-            { name: '梦角小组', description: 'Char们分享关于user的梦境', icon: '🌙' }
-        ];
-        await db.forumGroups.bulkAdd(defaultGroups);
-        console.log("已成功创建默认小组（包含梦角小组）。");
-    }
-}
 
-// ▲▲▲ 替换结束 ▲▲▲
-
-/**
- * 渲染论坛主屏幕，显示所有小组及其分类（已支持筛选）
- */
-async function renderForumScreen() {
-    const listEl = document.getElementById('forum-group-list');
-    const allGroups = await db.forumGroups.toArray();
-    listEl.innerHTML = '';
-
-    // --- ▼▼▼ 【核心新增】筛选逻辑 ▼▼▼ ---
-    const globalFilters = activeForumFilters.global;
-    let groupsToRender = allGroups;
-
-    if (globalFilters && globalFilters.length > 0) {
-        groupsToRender = allGroups.filter(group => 
-            group.categories && group.categories.some(cat => globalFilters.includes(cat))
-        );
-    }
-    // --- ▲▲▲ 新增结束 ▲▲▲ ---
-
-    // 检查筛选后是否还有内容
-    if (groupsToRender.length === 0) {
-        const message = globalFilters.length > 0 
-            ? '没有找到符合筛选条件的小组哦' 
-            : '还没有任何小组，点击右上角“+”创建一个吧！';
-        listEl.innerHTML = `<p style="text-align:center; color: #8a8a8a; padding: 50px 0;">${message}</p>`;
-        return;
-    }
-
-    // 使用筛选后的 groupsToRender 数组进行渲染
-    groupsToRender.forEach(group => {
-        const item = document.createElement('div');
-        item.className = 'forum-group-item';
-
-        let categoriesHtml = '';
-        if (group.categories && group.categories.length > 0) {
-            categoriesHtml = `
-                <div class="category-tag-container">
-                    ${group.categories.map(cat => `<span class="category-tag">#${cat}</span>`).join('')}
-                </div>
-            `;
-        }
-
-        item.innerHTML = `
-            <div class="forum-group-icon">${group.icon || '📁'}</div>
-            <div class="forum-group-name">${group.name}</div>
-            <div class="forum-group-desc">${group.description}</div>
-            ${categoriesHtml}
-        `;
-        item.addEventListener('click', () => openGroup(group.id, group.name));
-        addLongPressListener(item, () => showGroupActions(group.id, group.name));
-        listEl.appendChild(item);
-    });
-    
-    // 更新筛选按钮状态
-    const filterBtn = document.getElementById('forum-filter-btn');
-    if (filterBtn) {
-        filterBtn.classList.toggle('active', globalFilters && globalFilters.length > 0);
-    }
-}
-
-
-/**
- * 【全新】长按小组时显示操作菜单（编辑或删除）
- * @param {number} groupId - 小组的ID
- * @param {string} groupName - 小组的名称
- */
-async function showGroupActions(groupId, groupName) {
-    // 调用你现有的弹窗函数，显示两个选项
-    const choice = await showChoiceModal(`操作小组 "${groupName}"`, [
-        { text: '✏️ 编辑小组信息', value: 'edit' },
-        { text: '🗑️ 删除小组', value: 'delete' }
-    ]);
-
-    // 根据用户的选择，执行不同的操作
-    if (choice === 'edit') {
-        // 如果用户选择“编辑”，就调用你原来的编辑函数
-        openGroupEditor(groupId);
-    } else if (choice === 'delete') {
-        // 如果用户选择“删除”，就调用你原来的删除函数
-        deleteGroupAndPosts(groupId);
-    }
-}
-
-// ▼▼▼ 用这块【已移除自动生成逻辑】的代码，完整替换你旧的 openGroup 函数 ▼▼▼
-async function openGroup(groupId, groupName) {
-    activeGroupId = groupId;
-    document.getElementById('group-screen-title').textContent = groupName;
-    const fanficBar = document.getElementById('fanfic-preference-bar');
-    
-    // 根据小组名显示或隐藏特定UI
-    if (groupName === '同人文小组') {
-        fanficBar.style.display = 'block';
-        await populateFanficSelectors();
-    } else {
-        fanficBar.style.display = 'none';
-    }
-    await renderGroupPosts(groupId);
-    showScreen('group-screen');
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
-/**
- * 渲染小组内的帖子列表及其分类（已支持筛选）
- */
-async function renderGroupPosts(groupId) {
-    const listEl = document.getElementById('group-post-list');
-    const allPosts = await db.forumPosts.where('groupId').equals(groupId).reverse().sortBy('timestamp');
-    listEl.innerHTML = '';
-
-    // --- ▼▼▼ 【核心新增】筛选逻辑 ▼▼▼ ---
-    const groupFilters = activeForumFilters.group[groupId];
-    let postsToRender = allPosts;
-
-    if (groupFilters && groupFilters.length > 0) {
-        postsToRender = allPosts.filter(post => 
-            post.categories && post.categories.some(cat => groupFilters.includes(cat))
-        );
-    }
-    // --- ▲▲▲ 新增结束 ▲▲▲ ---
-
-    if (postsToRender.length === 0) {
-        const message = groupFilters && groupFilters.length > 0 
-            ? '没有找到符合筛选条件的帖子哦' 
-            : '这个小组还没有帖子哦';
-        listEl.innerHTML = `<p style="text-align:center; color: #8a8a8a; padding: 50px 0;">${message}</p>`;
-        return;
-    }
-
-    for (const post of postsToRender) {
-        const commentCount = await db.forumComments.where('postId').equals(post.id).count();
-        const item = document.createElement('div');
-        item.className = 'forum-post-item';
-        item.dataset.postId = post.id;
-        
-        let categoriesHtml = '';
-        if (post.categories && post.categories.length > 0) {
-            categoriesHtml = `
-                <div class="category-tag-container">
-                    ${post.categories.map(cat => `<span class="category-tag">#${cat}</span>`).join('')}
-                </div>
-            `;
-        }
-
-        item.innerHTML = `
-            <div class="post-item-title">${post.title}</div>
-            ${categoriesHtml}
-            <div class="post-item-meta">
-                <span>作者: ${post.author}</span>
-                <span>评论: ${commentCount}</span>
-            </div>
-            <button class="forum-post-delete-btn" title="删除帖子">×</button>
-        `;
-        listEl.appendChild(item);
-    }
-
-    // 更新筛选按钮状态
-    const filterBtn = document.getElementById('group-filter-btn');
-    if (filterBtn) {
-        filterBtn.classList.toggle('active', groupFilters && groupFilters.length > 0);
-    }
-}
-
-
-/**
- * 【关键修复】打开一个帖子，显示详情和评论
- */
-async function openPost(postId) {
-    activeForumPostId = postId;
-    await renderPostDetails(postId);
-    showScreen('post-screen');
-}
-
-// ▼▼▼ 用这块【功能增强版】的代码，完整替换掉你旧的 renderPostDetails 函数 ▼▼▼
-/**
- * 【功能增强版】渲染帖子详情和评论 (已加入头像和楼层)
- */
-async function renderPostDetails(postId) {
-    const contentEl = document.getElementById('post-detail-content');
-    const post = await db.forumPosts.get(postId);
-    const comments = await db.forumComments.where('postId').equals(postId).sortBy('timestamp');
-
-    if (!post) {
-        contentEl.innerHTML = '<p>帖子不存在或已被删除</p>';
-        return;
-    }
-    
-    // --- 1. 获取作者头像 ---
-    let authorAvatarUrl = 'https://i.postimg.cc/PxZrFFFL/o-o-1.jpg'; // 默认路人头像
-    const userNickname = state.qzoneSettings.nickname || '我';
-    
-    if (post.author === userNickname) {
-        authorAvatarUrl = state.qzoneSettings.avatar; // 如果是用户自己
-    } else {
-        const authorChar = Object.values(state.chats).find(c => c.name === post.author);
-        if (authorChar) {
-            authorAvatarUrl = authorChar.settings.aiAvatar; // 如果是角色
-        }
-    }
-
-    // --- 2. 拼接评论区HTML ---
-    let commentsHtml = `
-        <div class="post-comments-section">
-            <h3>评论 (${comments.length})</h3>
-    `;
-    if (comments.length > 0) {
-        comments.forEach((comment, index) => {
-            // --- 2a. 获取评论者头像 ---
-            let commenterAvatarUrl = 'https://i.postimg.cc/PxZrFFFL/o-o-1.jpg'; // 默认路人头像
-            if (comment.author === userNickname) {
-                commenterAvatarUrl = state.qzoneSettings.avatar;
-            } else {
-                const commenterChar = Object.values(state.chats).find(c => c.name === comment.author);
-                if (commenterChar) {
-                    commenterAvatarUrl = commenterChar.settings.aiAvatar;
-                }
-            }
-
-            // --- 2b. 处理回复 ---
-            let replyHtml = '';
-            if (comment.replyTo) {
-                replyHtml = `<span class="reply-text">回复</span> <span class="reply-target-name">${comment.replyTo}</span>`;
-            }
-
-            // --- 2c. 拼接单条评论的完整HTML ---
-            commentsHtml += `
-                <div class="post-comment-item" data-commenter-name="${comment.author}">
-                    <img src="${commenterAvatarUrl}" class="comment-avatar-small">
-                    <div class="comment-details">
-                        <div class="comment-header-line">
-                            <span class="comment-author">${comment.author}</span>
-                            <span class="comment-floor">${index + 1}楼</span>
-                        </div>
-                        <div class="comment-content">
-                            ${replyHtml}
-                            <span class="comment-text">${(comment.content || '').replace(/\n/g, '<br>')}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    } else {
-        commentsHtml += '<p style="color: var(--text-secondary); font-size: 14px;">还没有评论，快来抢沙发！</p>';
-    }
-    commentsHtml += '</div>';
-
-    // --- 3. 拼接帖子详情页的完整HTML ---
-    contentEl.innerHTML = `
-        <div class="post-detail-header">
-            <img src="${authorAvatarUrl}" class="post-author-avatar">
-            <div class="post-author-info">
-                <h1>${post.title}</h1>
-                <div class="post-detail-meta">
-                    <span>作者: ${post.author}</span> | <span>发布于: ${new Date(post.timestamp).toLocaleString()}</span>
-                </div>
-            </div>
-        </div>
-        <div class="post-detail-body">${post.content.replace(/\n/g, '<br>')}</div>
-        <div class="generate-comments-container">
-            <button id="generate-forum-comments-btn">✨ 生成评论</button>
-        </div>
-        ${commentsHtml}
-    `;
-
-    // --- 4. 重新绑定评论的点击回复事件 (这部分逻辑保持不变) ---
-    contentEl.querySelectorAll('.post-comment-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const commenterName = item.dataset.commenterName;
-            const myNickname = state.qzoneSettings.nickname || '我';
-            if (commenterName !== myNickname) {
-                const commentInput = document.getElementById('post-comment-input');
-                commentInput.placeholder = `回复 ${commenterName}:`;
-                commentInput.dataset.replyTo = commenterName;
-                commentInput.focus();
-            }
-        });
-    });
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-
-/**
- * 【AI核心】为论坛帖子生成“豆瓣风格”的评论
- */
-async function generateForumComments() {
-    const postIdToCommentOn = activeForumPostId; 
-    if (!postIdToCommentOn) return;
-
-    await showCustomAlert("请稍候...", "正在召唤资深豆友前来围观...");
-
-    const { proxyUrl, apiKey, model } = state.apiConfig;
-    if (!proxyUrl || !apiKey || !model) {
-        alert('请先在API设置中配置好才能生成内容哦！');
-        return;
-    }
-
-    const post = await db.forumPosts.get(postIdToCommentOn); 
-    const existingComments = await db.forumComments.where('postId').equals(postIdToCommentOn).toArray(); 
-    const group = await db.forumGroups.get(post.groupId);
-
-    // ▼▼▼ 用下面这【一整块新代码】替换掉旧的 prompt 变量 ▼▼▼
-    const prompt = `
-# 任务
-你是一个专业的“豆瓣小组资深用户模拟器”。你的任务是为名为“${group.name}”的论坛小组里的一个帖子，生成5条全新的、非常“豆瓣风格”的评论。
-
-# 帖子信息
-- 标题: ${post.title}
-- 内容: ${post.content.substring(0, 300)}...
-- 已有评论:
-${existingComments.map(c => `- ${c.author}: ${c.content}`).join('\n') || "(暂无评论)"}
-
-# 【【【评论生成核心规则】】】
-1.  **豆瓣风格**: 评论的语言风格必须非常地道，符合真实豆瓣网友的习惯。大量使用豆瓣黑话和网络用语，例如：
-    - "同意楼上姐妹！"
-    - "马了，感谢楼主分享"
-    - "蹲一个后续"
-    - "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈" (大量的“哈”)
-    - "这是可以说的吗？"
-    - "码住"
-    - "笑死，你是什么互联网嘴替"
-    - "插眼"
-    - "我先来，楼主好人一生平安"
-2.  **互动性**: 生成的评论必须互相之间有互动。你可以回复楼主（作者: ${post.author}），也可以回复评论区的其他网友。
-3.  **【【【昵称生成铁律】】】**: 评论者的昵称 ("author") 【必须】是你自己虚构的、随机的、生活化的、符合小组氛围的路人网友昵称。【绝对禁止】使用下方“公众人物列表”中的任何一个名字作为评论者。
-4.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON数组，数组中包含5个对象。每个对象【必须】包含 "author" 和 "content" 两个字段，如果需要回复别人，可以加上 "replyTo" 字段。
-
-# 公众人物列表 (他们是讨论的对象，但不是发帖人)
-${Object.values(state.chats).filter(c => !c.isGroup).map(c => `- ${c.name}`).join('\n')}
-
-# JSON输出格式示例:
-[
-  {
-    "author": "早睡早起身体好",
-    "content": "同意楼上哥哥的，这个确实是这样！"
-  },
-  {
-    "author": "momo",
-    "content": "哈哈哈哈哈哈哈哈哈哈这是可以说的吗",
-    "replyTo": "早睡早起身体好"
-  }
-]
-`;
-    // ▲▲▲ 替换结束 ▲▲▲
-    
-    const messagesForApi = [{ role: 'user', content: prompt }];
-    
-    try {
-        let isGemini = proxyUrl === GEMINI_API_URL;
-        let geminiConfig = toGeminiRequestData(model, apiKey, prompt, messagesForApi, isGemini);
-        const response = isGemini 
-            ? await fetch(geminiConfig.url, geminiConfig.data) 
-            : await fetch(`${proxyUrl}/v1/chat/completions`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
-                body: JSON.stringify({ model: model, messages: messagesForApi, temperature: parseFloat(state.apiConfig.temperature) || 0.8,response_format: { type: "json_object" } })
-            });
-        if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
-        const data = await response.json();
-        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content);
-        const cleanedContent = rawContent.replace(/^```json\s*|```$/g, '').trim();
-        const newCommentsData = JSON.parse(cleanedContent);
-        if (Array.isArray(newCommentsData) && newCommentsData.length > 0) {
-            const commentsToAdd = newCommentsData.map((comment, index) => ({
-                postId: postIdToCommentOn,
-                author: comment.author || '路人',
-                content: comment.content,
-                replyTo: comment.replyTo || null,
-                timestamp: Date.now() + index
-            }));
-            await db.forumComments.bulkAdd(commentsToAdd);
-            await showCustomAlert("召唤成功！", `已成功召唤 ${commentsToAdd.length} 位豆友前来围观。`);
-        } else {
-            throw new Error("AI返回的数据格式不正确。");
-        }
-    } catch (error) {
-        console.error("生成小组评论失败:", error);
-        await showCustomAlert('生成失败', `发生了一个错误：\n${error.message}`);
-    } finally {
-        await renderPostDetails(postIdToCommentOn);
-    }
-}
-
-
-/**
- * 为帖子添加新评论 (支持回复)
- */
-async function handleAddComment() {
-    if (!activeForumPostId) return;
-    const input = document.getElementById('post-comment-input');
-    const content = input.value.trim();
-    if (!content) {
-        alert("评论内容不能为空！");
-        return;
-    }
-    const newComment = {
-        postId: activeForumPostId,
-        author: state.qzoneSettings.nickname || '我',
-        content: content,
-        timestamp: Date.now()
-    };
-    if (input.dataset.replyTo) {
-        newComment.replyTo = input.dataset.replyTo;
-    }
-    await db.forumComments.add(newComment);
-    input.value = '';
-    input.placeholder = '发布你的评论...';
-    delete input.dataset.replyTo;
-    await renderPostDetails(activeForumPostId);
-}
-
-/**
- * 获取所有可用于同人创作的角色列表
- */
-function getAvailableCharacters() {
-    const user = { id: 'user', name: state.qzoneSettings.nickname || '我' };
-    const chars = Object.values(state.chats)
-        .filter(c => !c.isGroup)
-        .map(c => ({ id: c.id, name: c.name }));
-    return [user, ...chars];
-}
-
-/**
- * 填充同人文小组的CP选择器
- */
-async function populateFanficSelectors() {
-    const charList = getAvailableCharacters();
-    const select1 = document.getElementById('fanfic-char1-select');
-    const select2 = document.getElementById('fanfic-char2-select');
-    select1.innerHTML = '';
-    select2.innerHTML = '';
-    charList.forEach(char => {
-        const option1 = document.createElement('option');
-        option1.value = char.name;
-        option1.textContent = char.name;
-        select1.appendChild(option1);
-        const option2 = document.createElement('option');
-        option2.value = char.name;
-        option2.textContent = char.name;
-        select2.appendChild(option2);
-    });
-    if(charList.length > 1) {
-        select1.selectedIndex = 0;
-        select2.selectedIndex = 1;
-    }
-}
-
-// ▼▼▼ 用这块【已修改】的代码，完整替换你旧的 handleGenerateGroupContent 函数 ▼▼▼
-
-/**
- * 【全新改造版】处理通用“生成内容”按钮的点击事件
- */
-async function handleGenerateGroupContent() {
-    const groupIdToGenerateFor = activeGroupId;
-    if (!groupIdToGenerateFor) return;
-
-    const group = await db.forumGroups.get(groupIdToGenerateFor);
-    if (!group) return;
-    
-    // ★★★★★ 这就是我们这次修改的核心！ ★★★★★
-    // 1. 我们在这里加一个判断，检查当前小组的名字是不是“梦角小组”
-    if (group.name === '梦角小组') {
-        // 如果是，就调用我们刚刚创建的新函数！
-        await generateDreamPost(groupIdToGenerateFor);
-    }
-    // 2. 检查是不是“娱乐小组”
-    else if (group.name === '娱乐小组') {
-        await generateEntertainmentGroupContent(groupIdToGenerateFor);
-    } 
-    else if (group.name === '同人文小组') {
-        // 核心修改：将小组ID传进去，并用 await 等待它执行完毕
-        await generateFanfic(groupIdToGenerateFor);
-    } 
-    // 4. 对于所有其他普通小组
-    else {
-        // 调用原来的通用内容生成函数
-        await generateForumContentWithAPI(groupIdToGenerateFor, group.name);
-    }
-    // ★★★★★ 修改结束 ★★★★★
-}
-
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-
-// ▼▼▼ 用这块【V5 | 最终原创分类版】代码，完整替换旧的 generateForumContentWithAPI 函数 ▼▼▼
-
-/**
- * 【AI核心 - V5 世界观+原创分类版】为通用小组生成内容
- */
-async function generateForumContentWithAPI(groupId, groupName) {
-    if (!groupId) return;
-
-    // --- 1. 获取小组的世界观 ---
-    const group = await db.forumGroups.get(groupId);
-    if (!group) {
-        alert("错误：找不到该小组！");
-        return;
-    }
-    const worldview = group.worldview || '';
-
-    await showCustomAlert("请稍候...", `AI正在为“${groupName}”小组寻找灵感...`);
-
-    const { proxyUrl, apiKey, model } = state.apiConfig;
-    if (!proxyUrl || !apiKey || !model) {
-        alert('请先在API设置中配置好才能生成内容哦！');
-        return;
-    }
-
-    let worldviewContext = '';
-    if (worldview.trim()) {
-        worldviewContext = `
-# 小组专属世界观 (你必须严格遵守)
-${worldview}
-`;
-    }
-
-    const passerbyPostCount = 5;
-
-    // --- ▼▼▼ 【核心修改】彻底重写Prompt指令 ---
-    const prompt = `
-# 任务
-你是一个专业的“论坛内容生成器”。你的任务是为名为“${groupName}”的论坛小组，生成【${passerbyPostCount}条】全新的、有趣的、符合小组主题的帖子，并为每条帖子生成2-3条符合情景的评论。
-
-${worldviewContext}
-
-# 核心规则
-1.  **主题相关**: 所有帖子的标题、内容和评论都必须与小组主题“${groupName}”高度相关。
-2.  **【【【分类铁律】】】**: 你【必须】为每一条帖子，根据其【具体内容】，原创1-2个高度相关的分类标签。绝对不要使用任何预设的、固定的分类列表。
-    - 例如，如果帖子是讨论设定的，分类可以是 ["设定讨论"]。
-    - 如果帖子是分析剧情的，分类可以是 ["剧情分析"]。
-    - 如果帖子是闲聊，分类可以是 ["闲聊水"]。
-3.  **作者随机**: 每条帖子的作者都必须是你虚构的、符合小组氛围的路人网友。
-4.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON数组，数组中包含【${passerbyPostCount}个】帖子对象。每个对象【必须】包含 "author", "title", "content", "categories", 和 "comments" 字段。
-    - "categories" 字段【必须】是你为这条帖子原创的分类数组。
-    - "comments" 字段的值【必须】是一个对象数组，每个对象包含 "author" 和 "content" 字段。
-
-# JSON输出格式示例:
-[
-  {
-    "author": "早睡早起身体好",
-    "title": "关于世界观里XX设定的一个疑问",
-    "content": "我刚刚在看世界观设定，里面提到XX是蓝色的，但是在另一处又说是绿色的...",
-    "categories": ["设定讨论", "剧情分析"],
-    "comments": [
-      {"author": "路人甲", "content": "我也发现了！蹲一个解答。"}
-    ]
-  }
-]
-`;
-    // --- ▲▲▲ 更新结束 ▲▲▲ ---
-
-    const messagesForApi = [{ role: 'user', content: prompt }];
-
-    try {
-        let isGemini = proxyUrl === GEMINI_API_URL;
-        let geminiConfig = toGeminiRequestData(model, apiKey, prompt, messagesForApi, isGemini);
-        const response = isGemini 
-            ? await fetch(geminiConfig.url, geminiConfig.data) 
-            : await fetch(`${proxyUrl}/v1/chat/completions`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
-                body: JSON.stringify({ model: model, messages: messagesForApi, temperature: parseFloat(state.apiConfig.temperature) || 0.8, response_format: { type: "json_object" } })
-            });
-
-        if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
-        
-        const data = await response.json();
-        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content);
-        const cleanedContent = rawContent.replace(/^```json\s*|```$/g, '').trim();
-        const newPostsData = JSON.parse(cleanedContent);
-
-        if (Array.isArray(newPostsData) && newPostsData.length > 0) {
-            let totalPosts = 0;
-            let totalComments = 0;
-            for (const postData of newPostsData) {
-                // --- 3. 保存帖子时，也保存AI原创的分类 ---
-                const newPost = {
-                    groupId: groupId,
-                    title: postData.title,
-                    content: postData.content,
-                    author: postData.author,
-                    timestamp: Date.now() + totalPosts,
-                    categories: postData.categories || [] // 保存原创分类
-                };
-                const postId = await db.forumPosts.add(newPost);
-                totalPosts++;
-
-                if (postData.comments && Array.isArray(postData.comments)) {
-                    const commentsToAdd = postData.comments.map(comment => {
-                        if (typeof comment === 'object' && comment !== null && comment.author && comment.content) {
-                            return {
-                                postId: postId,
-                                author: comment.author,
-                                content: comment.content,
-                                timestamp: Date.now() + totalPosts + totalComments++
-                            };
-                        }
-                        return null;
-                    }).filter(Boolean);
-                    
-                    if (commentsToAdd.length > 0) {
-                        await db.forumComments.bulkAdd(commentsToAdd);
-                    }
-                }
-            }
-            await showCustomAlert("生成成功！", `已为“${groupName}”小组生成了 ${totalPosts} 条新帖子和 ${totalComments} 条评论。`);
-            await renderGroupPosts(groupId);
-        } else {
-            throw new Error("AI没有返回任何有效的数据。");
-        }
-    } catch (error) {
-        console.error("生成小组内容失败:", error);
-        await showCustomAlert('生成失败', `发生了一个错误：\n${error.message}`);
-    }
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-
-
-// ▼▼▼ 用这块【V10 | 健壮稳定版】代码，完整替换旧的 generateFanfic 函数 ▼▼▼
-
-// 这是【修复后】的代码
-async function generateFanfic(groupId) { // 核心修改1：在这里添加 groupId 参数，接收传入的小组ID
-    if (!groupId) {
-        // 安全检查，如果因为某些原因没传对ID，就报错提示，防止污染数据
-        console.error("generateFanfic called without a groupId!");
-        alert("发生内部错误：生成同人时未能指定小组ID。");
-        return;
-    }
-    const char1Name = document.getElementById('fanfic-char1-select').value;
-    const char2Name = document.getElementById('fanfic-char2-select').value;
-    const worldviewPreference = document.getElementById('fanfic-worldview-input').value.trim();
-
-    if (char1Name === char2Name) {
-        alert("请选择两个不同的角色！");
-        return;
-    }
-    
-    await showCustomAlert("正在创作...", `粉丝正在为【${char1Name}x${char2Name}】奋笔疾书中...`);
-    
-    const { proxyUrl, apiKey, model } = state.apiConfig;
-    if (!proxyUrl || !apiKey || !model) {
-        alert('请先配置API！');
-        return;
-    }
-
-    const allChars = getAvailableCharacters();
-    const char1Data = allChars.find(c => c.name === char1Name);
-    const char2Data = allChars.find(c => c.name === char2Name);
-    const char1Persona = (state.chats[char1Data.id]?.settings.aiPersona || '一个普通人');
-    const char2Persona = (state.chats[char2Data.id]?.settings.aiPersona || '一个普通人');
-
-    let worldviewContext = worldviewPreference ? `世界观设定：${worldviewPreference}` : '';
-    
-    // --- ▼▼▼ 【核心修正】重写Prompt，增强稳定性和清晰度 ---
-    const prompt = `
-你是一位专业的同人文写手。请根据以下要求，创作【三篇】关于角色A和角色B的、情节各不相同的短篇同人故事。
-
-# 角色信息
-- 角色A (${char1Name}): ${char1Persona}
-- 角色B (${char2Name}): ${char2Persona}
-${worldviewContext}
-
-# 任务要求
-1.  **创作三篇故事**: 三篇故事的情节、风格必须完全不同。
-2.  **原创分类**: 为【每篇】故事，根据其情节原创1-2个最贴切的分类标签 (例如: "破镜重圆", "ABO", "甜文")。
-3.  **生成评论**: 为【每篇】故事，模拟读者口吻生成3-5条评论。
-4.  **JSON格式**: 你的回复【必须且只能】是一个纯净的JSON数组，直接以 '[' 开头，以 ']' 结尾。禁止包含任何其他说明文字。
-
-# JSON结构
-[
-  {
-    "title": "故事标题1",
-    "story": "故事内容1...",
-    "categories": ["原创分类1", "原创分类2"],
-    "comments": [
-      {"author": "读者A", "content": "评论内容A..."},
-      {"author": "读者B", "content": "评论内容B..."}
-    ]
-  },
-  ... (另外两个故事对象)
-]
-`;
-    // --- ▲▲▲ 更新结束 ▲▲▲ ---
-
-    const messagesForApi = [{ role: 'user', content: prompt }];
-    try {
-        let isGemini = proxyUrl === GEMINI_API_URL;
-        let geminiConfig = toGeminiRequestData(model, apiKey, prompt, messagesForApi, isGemini);
-        const response = isGemini 
-            ? await fetch(geminiConfig.url, geminiConfig.data) 
-            : await fetch(`${proxyUrl}/v1/chat/completions`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
-                body: JSON.stringify({ model: model, messages: messagesForApi, temperature: parseFloat(state.apiConfig.temperature) || 0.8, response_format: { type: "json_object" } })
-            });
-        if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
-        const data = await response.json();
-        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content);
-        let stories = [];
-        try {
-            const cleanedContent = rawContent.replace(/^```json\s*|```$/g, '').trim();
-            stories = JSON.parse(cleanedContent);
-            if (!Array.isArray(stories)) throw new Error("AI未返回数组格式。");
-        } catch (e) {
-            // --- ▼▼▼ 【核心修正】增强错误日志 ---
-            console.error("JSON解析失败！", e);
-            console.error("AI返回的原始文本:", rawContent);
-            throw new Error("AI返回了无效的JSON格式。请按F12查看控制台中的“AI返回的原始文本”以了解详情。");
-            // --- ▲▲▲ 更新结束 ▲▲▲ ---
-        }
-        for (let i = 0; i < stories.length; i++) {
-            const storyData = stories[i];
-            const newPost = {
-                groupId: groupId, // 核心修改2：使用传入的 groupId
-                title: `【${char1Name}x${char2Name}】${storyData.title || `无题 ${Date.now().toString().slice(-4)}`}`,
-                content: storyData.story || '内容生成失败',
-                author: getRandomItem(['为爱发电的太太', '圈地自萌', 'CP是真的', '嗑拉了', '咕咕咕']),
-                timestamp: Date.now() + i,
-                categories: storyData.categories || []
-            };
-            const postId = await db.forumPosts.add(newPost);
-            if (storyData.comments && Array.isArray(storyData.comments)) {
-                const commentsToAdd = storyData.comments.map((c, idx) => ({ postId, author: c.author || '匿名', content: c.content, timestamp: Date.now()+i+idx+1 }));
-                await db.forumComments.bulkAdd(commentsToAdd);
-            }
-        }
-        await renderGroupPosts(groupId);
-        await showCustomAlert("创作完成！", `已成功为你创作了 ${stories.length} 篇新的同人故事。`);
-    } catch (error) {
-        console.error("生成同人文失败:", error);
-        await showCustomAlert('创作失败', `发生了一个错误：\n${error.message}`);
-    }
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-
-
-
-// ▼▼▼ 用这个【V2版】替换旧的 openCreateForumPostModal 函数 ▼▼▼
-/**
- * 打开创建帖子的模态框
- */
-async function openCreateForumPostModal() {
-    resetCreatePostModal(); 
-    const modal = document.getElementById('create-post-modal');
-    modal.dataset.mode = 'forum';
-    document.getElementById('create-post-modal-title').textContent = '发布新帖子';
-    document.getElementById('post-public-text').placeholder = '请输入帖子内容...';
-    
-    // 隐藏所有不需要的控件
-    modal.querySelector('.post-mode-switcher').style.display = 'none';
-    modal.querySelector('#image-mode-content').style.display = 'none';
-    modal.querySelector('#text-image-mode-content').style.display = 'none';
-    modal.querySelector('#post-comments-toggle-group').style.display = 'none';
-    modal.querySelector('#post-visibility-group').style.display = 'none';
-    
-    const publicTextGroup = document.getElementById('post-public-text').parentElement;
-    
-    // --- 动态添加或显示“标题”输入框 ---
-    let titleGroup = document.getElementById('forum-post-title-group');
-    if (!titleGroup) {
-        titleGroup = document.createElement('div');
-        titleGroup.className = 'form-group';
-        titleGroup.id = 'forum-post-title-group';
-        titleGroup.innerHTML = `
-            <label for="forum-post-title-input">标题</label>
-            <input type="text" id="forum-post-title-input" placeholder="请输入帖子标题...">
-        `;
-        publicTextGroup.parentNode.insertBefore(titleGroup, publicTextGroup);
-    }
-    document.getElementById('forum-post-title-input').value = '';
-
-    // --- ▼▼▼ 【核心新增】动态添加“分类”输入框 ▼▼▼ ---
-    let categoryGroup = document.getElementById('forum-post-category-group');
-    if (!categoryGroup) {
-        categoryGroup = document.createElement('div');
-        categoryGroup.className = 'form-group';
-        categoryGroup.id = 'forum-post-category-group';
-        categoryGroup.innerHTML = `
-            <label for="forum-post-category-input">帖子分类 (用#号分隔)</label>
-            <input type="text" id="forum-post-category-input" placeholder="例如: #剧情讨论 #角色分析">
-        `;
-        // 将分类输入框插入到“内容”输入框之后
-        publicTextGroup.parentNode.insertBefore(categoryGroup, publicTextGroup.nextSibling);
-    }
-    document.getElementById('forum-post-category-input').value = '';
-    // --- ▲▲▲ 新增结束 ▲▲▲ ---
-
-    modal.classList.add('visible');
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-// ▼▼▼ 用这个【V2版】替换旧的 handleCreateForumPost 函数 ▼▼▼
-/**
- * 处理用户点击“发布”按钮，创建新帖子的逻辑
- */
-async function handleCreateForumPost() {
-    const title = document.getElementById('forum-post-title-input').value.trim();
-    const content = document.getElementById('post-public-text').value.trim();
-    if (!title || !content) {
-        alert("帖子标题和内容都不能为空哦！");
-        return;
-    }
-
-    // --- ▼▼▼ 【核心新增】获取并解析分类 ▼▼▼ ---
-    const categoryInput = document.getElementById('forum-post-category-input').value.trim();
-    const categories = categoryInput ? categoryInput.match(/#(\S+)/g)?.map(tag => tag.substring(1)) || [] : [];
-    // --- ▲▲▲ 新增结束 ▲▲▲ ---
-
-    const newPost = {
-        groupId: activeGroupId,
-        title: title,
-        content: content,
-        author: state.qzoneSettings.nickname || '我',
-        timestamp: Date.now(),
-        categories: categories // 保存解析后的分类数组
-    };
-    
-    await db.forumPosts.add(newPost);
-    document.getElementById('create-post-modal').classList.remove('visible');
-    await renderGroupPosts(activeGroupId);
-    alert('帖子发布成功！');
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-/**
- * 删除一个小组及其所有内容
- */
-async function deleteGroupAndPosts(groupId) {
-    const group = await db.forumGroups.get(groupId);
-    if (!group) return;
-    const confirmed = await showCustomConfirm(
-        '确认删除',
-        `确定要删除小组“${group.name}”吗？此操作将同时删除该小组内的【所有帖子和评论】，且无法恢复！`,
-        { confirmButtonClass: 'btn-danger' }
-    );
-    if (confirmed) {
-        try {
-            const postsToDelete = await db.forumPosts.where('groupId').equals(groupId).toArray();
-            const postIds = postsToDelete.map(p => p.id);
-            if (postIds.length > 0) {
-                await db.forumComments.where('postId').anyOf(postIds).delete();
-            }
-            await db.forumPosts.where('groupId').equals(groupId).delete();
-            await db.forumGroups.delete(groupId);
-            await renderForumScreen();
-            alert(`小组“${group.name}”及其所有内容已删除。`);
-        } catch (error) {
-            console.error("删除小组时出错:", error);
-            alert(`删除失败: ${error.message}`);
-        }
-    }
-}
-
-// ▼▼▼ 请用这块【最终修复版】的代码，完整替换掉你旧的 repostToChat 函数 ▼▼▼
-
-/**
- * 【最终修复版】"转载"功能：将帖子内容分享到单聊，并植入强制AI评论的隐藏指令
- */
-async function repostToChat() {
-    if (!activeForumPostId) return;
-    const post = await db.forumPosts.get(activeForumPostId);
-    if (!post) {
-        alert("找不到要转载的帖子！");
-        return;
-    }
-    
-    // 打开角色选择弹窗的逻辑保持不变
-    const modal = document.getElementById('share-target-modal');
-    const listEl = document.getElementById('share-target-list');
-    listEl.innerHTML = '';
-    const singleChats = Object.values(state.chats).filter(c => !c.isGroup);
-    singleChats.forEach(chat => {
-        const item = document.createElement('div');
-        item.className = 'contact-picker-item'; 
-        item.innerHTML = `
-            <input type="radio" name="repost-target" value="${chat.id}" id="target-${chat.id}" style="margin-right: 15px;">
-            <label for="target-${chat.id}" style="display:flex; align-items:center; width:100%; cursor:pointer;">
-                <img src="${chat.settings.aiAvatar || defaultAvatar}" class="avatar">
-                <span class="name">${chat.name}</span>
-            </label>
-        `;
-        listEl.appendChild(item);
-    });
-    document.getElementById('share-target-modal-title').textContent = '转载到...';
-    modal.classList.add('visible');
-
-    // 确认按钮的事件监听
-    const confirmBtn = document.getElementById('confirm-share-target-btn');
-    const newConfirmBtn = confirmBtn.cloneNode(true);
-    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-    
-    newConfirmBtn.onclick = async () => {
-        const selectedRadio = document.querySelector('input[name="repost-target"]:checked');
-        if (!selectedRadio) {
-            alert("请选择一个要转载到的聊天！");
-            return;
-        }
-
-        const targetChatId = selectedRadio.value;
-        const targetChat = state.chats[targetChatId];
-        if (!targetChat) return;
-
-        // --- ▼▼▼ 这就是本次的【核心修改】！▼▼▼ ---
-
-        // 1. 创建对用户可见的转载卡片消息（这部分不变）
-        const repostMessage = {
-            role: 'user',
-            type: 'repost_forum_post',
-            timestamp: Date.now(),
-            content: `[转载的帖子]\nID为${post.id}\n标题: 《${post.title}》\n作者: ${post.author}\n内容: ${post.content}\n你的任务是【必须】对这个帖子发表评论。请【立刻】使用 'forum_comment' 指令完成此任务`,
-            payload: {
-                postId: post.id,
-                title: post.title,
-                author: post.author,
-                content: post.content.substring(0, 100) + '...'
-            }
-        };
-        targetChat.history.push(repostMessage);
-
-        // 2. 创建给【AI看】的隐藏指令，并【明确地告诉AI帖子的ID】
-        const hiddenInstructionMessage = {
-            role: 'system',
-            // 【【【看这里！我们把 post.id 加进去了！】】】
-            content: `[系统指令：用户刚刚向你分享了一个ID为【${post.id}】的小组帖子，内容如下。你的任务是【必须】对这个帖子发表评论。请【立刻】使用 'forum_comment' 指令完成此任务，并确保在指令中包含正确的 "postId": ${post.id}。]\n\n--- 帖子开始 ---\n标题: ${post.title}\n作者: ${post.author}\n内容: ${post.content}\n--- 帖子结束 ---`,
-            timestamp: Date.now() + 1,
-            isHidden: true
-        };
-        targetChat.history.push(hiddenInstructionMessage);
-        
-        // --- ▲▲▲ 修改结束 ▲▲▲ ---
-
-        // 后续的保存和跳转逻辑保持不变
-        await db.chats.put(targetChat);
-        
-        modal.classList.remove('visible');
-        await showCustomAlert("转载成功", `已成功将帖子转载给“${targetChat.name}”！`);
-        
-        openChat(targetChatId);
-    };
-}
-
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-
-
-// ▼▼▼ 【全新】圈子/小组高级功能辅助函数 ▼▼▼
-let editingGroupId = null; // 用于追踪正在编辑的小组ID
-
-/**
- * 打开小组编辑器
- */
-async function openGroupEditor(groupId) {
-    editingGroupId = groupId;
-    const group = await db.forumGroups.get(groupId);
-    if (!group) return;
-
-    document.getElementById('group-editor-name-input').value = group.name;
-    document.getElementById('group-editor-desc-input').value = group.description;
-    document.getElementById('group-editor-icon-input').value = group.icon;
-    document.getElementById('group-editor-worldview-input').value = group.worldview || '';
-    
-    // 将分类数组转换回带'#'的字符串
-    const categoriesString = (group.categories || []).map(c => `#${c}`).join(' ');
-    document.getElementById('group-editor-categories-input').value = categoriesString;
-    
-    document.getElementById('forum-group-editor-modal').classList.add('visible');
-}
-
-/**
- * 保存对小组信息的修改
- */
-async function saveGroupSettings() {
-    if (!editingGroupId) return;
-
-    const name = document.getElementById('group-editor-name-input').value.trim();
-    if (!name) {
-        alert('小组名称不能为空！');
-        return;
-    }
-    
-    const description = document.getElementById('group-editor-desc-input').value.trim();
-    const icon = document.getElementById('group-editor-icon-input').value.trim();
-    const worldview = document.getElementById('group-editor-worldview-input').value.trim();
-    const categoriesInput = document.getElementById('group-editor-categories-input').value.trim();
-    // 解析分类字符串
-    const categories = categoriesInput ? categoriesInput.match(/#(\S+)/g)?.map(tag => tag.substring(1)) || [] : [];
-    
-    await db.forumGroups.update(editingGroupId, { name, description, icon, worldview, categories });
-    
-    document.getElementById('forum-group-editor-modal').classList.remove('visible');
-    await renderForumScreen();
-    alert('小组信息已更新！');
-}
-
-/**
- * 打开分类管理弹窗
- */
-async function openForumCategoryManager() {
-    await renderForumCategoryList();
-    document.getElementById('forum-category-manager-modal').classList.add('visible');
-}
-
-/**
- * 在弹窗中渲染分类列表
- */
-async function renderForumCategoryList() {
-    const listEl = document.getElementById('existing-forum-categories-list');
-    const categories = await db.forumCategories.toArray();
-    listEl.innerHTML = '';
-    if (categories.length === 0) {
-        listEl.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">还没有任何分类</p>';
-    }
-    categories.forEach(cat => {
-        const item = document.createElement('div');
-        item.className = 'existing-group-item';
-        item.innerHTML = `
-            <span class="group-name">${cat.name}</span>
-            <span class="delete-group-btn" data-id="${cat.id}">×</span>
-        `;
-        listEl.appendChild(item);
-    });
-}
-
-/**
- * 添加一个新的圈子分类
- */
-async function addNewForumCategory() {
-    const input = document.getElementById('new-forum-category-name-input');
-    const name = input.value.trim();
-    if (!name) {
-        alert('分类名不能为空！');
-        return;
-    }
-    const existing = await db.forumCategories.where('name').equals(name).first();
-    if (existing) {
-        alert(`分类 "${name}" 已经存在了！`);
-        return;
-    }
-    await db.forumCategories.add({ name });
-    input.value = '';
-    await renderForumCategoryList();
-}
-
-/**
- * 删除一个圈子分类
- */
-async function deleteForumCategory(categoryId) {
-    const confirmed = await showCustomConfirm('确认删除', '确定要删除这个分类吗？', { confirmButtonClass: 'btn-danger' });
-    if (confirmed) {
-        await db.forumCategories.delete(categoryId);
-        await renderForumCategoryList();
-    }
-}
-// ▲▲▲ 新增函数结束 ▲▲▲
-
-
-// ▲▲▲ 论坛功能核心代码结束 ▲▲▲
-
-// ▼▼▼ 在 init() 函数的【上方】粘贴这【一整块新代码】 ▼▼▼
-/**
- * 【全新】打开创建小组的模态框
- */
-async function openGroupCreator() {
-    const name = await showCustomPrompt("创建新小组", "请输入小组名称：");
-    if (!name || !name.trim()) {
-        if (name !== null) alert("小组名称不能为空！");
-        return;
-    }
-
-    const desc = await showCustomPrompt("小组描述", "为你的小组写一句简介吧：");
-    if (desc === null) return;
-
-    const icon = await showCustomPrompt("小组图标", "输入一个 Emoji 作为小组图标：", "💬");
-    if (icon === null) return;
-
-    try {
-        const newGroup = {
-            name: name.trim(),
-            description: desc.trim(),
-            icon: icon.trim() || '💬' // 如果没输入就给个默认的
-        };
-        await db.forumGroups.add(newGroup);
-        await renderForumScreen(); // 刷新小组列表
-        alert(`小组“${name.trim()}”创建成功！`);
-    } catch (error) {
-        console.error("创建小组失败:", error);
-        alert(`创建失败: ${error.message}`);
-    }
-}
-
-/**
- * 【全新】删除一个小组
- * @param {number} groupId - 要删除的小组的ID
- */
-async function deleteGroupAndPosts(groupId) {
-    const group = await db.forumGroups.get(groupId);
-    if (!group) return;
-
-    const confirmed = await showCustomConfirm(
-        '确认删除',
-        `确定要删除小组“${group.name}”吗？此操作将同时删除该小组内的【所有帖子和评论】，且无法恢复！`,
-        { confirmButtonClass: 'btn-danger' }
-    );
-
-    if (confirmed) {
-        try {
-            // 1. 找到该小组下的所有帖子
-            const postsToDelete = await db.forumPosts.where('groupId').equals(groupId).toArray();
-            const postIds = postsToDelete.map(p => p.id);
-
-            // 2. 如果有帖子，就找到这些帖子下的所有评论并删除
-            if (postIds.length > 0) {
-                await db.forumComments.where('postId').anyOf(postIds).delete();
-            }
-
-            // 3. 删除所有帖子
-            await db.forumPosts.where('groupId').equals(groupId).delete();
-            
-            // 4. 最后删除小组本身
-            await db.forumGroups.delete(groupId);
-
-            await renderForumScreen(); // 刷新列表
-            alert(`小组“${group.name}”及其所有内容已删除。`);
-
-        } catch (error) {
-            console.error("删除小组时出错:", error);
-            alert(`删除失败: ${error.message}`);
-        }
-    }
-}
-// ▼▼▼ 用这块【V4 | 最终分类版】代码，完整替换旧的 generateEntertainmentGroupContent 函数 ▼▼▼
-
-// ▼▼▼ 用这块【V5 | 最终原创分类版】代码，完整替换旧的 generateEntertainmentGroupContent 函数 ▼▼▼
-
-/**
- * 【AI核心 - 娱乐小组 V5 | 最终原创分类版】
- */
-async function generateEntertainmentGroupContent(groupId) {
-    if (!groupId) return;
-
-    await showCustomAlert("请稍候...", "娱乐小组正在紧急开会讨论最新热点...");
-
-    const { proxyUrl, apiKey, model } = state.apiConfig;
-    if (!proxyUrl || !apiKey || !model) {
-        alert('请先在API设置中配置好才能生成内容哦！');
-        return;
-    }
-
-    const publicFigures = Object.values(state.chats)
-        .filter(c => !c.isGroup)
-        .map(c => ({ 
-            name: c.name, 
-            profession: c.settings.weiboProfession || '艺人',
-            persona: (c.settings.weiboInstruction || c.settings.aiPersona).substring(0, 150)
-        }));
-
-    let topicsContext = '';
-    if (weiboHotSearchCache && weiboHotSearchCache.length > 0) {
-        topicsContext = `请围绕以下【当前最新的微博热搜话题】展开讨论：\n${weiboHotSearchCache.map(t => `- ${t.topic}`).join('\n')}`;
-    } else {
-        topicsContext = `请你根据下方“公众人物列表”中各个角色的【职业和人设】，为他们创造一些符合身份的、可能引发讨论的娱乐新闻或八卦事件作为讨论主题。`;
-    }
-    
-    // --- ▼▼▼ 【核心修改】彻底重写Prompt指令 ---
-    const prompt = `
-# 任务
-你是一个专业的“豆瓣娱乐小组资深用户模拟器”。你的任务是根据一个热门娱乐主题，生成5个帖子和对应的评论，模拟小组内的真实讨论氛围。
-
-# 当前讨论主题
-${topicsContext}
-
-# 核心规则
-1.  **豆瓣风格铁律**: 所有帖子的标题、内容和评论都【必须】是地道的“豆瓣小组”风格。
-2.  **【【【分类铁律】】】**: 你【必须】为每一个帖子，根据其八卦内容，【原创】1-2个高度相关的分类标签。绝对不要使用任何预设列表。例如，如果帖子是关于恋情的，分类可以是 ["恋情瓜"]。
-3.  **角色扮演铁律**: 你生成的帖子内容可以【讨论或提及】下方的公众人物，但【不能扮演他们】亲自发帖。所有帖子都必须是路人视角。
-4.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON数组，包含5个帖子对象。每个对象【必须】包含 "author", "title", "content", "categories", 和 "comments" 字段。
-    - "categories" 字段【必须】是你为这篇帖子原创的分类数组。
-
-# 公众人物列表 (他们是讨论的对象，但不是发帖人)
-${JSON.stringify(publicFigures, null, 2)}
-
-# JSON输出格式示例:
-[
-  {
-    "author": "momo",
-    "title": "不懂就问，最近那个热搜上的剧真的好看吗？",
-    "content": "首页天天刷到，有点好奇但又怕踩雷...",
-    "categories": ["新剧讨论"],
-    "comments": [
-      {"author": "已注销", "content": "不好看，别去。"}
-    ]
-  }
-]
-`;
-    // --- ▲▲▲ 更新结束 ▲▲▲ ---
-
-    const messagesForApi = [{ role: 'user', content: prompt }];
-    
-    try {
-        let isGemini = proxyUrl === GEMINI_API_URL;
-        let geminiConfig = toGeminiRequestData(model, apiKey, prompt, messagesForApi, isGemini);
-        
-        const response = isGemini 
-            ? await fetch(geminiConfig.url, geminiConfig.data) 
-            : await fetch(`${proxyUrl}/v1/chat/completions`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
-                body: JSON.stringify({ model: model, messages: messagesForApi, temperature: parseFloat(state.apiConfig.temperature) || 0.8,response_format: { type: "json_object" } })
-            });
-
-        if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
-        
-        const data = await response.json();
-        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content);
-        const cleanedContent = rawContent.replace(/^```json\s*|```$/g, '').trim();
-        const newPostsData = JSON.parse(cleanedContent);
-
-        if (Array.isArray(newPostsData) && newPostsData.length > 0) {          
-            let totalPosts = 0;
-            let totalComments = 0;
-            for (const postData of newPostsData) {
-                // --- ▼▼▼ 【核心新增】保存分类数据 ---
-                const newPost = {
-                    groupId: groupId,
-                    title: postData.title,
-                    content: postData.content,
-                    author: postData.author,
-                    timestamp: Date.now() + totalPosts,
-                    categories: postData.categories || [] // 保存分类
-                };
-                // --- ▲▲▲ 新增结束 ▲▲▲ ---
-                
-                const postId = await db.forumPosts.add(newPost);
-                totalPosts++;
-
-                if (postData.comments && Array.isArray(postData.comments)) {
-                    const commentsToAdd = postData.comments.map(comment => ({
-                        postId: postId,
-                        author: comment.author,
-                        content: comment.content,
-                        timestamp: Date.now() + totalPosts + totalComments++
-                    }));
-                    if (commentsToAdd.length > 0) {
-                        await db.forumComments.bulkAdd(commentsToAdd);
-                    }
-                }
-            }
-            await renderGroupPosts(groupId);
-            await showCustomAlert("生成成功！", `已为娱乐小组生成了 ${totalPosts} 条新帖子和 ${totalComments} 条评论。`);
-        } else {
-            throw new Error("AI返回的数据格式不正确。");
-        }
-    } catch (error) {
-        console.error("生成娱乐小组内容失败:", error);
-        await showCustomAlert('生成失败', `发生了一个错误：\n${error.message}`);
-    }
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
-// ▼▼▼ 用这块【V4 | 最终原创分类版】代码，完整替换旧的 generateDreamPost 函数 ▼▼▼
-
-/**
- * 【全新修正版 | V4】为“梦角小组”生成专属帖子的核心函数
- */
-async function generateDreamPost(groupId) {
-    await showCustomAlert("请稍候...", "正在为user编织一个甜蜜的梦境...");
-
-    const { proxyUrl, apiKey, model } = state.apiConfig;
-    if (!proxyUrl || !apiKey || !model) {
-        alert('请先在API设置中配置好才能生成内容哦！');
-        return;
-    }
-
-    const allChars = Object.values(state.chats).filter(c => !c.isGroup);
-    if (allChars.length === 0) {
-        alert("还没有任何角色，无法发布梦境哦。");
-        return;
-    }
-
-    const postingChar = allChars[Math.floor(Math.random() * allChars.length)];
-    const userPersona = state.qzoneSettings.persona || '一个普通的、温柔的人。';
-    const userNickname = state.qzoneSettings.nickname || '{{user}}';
-
-    // --- ▼▼▼ 【核心修改】彻底重写Prompt指令 ---
-    const prompt = `
-# 任务：角色扮演与帖子创作（带评论和分类）
-你现在【就是】角色“${postingChar.name}”。你正在一个名为“梦角小组”的秘密论坛里。
-这个小组是你们这些角色，偷偷向彼此炫耀、倾诉对你们的共同爱人——用户“${userNickname}”——的爱意和幻想的地方。
-
-# 核心规则
-1.  **第一人称视角**: 你【必须】使用角色“${postingChar.name}”的第一人称视角来写作帖子正文。
-2.  **帖子主题**: 你的帖子内容是你对你的爱人“${userNickname}”的爱意表达或幻想。
-3.  **【【【分类铁律】】】**: 你【必须】根据梦境的具体内容，为这篇帖子【原创】1-2个高度相关的分类标签。绝对不要使用任何预设列表。例如，如果内容是甜蜜的日常，分类可以是 ["甜蜜日常"]。
-4.  **评论生成**: 在创作完帖子后，你还需要立刻切换到“其他小组成员”的视角，为这篇帖子生成【2-3条】符合情景的评论。
-5.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON对象，包含 "title", "content", "categories", 和 "comments" 字段。
-    - "categories" 字段【必须】是你为这篇帖子原创的分类数组。
-
-# 你的信息
--   你的名字: ${postingChar.name}
--   你的人设: ${postingChar.settings.aiPersona}
-
-# 你的爱人信息
--   爱人的名字: ${userNickname}
--   爱人的人设: ${userPersona}
-
-# JSON输出格式示例:
-{
-  "title": "关于他睡觉时的小习惯",
-  "content": "偷偷告诉你们，${userNickname}睡觉的时候喜欢抱着枕头的一角...",
-  "categories": ["甜蜜日常", "小习惯"],
-  "comments": [
-    {"author": "路人A", "content": "哇，好甜！"}
-  ]
-}
-`;
-    // --- ▲▲▲ 更新结束 ▲▲▲ ---
-
-    const messagesForApi = [{ role: 'user', content: prompt }];
-    
-    try {
-        let isGemini = proxyUrl === GEMINI_API_URL;
-        let geminiConfig = toGeminiRequestData(model, apiKey, prompt, messagesForApi, isGemini);
-        
-        const response = isGemini 
-            ? await fetch(geminiConfig.url, geminiConfig.data) 
-            : await fetch(`${proxyUrl}/v1/chat/completions`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
-                body: JSON.stringify({ model: model, messages: messagesForApi, temperature: parseFloat(state.apiConfig.temperature) || 0.8, response_format: { type: "json_object" } })
-            });
-        
-        if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
-        
-        const data = await response.json();
-        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content);
-        const cleanedContent = rawContent.replace(/^```json\s*|```$/g, '').trim();
-        const postData = JSON.parse(cleanedContent);
-
-        if (postData.title && postData.content) {
-            // --- ▼▼▼ 【核心新增】保存分类数据 ---
-            const newPost = {
-                groupId: groupId,
-                title: postData.title,
-                content: postData.content,
-                author: postingChar.name,
-                timestamp: Date.now(),
-                categories: postData.categories || [] // 保存分类
-            };
-            // --- ▲▲▲ 新增结束 ▲▲▲ ---
-            
-            const postId = await db.forumPosts.add(newPost);
-            
-            if (postData.comments && Array.isArray(postData.comments)) {
-                const commentsToAdd = postData.comments.map((c, i) => ({ postId, author: c.author, content: c.content, timestamp: Date.now() + i + 1 }));
-                await db.forumComments.bulkAdd(commentsToAdd);
-            }
-
-            await renderGroupPosts(groupId);
-            await showCustomAlert("发布成功！", `“${postingChar.name}”发布了一条新的梦境。`);
-        } else {
-            throw new Error("AI返回的数据格式不正确。");
-        }
-    } catch (error) {
-        console.error("生成梦角帖子失败:", error);
-        await showCustomAlert('生成失败', `发生了一个错误：\n${error.message}`);
-    }
-}
-// ▲▲▲ 替换结束 ▲▲▲
 
 
 
@@ -51959,28 +50944,31 @@ async function getStreakContext(chat) {
 }
 // ▼▼▼ 【全新】这是用户表情包批量删除的JS核心函数 ▼▼▼
 
-/**
- * 切换用户表情包的选择模式
- */
+// ▼▼▼ 使用这块【新代码】替换旧的 toggleUserStickerSelectionMode ▼▼▼
 function toggleUserStickerSelectionMode() {
     isUserStickerSelectionMode = !isUserStickerSelectionMode;
     const stickerPanel = document.getElementById('sticker-panel');
-    const stickerGrid = document.getElementById('sticker-grid');
     
-    // 清空选择集并更新UI
     selectedUserStickers.clear();
     stickerPanel.classList.toggle('selection-mode', isUserStickerSelectionMode);
-    stickerGrid.classList.toggle('selection-mode', isUserStickerSelectionMode);
     
     document.getElementById('edit-user-stickers-btn').style.display = isUserStickerSelectionMode ? 'none' : 'block';
     document.getElementById('done-user-stickers-btn').style.display = isUserStickerSelectionMode ? 'block' : 'none';
-    document.getElementById('sticker-panel-footer').style.display = isUserStickerSelectionMode ? 'block' : 'none';
-    document.getElementById('delete-selected-user-stickers-btn').textContent = `删除已选 (0)`;
-    document.getElementById('delete-selected-user-stickers-btn').disabled = true;
+    document.getElementById('sticker-panel-footer').style.display = isUserStickerSelectionMode ? 'flex' : 'none'; // 改为flex
+    
+    // 更新删除按钮
+    const deleteBtn = document.getElementById('delete-selected-user-stickers-btn');
+    deleteBtn.textContent = `删除已选 (0)`;
+    deleteBtn.disabled = true;
 
-    // 重新渲染表情列表以应用新的事件监听器
+    // ★★★ 新增：更新移动按钮 ★★★
+    const moveBtn = document.getElementById('move-selected-stickers-btn');
+    moveBtn.disabled = true;
+    
     renderStickerPanel();
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 /**
  * 退出用户表情包的选择模式
@@ -52371,9 +51359,8 @@ async function openDatingCharacterSelector(scene) {
 }
 
 
-// ▼▼▼ 请用这【一整块】全新的代码，完整替换掉你旧的 openDatingInvitationModal 函数 ▼▼▼
 /**
- * 【V2 | 文游改造版】打开支付方式选择的模态框
+ * 【V3 | 最终支付修复版】打开支付方式选择的模态框
  * @param {object} scene - 约会场景对象
  * @param {string} targetCharId - 被邀请角色的ID
  */
@@ -52383,48 +51370,75 @@ async function openDatingInvitationModal(scene, targetCharId) {
     document.getElementById('dating-modal-scene-cost').textContent = `预计花费: ${scene.cost}金币`;
 
     const optionsContainer = document.getElementById('dating-payment-options');
-    optionsContainer.innerHTML = '';
+    optionsContainer.innerHTML = ''; // 清空旧按钮
 
     const chat = state.chats[targetCharId];
     if (!chat) return;
 
-    // --- ★★★ 核心修改在这里 ★★★ ---
-    // 我们现在将所有支付选项的处理函数都改为调用 startDatingScene
-
-    const createButton = (text, handler, requiresBalanceCheck = 0) => {
-        const button = document.createElement('button');
-        button.className = 'form-button';
-        button.textContent = text;
-        button.onclick = async () => {
-            modal.classList.remove('visible');
-            
-            // 如果需要检查余额
-            if (requiresBalanceCheck > 0) {
-                const userBalance = state.globalSettings.userBalance || 0;
-                if (userBalance < requiresBalanceCheck) {
-                    await showCustomAlert("余额不足", "你的钱包空空如也，无法支付这次约会的花费！");
-                    return;
-                }
-                // 扣款并记录
-                await updateUserBalanceAndLogTransaction(-requiresBalanceCheck, `约会支出: ${scene.name}`);
-                await showCustomAlert("支付成功", `已成功支付 ${requiresBalanceCheck}金币！`);
-            }
-            // 调用新的开始约会函数！
-            handler(scene, targetCharId);
-        };
-        optionsContainer.appendChild(button);
+    // --- 按钮1：我来付全款 ---
+    const userPayBtn = document.createElement('button');
+    userPayBtn.className = 'form-button';
+    userPayBtn.textContent = '我来付全款';
+    userPayBtn.onclick = async () => {
+        const userBalance = state.globalSettings.userBalance || 0;
+        if (userBalance < scene.cost) {
+            await showCustomAlert("余额不足", "你的钱包空空如也，无法支付这次约会的花费！");
+            return;
+        }
+        await updateUserBalanceAndLogTransaction(-scene.cost, `约会支出: ${scene.name}`);
+        await showCustomAlert("支付成功", `已成功支付 ${scene.cost}金币！`);
+        modal.classList.remove('visible');
+        startDatingScene(scene, targetCharId, 'user'); // 记录由user支付
     };
+    optionsContainer.appendChild(userPayBtn);
 
-    // 1. 我来付全款：检查并扣除全款，然后开始约会
-    createButton('我来付全款', startDatingScene, scene.cost);
+    // --- 按钮2：让对方付全款 ---
+    const charPayBtn = document.createElement('button');
+    charPayBtn.className = 'form-button';
+    charPayBtn.textContent = `让 ${chat.name} 付全款`;
+    charPayBtn.onclick = async () => {
+        const charBalance = chat.characterPhoneData?.bank?.balance || 0;
+        if (charBalance < scene.cost) {
+            await showCustomAlert("对方余额不足", `“${chat.name}”的钱包好像不够支付这次约会的费用哦。`);
+            return;
+        }
+        // 【核心修复】调用函数，扣除角色的余额
+        await updateCharacterPhoneBankBalance(targetCharId, -scene.cost, `约会支出: ${scene.name}`);
+        await showCustomAlert("支付成功", `“${chat.name}”爽快地买单了！`);
+        modal.classList.remove('visible');
+        startDatingScene(scene, targetCharId, 'char'); // 记录由char支付
+    };
+    optionsContainer.appendChild(charPayBtn);
 
-    // 2. 让对方付全款：直接开始约会 (我们假设对方同意了)
-    createButton(`让 ${chat.name} 付全款`, startDatingScene);
+    // --- 按钮3：AA制 ---
+    const aaPayBtn = document.createElement('button');
+    aaPayBtn.className = 'form-button';
+    aaPayBtn.textContent = '我们AA制吧';
+    aaPayBtn.onclick = async () => {
+        const splitCost = scene.cost / 2;
+        const userBalance = state.globalSettings.userBalance || 0;
+        const charBalance = chat.characterPhoneData?.bank?.balance || 0;
 
-    // 3. AA制：检查并扣除一半款项，然后开始约会
-    createButton('我们AA制吧', startDatingScene, scene.cost / 2);
+        if (userBalance < splitCost) {
+            await showCustomAlert("余额不足", "你的钱包不够支付AA的费用哦！");
+            return;
+        }
+        if (charBalance < splitCost) {
+            await showCustomAlert("对方余额不足", `“${chat.name}”的钱包不够支付AA的费用哦。`);
+            return;
+        }
+        
+        // 【核心修复】同时扣除双方的余额
+        await updateUserBalanceAndLogTransaction(-splitCost, `约会AA支出: ${scene.name}`);
+        await updateCharacterPhoneBankBalance(targetCharId, -splitCost, `约会AA支出: ${scene.name}`);
+
+        await showCustomAlert("支付成功", `你们愉快地决定AA制！`);
+        modal.classList.remove('visible');
+        startDatingScene(scene, targetCharId, 'aa'); // 记录为AA制
+    };
+    optionsContainer.appendChild(aaPayBtn);
     
-    // 4. 找人借钱：这个逻辑保持不变，它会打开借钱的流程
+    // --- 按钮4：找人借钱 (保持不变) ---
     const otherChars = Object.values(state.chats).filter(c => !c.isGroup && c.id !== targetCharId);
     if (otherChars.length > 0) {
         const borrowBtn = document.createElement('button');
@@ -52432,17 +51446,16 @@ async function openDatingInvitationModal(scene, targetCharId) {
         borrowBtn.textContent = '我钱不够，找别人借点...';
         borrowBtn.onclick = () => {
             modal.classList.remove('visible');
-            openBorrowMoneyModal(scene, targetCharId); // 调用旧的借钱函数
+            openBorrowMoneyModal(scene, targetCharId);
         };
         optionsContainer.appendChild(borrowBtn);
     }
-    // --- ★★★ 修改结束 ★★★ ---
-
+    
+    // 绑定取消按钮
     document.getElementById('dating-cancel-btn').onclick = () => modal.classList.remove('visible');
+    // 显示弹窗
     modal.classList.add('visible');
 }
-// ▲▲▲ 替换结束 ▲▲▲
-
 
 /**
  * 【重构版】处理用户付全款的逻辑
@@ -53139,6 +52152,8 @@ function displayStoryText(storyText, choices) {
 
 // ▼▼▼ 【最终决战版】请用这块代码，完整替换旧的 showNextSentence 函数 ▼▼▼
 
+// ▼▼▼ 【最终决战版】请用这块代码，完整替换旧的 showNextSentence 函数 ▼▼▼
+
 /**
  * 【最终版V4】显示下一句剧情文本，或在结束后显示选项
  * - 修正了文本意外消失的bug (使用appendChild代替innerHTML)
@@ -53153,6 +52168,9 @@ function showNextSentence() {
     const textContentEl = document.getElementById('dating-game-text-content');
     const choicesEl = document.getElementById('dating-game-choices');
     const textboxEl = textContentEl.parentElement;
+    
+    // ★★★ 这就是我们新增的代码，用来获取进度条元素 ★★★
+    const progressBarContainer = document.getElementById('dating-completion-bar-container');
 
     // 句子索引+1
     datingGameState.currentSentenceIndex++;
@@ -53172,32 +52190,34 @@ function showNextSentence() {
         if (nextIndex < sentences.length) {
             const nextSentence = sentences[nextIndex];
             
-            // 【关键修正1】使用textContent进行安全的文本替换，绝对不会累积
+            // 使用textContent进行安全的文本替换，绝对不会累积
             textContentEl.textContent = nextSentence;
             
             // 如果这不是最后一句...
             if (nextIndex < sentences.length - 1) {
-                // 【关键修正2】用安全的方式创建并添加“点击继续”的提示，不会再破坏现有内容
+                // ★★★ 因为只显示文字，所以我们在这里【显示】进度条 ★★★
+                if (progressBarContainer) progressBarContainer.style.display = 'block';
+
+                // 创建并添加“点击继续”的提示
                 const indicator = document.createElement('div');
                 indicator.className = 'continue-indicator';
                 indicator.textContent = '▼';
                 textboxEl.appendChild(indicator);
             } else {
-                 // 如果是最后一句了，才显示选项
+                 // 如果是最后一句了，准备显示选项，所以我们在这里【隐藏】进度条
+                if (progressBarContainer) progressBarContainer.style.display = 'none';
+                
                 choices.forEach(choiceText => {
                     const choiceBtn = document.createElement('button');
                     choiceBtn.className = 'dating-game-choice-btn';
                     choiceBtn.textContent = choiceText;
-                                    // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
-                // ★★★ 核心修改：根据是否在NSFW模式，调用不同的函数 ★★★
-                choiceBtn.onclick = () => {
-                    if (datingGameState.isNsfwMode) {
-                        triggerNsfwScene(choiceText);
-                    } else {
-                        triggerDatingStory(choiceText);
-                    }
-                };
-                // ▲▲▲ 新代码粘贴结束 ▲▲▲
+                    choiceBtn.onclick = () => {
+                        if (datingGameState.isNsfwMode) {
+                            triggerNsfwScene(choiceText);
+                        } else {
+                            triggerDatingStory(choiceText);
+                        }
+                    };
                     choicesEl.appendChild(choiceBtn);
                 });
 
@@ -53205,19 +52225,16 @@ function showNextSentence() {
                 const inputBtn = document.createElement('button');
                 inputBtn.className = 'dating-game-choice-btn input-action';
                 inputBtn.textContent = '自定义行动...';
-            // ▼▼▼ 用下面这段新的 onclick 代码替换旧的 ▼▼▼
-            // ★★★ 核心修改：同样根据模式调用不同函数 ★★★
-            inputBtn.onclick = async () => {
-                const userInput = await showCustomPrompt("你的行动", "请输入你想说的话或想做的事：");
-                if (userInput && userInput.trim()) {
-                    if (datingGameState.isNsfwMode) {
-                        triggerNsfwScene(userInput.trim());
-                    } else {
-                        triggerDatingStory(userInput.trim());
+                inputBtn.onclick = async () => {
+                    const userInput = await showCustomPrompt("你的行动", "请输入你想说的话或想做的事：");
+                    if (userInput && userInput.trim()) {
+                        if (datingGameState.isNsfwMode) {
+                            triggerNsfwScene(userInput.trim());
+                        } else {
+                            triggerDatingStory(userInput.trim());
+                        }
                     }
-                }
-            };
-            // ▲▲▲ 替换结束 ▲▲▲
+                };
                 choicesEl.appendChild(inputBtn);
             }
         }
@@ -53228,12 +52245,10 @@ function showNextSentence() {
         // 所有操作完成后，解锁，允许下一次点击
         datingGameState.isSwitchingSentence = false; 
 
-    }, 250); // 稍微增加一点时间，确保动画流畅
+    }, 250);
 }
 
 // ▲▲▲ 替换结束 ▲▲▲
-
-
 
 // ▼▼▼ 【V2 | 流程重构版】用这块新代码替换旧的 endDate 函数 ▼▼▼
 /**
@@ -53470,70 +52485,130 @@ async function renderDatingPresetSelector() {
     });
 }
 
+// ▼▼▼ 【约会大作战 | 预设功能修复版】请用这整块代码，替换旧的 handleDatingPresetSelect 函数 ▼▼▼
 async function handleDatingPresetSelect() {
     const select = document.getElementById('dating-preset-select');
     const presetId = parseInt(select.value);
-    if (presetId) {
-        const preset = await db.datingPresets.get(presetId);
-        if (preset) {
-            // 加载预设到当前设置并刷新UI
-            currentDatingUISettings = preset.settings;
-            // 重新填充弹窗内容
-            document.getElementById('dating-prompt-input').value = currentDatingUISettings.prompt;
-            document.getElementById('dating-style-input').value = currentDatingUISettings.style;
-            document.getElementById('dating-bg-url-input').value = currentDatingUISettings.backgroundUrl;
-            document.getElementById('dating-sprite-url-input').value = currentDatingUISettings.sprite.url;
-            document.getElementById('sprite-x-slider').value = currentDatingUISettings.sprite.x;
-            document.getElementById('sprite-y-slider').value = currentDatingUISettings.sprite.y;
-            document.getElementById('sprite-size-slider').value = currentDatingUISettings.sprite.size;
-            // 实时应用预览
-            applyDatingUISettings();
+
+    // 如果用户选择的是“-- 自定义 --”（即没有 presetId），则清空输入框，让用户可以自由编辑
+    if (!presetId) {
+        document.getElementById('dating-prompt-input').value = '';
+        document.getElementById('dating-style-input').value = '';
+        document.getElementById('dating-bg-url-input').value = '';
+        document.getElementById('dating-sprite-group-select').value = '';
+        
+        // 同样重置临时的设置对象
+        if (currentDatingUISettings) {
+            currentDatingUISettings.prompt = '';
+            currentDatingUISettings.style = '';
+            currentDatingUISettings.backgroundUrl = '';
+            currentDatingUISettings.spriteGroupId = null;
         }
+        // 应用空的背景进行预览
+        applyDatingUISettings();
+        return;
+    }
+
+    // 根据ID从数据库获取预设
+    const preset = await db.datingPresets.get(presetId);
+    if (preset && preset.settings) {
+        const loadedSettings = preset.settings;
+
+        // 确保临时的UI设置对象存在，防止后续操作出错
+        if (!currentDatingUISettings) {
+            currentDatingUISettings = {
+                prompt: '', style: '', backgroundUrl: '', spriteGroupId: null,
+                sprite: { url: '', x: 50, y: 100, size: 80 }
+            };
+        }
+        
+        // 【核心修复】用加载的预设值，安全地更新当前设置对象，而不是整个替换它
+        currentDatingUISettings.prompt = loadedSettings.prompt || '';
+        currentDatingUISettings.style = loadedSettings.style || '';
+        currentDatingUISettings.backgroundUrl = loadedSettings.backgroundUrl || '';
+        currentDatingUISettings.spriteGroupId = loadedSettings.spriteGroupId || null;
+        
+        // 将新值同步更新到弹窗的UI控件上
+        document.getElementById('dating-prompt-input').value = currentDatingUISettings.prompt;
+        document.getElementById('dating-style-input').value = currentDatingUISettings.style;
+        document.getElementById('dating-bg-url-input').value = currentDatingUISettings.backgroundUrl;
+        document.getElementById('dating-sprite-group-select').value = currentDatingUISettings.spriteGroupId || '';
+
+        // 实时应用背景预览。因为我们保留了.sprite结构，所以这里不会再报错。
+        applyDatingUISettings();
     }
 }
+// ▲▲▲ 替换结束 ▲▲▲
 
+
+/**
+ * 【全新修复版】打开并管理约会场景预设
+ */
 async function openDatingPresetManager() {
+    // 1. 获取当前下拉框选中的预设ID
     const select = document.getElementById('dating-preset-select');
+    if (!select) {
+        alert("错误：在HTML中找不到ID为 'dating-preset-select' 的元素。");
+        return;
+    }
     const selectedId = select.value ? parseInt(select.value) : null;
 
+    // 2. 弹出操作选择菜单
     const choice = await showChoiceModal("管理场景预设", [
         { text: '💾 保存当前为新预设', value: 'save' },
         { text: '🔄 更新选中预设', value: 'update', disabled: !selectedId },
         { text: '🗑️ 删除选中预设', value: 'delete', disabled: !selectedId }
     ]);
+    
+    hidePresetActions(); // 这是你已有的函数，用于关闭选择菜单
 
+    // 3. 根据用户的选择，执行正确的操作
     if (choice === 'save') {
         const name = await showCustomPrompt("保存预设", "请输入预设名称：");
         if (name && name.trim()) {
+            // 从UI收集当前的设置
             const currentSettings = {
                 prompt: document.getElementById('dating-prompt-input').value.trim(),
                 style: document.getElementById('dating-style-input').value.trim(),
                 backgroundUrl: document.getElementById('dating-bg-url-input').value.trim(),
-                sprite: {
-                    url: document.getElementById('dating-sprite-url-input').value.trim(),
-                    x: parseInt(document.getElementById('sprite-x-slider').value),
-                    y: parseInt(document.getElementById('sprite-y-slider').value),
-                    size: parseInt(document.getElementById('sprite-size-slider').value)
-                }
+                spriteGroupId: document.getElementById('dating-sprite-group-select').value ? parseInt(document.getElementById('dating-sprite-group-select').value) : null
             };
+            // 保存到数据库
             await db.datingPresets.add({ name: name.trim(), settings: currentSettings });
-            await renderDatingPresetSelector();
+            await renderDatingPresetSelector(); // 刷新下拉框
             alert('预设已保存！');
         }
-    } else if (choice === 'update' && selectedId) {
-        const currentSettings = { /* ... (同上) ... */ };
-        await db.datingPresets.update(selectedId, { settings: currentSettings });
-        alert('预设已更新！');
-    } else if (choice === 'delete' && selectedId) {
-        const confirmed = await showCustomConfirm("确认删除", "确定要删除这个预设吗？");
-        if(confirmed) {
-            await db.datingPresets.delete(selectedId);
-            await renderDatingPresetSelector();
-            alert('预设已删除。');
+    } else if (choice === 'update') {
+        if (selectedId) {
+            // 收集当前设置
+            const currentSettings = {
+                prompt: document.getElementById('dating-prompt-input').value.trim(),
+                style: document.getElementById('dating-style-input').value.trim(),
+                backgroundUrl: document.getElementById('dating-bg-url-input').value.trim(),
+                spriteGroupId: document.getElementById('dating-sprite-group-select').value ? parseInt(document.getElementById('dating-sprite-group-select').value) : null
+            };
+            // 更新数据库中的预设
+            await db.datingPresets.update(selectedId, { settings: currentSettings });
+            alert('预设已更新！');
+        }
+    } else if (choice === 'delete') {
+        if (selectedId) {
+            const presetToDelete = await db.datingPresets.get(selectedId);
+            const confirmed = await showCustomConfirm("确认删除", `确定要删除预设 "${presetToDelete.name}" 吗？`, { confirmButtonClass: 'btn-danger' });
+            if (confirmed) {
+                await db.datingPresets.delete(selectedId);
+                await renderDatingPresetSelector(); // 刷新下拉框
+                // 删除后清空输入框
+                document.getElementById('dating-prompt-input').value = '';
+                document.getElementById('dating-style-input').value = '';
+                document.getElementById('dating-bg-url-input').value = '';
+                document.getElementById('dating-sprite-group-select').value = '';
+                alert('预设已删除。');
+            }
         }
     }
 }
-// ▲▲▲ 新功能函数粘贴结束 ▲▲▲
+
 /* ▼▼▼ 【全新】约会立绘功能核心函数 ▼▼▼ */
 
 /**
@@ -53837,7 +52912,6 @@ async function showDatingSummaryCard(finalStory = "") { // <--- 关键：将函�
 
     card.classList.remove('is-flipped');
     cardFront.classList.remove('romantic', 'passionate', 'perfect');
-    cardFront.style.background = 'linear-gradient(135deg, #a8b2c5, #8e9eab)';
 
     const romance = datingGameState.romance;
     const lust = datingGameState.lust;
@@ -53846,22 +52920,26 @@ async function showDatingSummaryCard(finalStory = "") { // <--- 关键：将函�
     let cardClass = '';
     let finalRatingType = 'anticipation';
 
+// ▼▼▼ 从这里开始复制，替换你的旧代码 ▼▼▼
+
     if (romance >= 100 && lust >= 100 && completion >= 100) {
-        ratingText = '完美之夜';
+        ratingText = '完美之夜 🎊'; // 修改点：添加了庆祝的 emoji
         cardClass = 'perfect';
         finalRatingType = 'perfect';
     } else if (romance >= 100) {
-        ratingText = '浪漫之夜';
+        ratingText = '浪漫之夜 ❤️'; // 修改点：添加了爱心 emoji
         cardClass = 'romantic';
         finalRatingType = 'romantic';
     } else if (lust >= 100) {
-        ratingText = '激情之夜';
+        ratingText = '激情之夜 ⭐'; // 修改点：添加了星星 emoji
         cardClass = 'passionate';
         finalRatingType = 'passionate';
     } else {
-        ratingText = '期待之夜';
+        ratingText = '期待之夜'; // 保持不变
     }
     
+// ▲▲▲ 复制替换到这里结束 ▲▲▲
+
     const character = state.chats[datingGameState.characterId];
     avatarEl.src = character.settings.aiAvatar || defaultAvatar;
     ratingEl.textContent = ratingText;
@@ -53902,19 +52980,17 @@ async function showDatingSummaryCard(finalStory = "") { // <--- 关键：将函�
 // ▲▲▲ 替换结束 ▲▲▲
 
 
-// ▼▼▼ 【V2 | 编辑内容增强版】用这块新代码替换旧的 shareDatingSummary 函数 ▼▼▼
 /**
- * 【全新V2】将结算卡片分享到与角色的聊天中 (包含完整记录用于编辑)
+ * 【全新V2版】将结算卡片分享到与角色的聊天中 (包含完整记录用于编辑)
  */
 async function shareDatingSummary() {
+    // 安全检查，确保有结算数据
     if (!currentDatingSummary) return;
 
     const chat = state.chats[currentDatingSummary.characterId];
     if (!chat) return;
 
-    // --- ★★★ 这就是本次修改的核心！ ★★★ ---
-
-    // 1. 构建一个包含所有详细信息的、用于编辑的文本内容
+    // 1. 准备一个用于【编辑时】显示的、包含完整约会过程的详细文本
     const storyForEdit = [...currentDatingSummary.storyHistory, `【旁白】: ${currentDatingSummary.finalStory}`].join('\n');
     const contentForEditing = `
 [约会记录]
@@ -53924,74 +53000,80 @@ async function shareDatingSummary() {
 ${storyForEdit}
     `.trim();
 
-    // 2. 创建消息对象
+    // 2. 创建一个特殊的消息对象，它将作为聊天记录被保存
     const summaryMessage = {
-        role: 'user', // 用户发出的分享
-        type: 'dating_summary_card',
+        role: 'user', // 标记为用户发出的消息
+        type: 'dating_summary_card', // 这是我们自定义的新消息类型，用于识别
         timestamp: Date.now(),
-        // 【核心】将我们刚刚构建的详细文本，作为这条消息的 content
+        
+        // 【核心】这个 content 字段就是你想要的，当编辑这条消息时，就会显示这里的文本
         content: contentForEditing, 
-        // payload 依然保留，它负责渲染出漂亮的卡片UI
+        
+        // payload 字段用于存储渲染UI所需的所有数据
         payload: {
             rating: currentDatingSummary.rating,
             ratingType: currentDatingSummary.ratingType,
             avatarUrl: currentDatingSummary.avatarUrl,
-            // 为了安全，payload里也存一份，确保数据完整
             storyHistory: currentDatingSummary.storyHistory,
             finalStory: currentDatingSummary.finalStory,
-            sceneName: currentDatingSummary.sceneName
+            sceneName: currentDatingSummary.sceneName,
+            characterName: chat.name // 把角色名字也存进去，方便卡片背面显示
         }
     };
-    // --- ★★★ 修改结束 ★★★ ---
 
+    // 3. 将这条新消息添加到聊天记录并保存到数据库
     chat.history.push(summaryMessage);
     await db.chats.put(chat);
     
+    // 4. 给出成功提示，并关闭结算卡片、结束约会
     await showCustomAlert('分享成功', '你们的约会记录已发送给Ta！');
     
-    // 分享后，关闭结算卡片并结束约会
     document.getElementById('dating-summary-overlay').classList.remove('visible');
-    finalizeAndExitDate();
-    currentDatingSummary = null;
+    finalizeAndExitDate(); // 这个函数会处理后续的清理工作
+    currentDatingSummary = null; // 清理临时数据
 }
-// ▲▲▲ 替换结束 ▲▲▲
 
-// ▼▼▼ 【V2 | 评级样式修复版】用这块新代码替换旧的 reopenDatingSummary 函数 ▼▼▼
+
 /**
- * 【全新V2】点击聊天记录里的卡片时，重新打开结算详情
- * @param {object} payload - 消息中保存的结算数据
+ * 【全新】重新打开约会结算详情卡片
+ * @param {object} payload - 从聊天记录消息中解析出的卡片数据
  */
 function reopenDatingSummary(payload) {
     const overlay = document.getElementById('dating-summary-overlay');
     const card = document.querySelector('.dating-summary-card');
+    const cardInner = document.querySelector('.dating-summary-card-inner');
     const cardFront = document.querySelector('.card-front');
     const avatarEl = document.getElementById('summary-card-avatar');
     const ratingEl = document.getElementById('summary-card-rating');
     const historyEl = document.getElementById('summary-card-history');
 
+    // 重置卡片状态
     card.classList.remove('is-flipped');
     cardFront.classList.remove('romantic', 'passionate', 'perfect');
-    // 恢复默认背景，防止颜色残留
-    cardFront.style.background = 'linear-gradient(135deg, #a8b2c5, #8e9eab)';
+    cardFront.style.background = '';
     
-    // 从 payload 中恢复数据
+    // 从 payload 中恢复数据并填充到UI元素中
     avatarEl.src = payload.avatarUrl;
     ratingEl.textContent = payload.rating;
-    if(payload.ratingType !== 'anticipation') {
+    if (payload.ratingType && payload.ratingType !== 'anticipation') {
         cardFront.classList.add(payload.ratingType);
     }
     
     const fullHistory = [...payload.storyHistory, `【旁白】: ${payload.finalStory}`].join('\n\n').replace(/\n/g, '<br>');
     historyEl.innerHTML = `<p>${fullHistory}</p>`;
 
-    // 查看记录时，不应再提供“分享”功能
+    // 设置卡片背面的标题
+    const cardBackHeader = document.querySelector('.card-back .card-back-header span');
+    if (cardBackHeader) {
+        cardBackHeader.textContent = `${payload.characterName} - ${payload.sceneName}`;
+    }
+
+    // 因为只是查看，所以隐藏“分享”按钮
     document.getElementById('summary-share-btn').style.display = 'none';
 
     overlay.classList.add('visible');
-    // 注意：这里不需要调用 endDate，因为只是查看记录
 }
-// ▲▲▲ 替换结束 ▲▲▲
-// ▼▼▼ 把这一整块全新的代码，粘贴到 init() 函数的上方 ▼▼▼
+
 
 /* --- 【全新】约会历史记录功能核心函数 --- */
 
@@ -54073,19 +53155,67 @@ function createDatingHistoryCard(record) {
 }
 
 /* --- 【全新】约会历史记录功能函数结束 --- */
+// ▼▼▼ 把这一整块全新的函数，粘贴到 handleSaveCustomDatingScene 函数的上方 ▼▼▼
 
-// ▼▼▼ 【全新 | V2 - 支持AI生成】用这整块代码，完整替换旧的 handleSaveCustomDatingScene 函数 ▼▼▼
+// ▼▼▼ 用这块【V2 - 场景重写版】代码，完整替换旧的 getSceneTypeKeywords 函数 ▼▼▼
+
 /**
- * 【全新 | V2】处理用户保存自定义约会场景的逻辑
- * - 如果用户提供了URL，则直接使用。
- * - 如果用户未提供URL，则根据场景名称生成一个imagePrompt，交由后续流程处理。
+ * 【V2 - 场景重写版】根据场景名称，智能判断并返回重写后的场景描述和风格关键词
+ * @param {string} sceneName - 用户输入的场景名称
+ * @returns {{scenePrompt: string, styleKeywords: string}} - 返回包含场景描述和风格词的对象
  */
+function getSceneTypeKeywords(sceneName) {
+    const name = sceneName.toLowerCase(); // 转换为小写，方便匹配
+
+    const outdoorKeywords = ['公园', '海滩', '山', '森林', '湖', '花园', '夜市', '路边', '街头', 'park', 'beach', 'mountain', 'forest', 'lake', 'garden', 'street'];
+    const indoorPublicKeywords = ['咖啡', '书店', '博物馆', '美术馆', '水族馆', '影院', '酒吧', 'cafe', 'bookstore', 'museum', 'gallery', 'aquarium', 'cinema', 'bar'];
+    const loveHotelKeywords = ['情趣', 'love hotel', '主题酒店', 'lovers hotel', '成人旅馆'];
+
+    // 1. 【核心修改】优先判断是否为特殊的情趣酒店
+    if (loveHotelKeywords.some(keyword => name.includes(keyword))) {
+        console.log("场景识别为：情趣酒店（已激活特殊重写模式）");
+        // 我们不再使用用户输入的 "情趣酒店" 这个词
+        // 而是直接把它“翻译”成一个纯粹的、描述性的场景
+        return {
+            scenePrompt: 'an empty luxurious romantic hotel room interior, with a heart-shaped bed or a round bed, mirrors on the ceiling, neon mood lighting, Jacuzzi in room, sensual and intimate atmosphere',
+            styleKeywords: 'romantic, luxurious, intimate, playful'
+        };
+    }
+
+    // 2. 对于其他场景，保持原来的逻辑，直接使用用户输入的名称
+    if (outdoorKeywords.some(keyword => name.includes(keyword))) {
+        console.log("场景识别为：户外");
+        return {
+            scenePrompt: sceneName,
+            styleKeywords: 'natural lighting, golden hour, beautiful scenery, serene atmosphere, epic sky, wide angle'
+        };
+    }
+
+    if (indoorPublicKeywords.some(keyword => name.includes(keyword))) {
+        console.log("场景识别为：室内公共场所");
+        return {
+            scenePrompt: sceneName,
+            styleKeywords: 'cozy interior, ambient lighting, warm and inviting, charming decor, detailed background'
+        };
+    }
+
+    // 4. 默认情况，也直接使用用户输入的名称
+    console.log("场景识别为：通用/现代酒店");
+    return {
+        scenePrompt: sceneName,
+        styleKeywords: 'modern aesthetic, elegant decor, luxurious interior, clean, bright'
+    };
+}
+
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+// ▼▼▼ 用这块【已适配】的代码，完整替换旧的 handleSaveCustomDatingScene 函数 ▼▼▼
 async function handleSaveCustomDatingScene() {
     const name = document.getElementById('scene-name-input').value.trim();
     const imageUrl = document.getElementById('scene-image-url-input').value.trim();
     const costStr = document.getElementById('scene-cost-input').value.trim();
 
-    // 1. 【核心修改】验证逻辑调整，现在图片URL不再是必填项
     if (!name || !costStr) {
         alert("场景名称和花费为必填项！");
         return;
@@ -54097,40 +53227,40 @@ async function handleSaveCustomDatingScene() {
         return;
     }
     
-    // 准备一个基础的场景对象
     const newScene = {
         name: name,
         cost: cost,
-        uid: 'scene_user_' + Date.now() // 创建一个独特的ID
+        uid: 'scene_user_' + Date.now()
     };
 
-    // 2. 【核心修改】根据用户是否输入了URL，来决定如何处理图片信息
     if (imageUrl) {
-        // --- 用户提供了URL ---
-        // 验证链接有效性
         if (!imageUrl.startsWith('http') && !imageUrl.startsWith('data:image')) {
             alert("请输入一个有效的网络图片URL！");
             return;
         }
         newScene.imageUrl = imageUrl;
-        newScene.imagePrompt = 'User-provided image'; // 给一个占位符
+        newScene.imagePrompt = 'User-provided image';
     } else {
-        // --- 用户没有提供URL，我们将为AI准备好“作画指令” ---
-        newScene.imageUrl = ''; // 明确设置为空字符串
-        // 根据场景名称，生成一个高质量的、用于文生图的英文Prompt
-        newScene.imagePrompt = `${name}, vertical, phone wallpaper, cinematic lighting, masterpiece, best quality, beautiful anime style art, vibrant colors`;
+        // --- 【核心修改在这里】 ---
+
+        // 1. 这是我们强力的通用指令，确保高质量和【绝对不要人物】
+        const universalStyle = "photorealistic, 4k, hyperrealistic, cinematic lighting, masterpiece, best quality, ultra detailed, no dark elements, romantic, (no humans:1.5), no people, no characters, empty room, no one";
+        
+        // 2. 调用我们升级后的辅助函数，它会返回一个包含 scenePrompt 和 styleKeywords 的对象
+        const promptParts = getSceneTypeKeywords(name);
+        
+        // 3. 将【重写后的场景描述】、【智能风格】和【通用风格】组合成最终的提示词
+        newScene.imageUrl = '';
+        newScene.imagePrompt = `${promptParts.scenePrompt}, ${promptParts.styleKeywords}, ${universalStyle}`;
+        
+        console.log("【终极版】生成的Image Prompt:", newScene.imagePrompt); 
     }
 
     try {
-        // 3. 后续的保存和渲染逻辑完全不需要改变！
         await db.datingScenes.add(newScene);
         currentDatingScenes.push(newScene);
-        
         document.getElementById('create-dating-scene-modal').classList.remove('visible');
-        
-        // 重新渲染列表。对于需要AI生成的卡片，它会自动显示加载动画。
         renderDatingScenes();
-
         alert('自定义约会场景已成功创建！');
     } catch (error) {
         console.error("保存自定义约会场景失败:", error);
@@ -54138,6 +53268,141 @@ async function handleSaveCustomDatingScene() {
     }
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
+// ▼▼▼ 把下面这3个【全新】的函数，粘贴到你的JS代码功能区 ▼▼▼
+
+// ▼▼▼ 使用这块【新代码】替换旧的 renderStickerCategories 函数 ▼▼▼
+/**
+ * 【V2 - 未分类版】渲染表情面板底部的分类页签栏
+ */
+async function renderStickerCategories() {
+    const tabsContainer = document.getElementById('sticker-category-tabs');
+    if (!tabsContainer) return;
+
+    tabsContainer.innerHTML = '';
+    const categories = await db.userStickerCategories.orderBy('name').toArray();
+    userStickerCategories = categories;
+
+    // ★ 核心修改1：创建“未分类”按钮，而不是“全部”
+    const uncategorizedBtn = document.createElement('button');
+    uncategorizedBtn.className = 'sticker-category-btn';
+    uncategorizedBtn.textContent = '未分类'; // 文字改变
+    if (activeStickerCategoryId === 'uncategorized') { // 检查的ID也改变
+        uncategorizedBtn.classList.add('active');
+    }
+    uncategorizedBtn.addEventListener('click', () => {
+        activeStickerCategoryId = 'uncategorized'; // 点击后设置的ID也改变
+        renderStickerPanel(); 
+    });
+    tabsContainer.appendChild(uncategorizedBtn);
+
+    // 其他分类按钮的逻辑保持不变
+    categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = 'sticker-category-btn';
+        btn.textContent = category.name;
+        if (activeStickerCategoryId === category.id) {
+            btn.classList.add('active');
+        }
+        btn.addEventListener('click', () => {
+            activeStickerCategoryId = category.id;
+            renderStickerPanel();
+        });
+        tabsContainer.appendChild(btn);
+    });
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+/**
+ * 【全新】打开移动表情到分类的模态框
+ */
+async function openStickerCategoryModal() {
+    if (selectedUserStickers.size === 0) {
+        alert('请先选择要移动的表情包！');
+        return;
+    }
+
+    const modal = document.getElementById('sticker-category-modal');
+    const listEl = document.getElementById('sticker-category-list');
+    const inputEl = document.getElementById('new-sticker-category-input');
+    listEl.innerHTML = '';
+    inputEl.value = '';
+
+    const categories = await db.userStickerCategories.toArray();
+    if (categories.length > 0) {
+        categories.forEach(cat => {
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="radio" name="sticker_category_select" value="${cat.id}"> ${cat.name}`;
+            listEl.appendChild(label);
+        });
+    } else {
+        listEl.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">还没有任何分类。</p>';
+    }
+
+    modal.classList.add('visible');
+}
+
+/**
+ * 【全新】处理“确认移动”按钮的点击逻辑
+ */
+async function handleMoveStickers() {
+    const newCategoryName = document.getElementById('new-sticker-category-input').value.trim();
+    const selectedRadio = document.querySelector('input[name="sticker_category_select"]:checked');
+    
+    let targetCategoryId = null;
+
+    if (newCategoryName) {
+        try {
+            // 检查分类是否已存在
+            let existingCategory = await db.userStickerCategories.where('name').equalsIgnoreCase(newCategoryName).first();
+            if (existingCategory) {
+                targetCategoryId = existingCategory.id;
+            } else {
+                targetCategoryId = await db.userStickerCategories.add({ name: newCategoryName });
+            }
+        } catch (error) {
+            alert('创建新分类失败，可能是名称重复或数据库错误。');
+            return;
+        }
+    } else if (selectedRadio) {
+        targetCategoryId = parseInt(selectedRadio.value);
+    } else {
+        alert('请选择一个分类或创建一个新分类！');
+        return;
+    }
+
+    try {
+        const stickerIdsToMove = Array.from(selectedUserStickers);
+        const stickers = await db.userStickers.bulkGet(stickerIdsToMove);
+        
+        stickers.forEach(sticker => {
+            if (sticker) {
+                sticker.categoryId = targetCategoryId;
+            }
+        });
+
+        await db.userStickers.bulkPut(stickers);
+        
+        // 更新内存中的 state.userStickers
+        stickers.forEach(updatedSticker => {
+            const index = state.userStickers.findIndex(s => s.id === updatedSticker.id);
+            if (index > -1) {
+                state.userStickers[index].categoryId = targetCategoryId;
+            }
+        });
+
+        document.getElementById('sticker-category-modal').classList.remove('visible');
+        exitUserStickerSelectionMode(); // 退出编辑模式
+        alert(`成功移动 ${stickerIdsToMove.length} 个表情！`);
+
+    } catch (error) {
+        console.error("移动表情失败:", error);
+        alert("移动表情时发生错误。");
+    }
+}
+
+// ▲▲▲ 新函数粘贴结束 ▲▲▲
+
 
 
         // ===================================================================
@@ -54191,6 +53456,7 @@ if (typeof state.globalSettings.notificationSoundUrl === 'undefined') {
             // ▲▲▲ 粘贴结束 ▲▲▲
             applyHomeIconWidgetTextColor(state.globalSettings.homeIconWidgetTextColor);
             await loadAllFontPresetsOnStartup(); // <---- 在这里添加这一行新代码
+            await migrateDefaultLudoQuestions();
             await addDefaultDarkModeThemeIfNeeded();
             applyWidgetData();
 
@@ -55114,6 +54380,21 @@ document.getElementById('chat-messages').addEventListener('click', async (e) => 
             }
         }
     }
+        // ▼▼▼ 在这个函数的逻辑块内，添加下面这段新代码 ▼▼▼
+    const chatCard = e.target.closest('.dating-summary-chat-card');
+    if (chatCard && chatCard.dataset.summaryPayload) {
+        try {
+            // 读取并解析存储在 data-* 属性中的卡片数据
+            const payloadString = chatCard.dataset.summaryPayload.replace(/&apos;/g, "'").replace(/"/g, '&quot;');
+            const payload = JSON.parse(payloadString);
+            // 调用我们新写的函数，打开详情卡片
+            reopenDatingSummary(payload);
+        } catch (error) {
+            console.error("解析分享的约会记录失败:", error);
+            alert("无法打开这个约会记录。");
+        }
+    }
+    // ▲▲▲ 新代码添加结束 ▲▲▲
 });
 // ▲▲▲ 替换结束 ▲▲▲
             const chatSettingsModal = document.getElementById('chat-settings-modal');
@@ -58978,149 +58259,6 @@ document.getElementById('clear-following-feed-btn').addEventListener('click', cl
 
 // 1. 初始化时创建默认小组
 await initializeDefaultGroups();
-
-// 2. 当用户点击“圈子”App图标时，渲染小组列表
-document.querySelector('.desktop-app-icon[onclick="showScreen(\'forum-screen\')"]').addEventListener('click', renderForumScreen);
-
-// 3. 绑定小组页和帖子页的返回按钮
-document.getElementById('back-to-forum-list').addEventListener('click', () => showScreen('forum-screen'));
-document.getElementById('back-to-group-screen').addEventListener('click', () => openGroup(activeGroupId, document.getElementById('group-screen-title').textContent));
-
-// 4. 绑定帖子评论区的发送按钮
-document.getElementById('send-post-comment-btn').addEventListener('click', handleAddComment);
-
-// 这是【修复后】的代码
-document.getElementById('trigger-fanfic-generation-btn').addEventListener('click', () => {
-    // 核心修改：使用箭头函数，在点击时获取并传入当前的 activeGroupId
-    generateFanfic(activeGroupId);
-});
-
-
-// 绑定所有小组头部通用的“生成”按钮
-document.getElementById('generate-group-content-btn').addEventListener('click', handleGenerateGroupContent);
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-// 6. 绑定帖子详情页的“转载”按钮
-document.getElementById('repost-to-chat-btn').addEventListener('click', repostToChat);
-
-// ▼▼▼ 在 init() 函数中，用【这一行】替换旧的 create-group-btn 监听器 ▼▼▼
-document.getElementById('create-group-btn').addEventListener('click', openGroupCreator);
-// ▲▲▲ 替换结束 ▲▲▲
-
-
-// ▼▼▼ 用这块新代码替换 ▼▼▼
-document.getElementById('create-forum-post-btn').addEventListener('click', () => {
-    // 【核心修改】我们不再弹窗提示，而是调用一个新函数来打开真正的发帖窗口
-    openCreateForumPostModal(); 
-});
-// ▲▲▲ 替换结束 ▲▲▲
-// ▼▼▼ 在 init() 的事件监听器区域，粘贴下面这块【新代码】 ▼▼▼
-
-// 使用事件委托，为帖子详情页的“生成评论”按钮绑定事件
-document.getElementById('post-detail-content').addEventListener('click', (e) => {
-    if (e.target.id === 'generate-forum-comments-btn') {
-        generateForumComments();
-    }
-});
-
-// 在用户手动输入评论后，如果输入框为空就失去焦点时，自动取消回复状态
-document.getElementById('post-comment-input').addEventListener('blur', (e) => {
-    const input = e.target;
-    if (input.value.trim() === '') {
-        input.placeholder = '发布你的评论...';
-        delete input.dataset.replyTo;
-    }
-});
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
-// ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴下面这整块新代码 ▼▼▼
-
-// 使用事件委托，为所有转载的帖子卡片添加点击事件
-document.getElementById('chat-messages').addEventListener('click', (e) => {
-    const repostCard = e.target.closest('.link-share-card[data-post-id]');
-    if (repostCard) {
-        const postId = parseInt(repostCard.dataset.postId);
-        if (!isNaN(postId)) {
-            // 调用你已经写好的“打开帖子”函数
-            openPost(postId);
-        }
-    }
-});
-
-// ▲▲▲ 新增代码结束 ▲▲▲
-// ▼▼▼ 【全新】论坛帖子列表事件委托 ▼▼▼
-document.getElementById('group-post-list').addEventListener('click', async (e) => {
-    const postItem = e.target.closest('.forum-post-item');
-    if (!postItem) return;
-
-    // 检查点击的是否是删除按钮
-    if (e.target.classList.contains('forum-post-delete-btn')) {
-        const postId = postItem.dataset.postId;
-        if (!postId) return;
-        
-        const post = await db.forumPosts.get(parseInt(postId));
-        if (!post) return;
-
-        const confirmed = await showCustomConfirm(
-            '删除帖子', 
-            `确定要删除帖子《${post.title}》吗？此操作将同时删除帖子下的所有评论，且无法恢复。`, 
-            { confirmButtonClass: 'btn-danger' }
-        );
-
-        if (confirmed) {
-            try {
-                // 使用数据库事务来确保帖子和评论被同时删除
-                await db.transaction('rw', db.forumPosts, db.forumComments, async () => {
-                    // 1. 删除所有与该帖子关联的评论
-                    await db.forumComments.where('postId').equals(parseInt(postId)).delete();
-                    // 2. 删除帖子本身
-                    await db.forumPosts.delete(parseInt(postId));
-                });
-
-                await showCustomAlert('删除成功', '帖子及其所有评论已被删除。');
-                // 刷新帖子列表
-                await renderGroupPosts(activeGroupId);
-            } catch (error) {
-                console.error('删除帖子失败:', error);
-                await showCustomAlert('删除失败', `操作失败: ${error.message}`);
-            }
-        }
-    } else {
-        // 如果点击的不是删除按钮，那就是点击了帖子本身，执行跳转逻辑
-        const postId = postItem.dataset.postId;
-        if (postId) {
-            openPost(parseInt(postId));
-        }
-    }
-});
-// ▲▲▲ 新事件监听器结束 ▲▲▲
-// ▼▼▼ 【全新】圈子/小组高级功能事件监听 ▼▼▼
-
-// 1. 为“圈子”主页右上角的“+”按钮，绑定创建小组的事件
-document.getElementById('create-group-btn').addEventListener('click', openGroupCreator);
-
-// 2. 为小组编辑器弹窗的“保存”和“取消”按钮绑定事件
-document.getElementById('save-group-editor-btn').addEventListener('click', saveGroupSettings);
-document.getElementById('cancel-group-editor-btn').addEventListener('click', () => {
-    document.getElementById('forum-group-editor-modal').classList.remove('visible');
-});
-
-// 3. 为分类管理弹窗的按钮绑定事件
-document.getElementById('add-new-forum-category-btn').addEventListener('click', addNewForumCategory);
-document.getElementById('close-forum-category-manager-btn').addEventListener('click', () => {
-    document.getElementById('forum-category-manager-modal').classList.remove('visible');
-});
-
-// 4. 使用事件委托，为分类列表中的“删除”按钮绑定事件
-document.getElementById('existing-forum-categories-list').addEventListener('click', (e) => {
-    if (e.target.classList.contains('delete-group-btn')) { // 复用样式
-        const categoryId = parseInt(e.target.dataset.id);
-        deleteForumCategory(categoryId);
-    }
-});
-// ▲▲▲ 新增事件监听结束 ▲▲▲
-
-
 // ▲▲▲ 论坛事件监听器结束 ▲▲▲
 // ▼▼▼ 把这一整块全新的事件监听器代码，粘贴到 init() 函数的末尾，就在 init(); 的正上方 ▼▼▼
 
@@ -61037,38 +60175,59 @@ summaryCardBackBtn.addEventListener('click', (e) => {
 // 2. 分享按钮
 document.getElementById('summary-share-btn').addEventListener('click', shareDatingSummary);
 
-// ▼▼▼ 【修复版】用这块新代码替换旧的 'summary-close-btn' 事件监听器 ▼▼▼
-// 3. 关闭按钮
+// 3. 关闭按钮 (已修复，支持不同场景)
 document.getElementById('summary-close-btn').addEventListener('click', async () => {
-    const confirmed = await showCustomConfirm(
-        '确认关闭',
-        '确定要关闭结算卡片吗？关闭后约会即告结束。',
-        { confirmButtonClass: 'btn-danger' } // 使用更醒目的红色按钮
-    );
-    if (confirmed) {
-        // 调用我们新的、真正的结束函数
-        finalizeAndExitDate();
+    // ▼▼▼ 核心修改在这里 ▼▼▼
+    if (datingGameState.isActive) {
+        // 如果在约会中，走原来的确认并结束约会的流程
+        const confirmed = await showCustomConfirm(
+            '确认关闭',
+            '确定要关闭结算卡片吗？关闭后约会即告结束。',
+            { confirmButtonClass: 'btn-danger' }
+        );
+        if (confirmed) {
+            finalizeAndExitDate();
+        }
+    } else {
+        // 如果只是在单聊里查看分享，直接关闭弹窗即可
+        document.getElementById('dating-summary-overlay').classList.remove('visible');
+        // 同时重置卡片翻转状态，以防下次打开有问题
+        const card = document.querySelector('.dating-summary-card');
+        if (card) {
+            card.classList.remove('is-flipped');
+        }
     }
+    // ▲▲▲ 修改结束 ▲▲▲
 });
-// ▲▲▲ 替换结束 ▲▲▲
+
 
 
 // 4. 聊天记录中的卡片点击事件（事件委托）
 document.getElementById('chat-messages').addEventListener('click', (e) => {
     const chatCard = e.target.closest('.dating-summary-chat-card');
-    if (chatCard && chatCard.dataset.summaryPayload) {
+    // ▼▼▼【核心修复】我们现在检查 data-timestamp ▼▼▼
+    if (chatCard && chatCard.dataset.timestamp) {
         try {
-            // 读取并解析存储的payload数据
-            const payloadString = chatCard.dataset.summaryPayload.replace(/&apos;/g, "'").replace(/&quot;/g, '"');
-            const payload = JSON.parse(payloadString);
-            reopenDatingSummary(payload);
+            const timestamp = parseInt(chatCard.dataset.timestamp);
+            const chat = state.chats[state.activeChatId];
+            
+            // 用时间戳从聊天记录里找到那条原始消息
+            const message = chat.history.find(m => m.timestamp === timestamp);
+            
+            // 如果找到了，直接用它的 payload
+            if (message && message.payload) {
+                reopenDatingSummary(message.payload);
+            } else {
+                // 如果因为某种原因没找到，再给一个提示
+                alert("无法找到对应的约会记录数据。");
+            }
         } catch (error) {
-            console.error("解析分享的约会记录失败:", error);
-            alert("无法打开这个约会记录。");
+            // 这个catch现在几乎不会触发了，但保留着以防万一
+            console.error("打开分享的约会记录失败:", error);
+            alert("打开约会记录时发生未知错误。");
         }
     }
 });
-// 在 init() 函数的事件监听器区域末尾，粘贴下面这整块代码
 
 // ▼▼▼ 【全新】约会历史记录功能事件绑定 ▼▼▼
 
@@ -61110,7 +60269,17 @@ document.getElementById('save-custom-scene-btn').addEventListener('click', handl
 /* --- 约会结算事件绑定结束 --- */
 
 // ▲▲▲ 新增事件监听器结束 ▲▲▲
+// ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴下面这段新代码 ▼▼▼
 
+// --- 表情分类功能事件绑定 ---
+document.getElementById('move-selected-stickers-btn').addEventListener('click', openStickerCategoryModal);
+document.getElementById('cancel-sticker-category-btn').addEventListener('click', () => {
+    document.getElementById('sticker-category-modal').classList.remove('visible');
+});
+document.getElementById('confirm-sticker-category-btn').addEventListener('click', handleMoveStickers);
+
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
+initForumFeatures();
 
 
 // ▲▲▲ 新增代码粘贴结束 ▲▲▲
