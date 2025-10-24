@@ -37,7 +37,8 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
     <script src="https://phoebeboo.github.io/mewoooo/pp.js" defer></script>
-    <script src="https://phoebeboo.github.io/mewoooo/pp.js" defer></script>
+    <script src="main-app.js" defer></script>
+    <script src="game-hall.js" defer></script>
 
     <style>
         :root { --screen-width: 350px; --screen-height: 650px; --secondary-bg: #ffffff; --border-color: #e0e0e0; --text-primary: #1f1f1f; --text-secondary: #8a8a8a; --accent-color: #007bff;    --status-bar-text-color: var(--accent-color); }
@@ -14604,12 +14605,863 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     color: white;
 }
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】约会大作战App样式 (V5 - 终极修复版) ▼▼▼ */
+
+#date-a-live-screen {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #date-a-live-screen {
+    background-color: #000;
+}
+
+/* ★★★ 这是本次唯一的、但最关键的修改区域 ★★★ */
+#dating-scene-content {
+    flex: 1; /* ★★★ 核心1: 让内容区占据父容器（屏幕）的所有剩余空间 */
+    min-height: 0; /* ★★★ 核心2: flex布局的一个重要技巧，防止内容溢出时产生意外的布局问题 */
+    overflow-y: auto; /* ★★★ 核心3: 当内容超出容器高度时，自动显示垂直滚动条！*/
+
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+}
+/* ★★★ 修改结束 ★★★ */
+
+
+.dating-scene-card {
+    width: 100%;
+    background-color: var(--secondary-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative; 
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    
+    /* 保持卡片内部为垂直flex布局，确保图片在上，文字在下 */
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* 防止卡片自身被意外压缩 */
+}
+
+.dating-scene-delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 20px;
+    line-height: 28px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 5;
+    opacity: 0;
+    transition: background-color 0.2s;
+}
+.dating-scene-card:hover .dating-scene-delete-btn {
+    opacity: 1;
+}
+.dating-scene-delete-btn:hover {
+    background-color: #ff3b30;
+}
+
+.dating-scene-image-container {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background-color: #e9ecef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    flex-shrink: 0; 
+}
+#phone-screen.dark-mode .dating-scene-image-container {
+    background-color: #2c2c2e;
+}
+
+.dating-scene-image-container .loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(0,0,0,0.1);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.dating-scene-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dating-scene-info {
+    padding: 15px;
+    text-align: center;
+    flex-shrink: 0; /* 防止文字区域被压缩 */
+}
+
+.dating-scene-info .name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dating-scene-info .cost {
+    font-size: 16px;
+    color: #FF5722;
+    font-weight: bold;
+    margin-top: 8px;
+}
+/* ▲▲▲ 样式结束 ▲▲▲ */
+/* ▼▼▼ 【全新】借钱列表项美化样式 ▼▼▼ */
+#borrow-money-char-list .character-select-item {
+    gap: 12px; /* 在头像和名字之间增加一些间距 */
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】借条卡片样式 ▼▼▼ */
+.message-bubble.is-borrow-request .content {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.borrow-card {
+    width: 220px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e0c3fc, #8ec5fc); /* 温柔的紫蓝色渐变 */
+    color: white;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(142, 197, 252, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+.borrow-card::before {
+    content: '💸'; /* 飞钱的Emoji作为装饰 */
+    position: absolute;
+    top: -5px;
+    right: 10px;
+    font-size: 32px;
+    opacity: 0.15;
+    transform: rotate(15deg);
+}
+
+.borrow-card .borrow-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.borrow-card .borrow-header span {
+    color: #4a00e0; /* 深紫色突出借钱对象 */
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+.borrow-card .borrow-body .label {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.borrow-card .borrow-body .amount {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 4px 0 10px 0;
+}
+
+.borrow-card .borrow-body .reason {
+    font-size: 12px;
+    line-height: 1.5;
+    opacity: 0.9;
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    word-break: break-all;
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* 1. 主容器 (保持不变) */
+#dating-game-screen {
+    background-color: #000;
+    color: white;
+}
+
+/* 2. 背景图层 (最底层) */
+#dating-game-background {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.5s ease-in-out, filter 0.5s ease-in-out;
+    filter: blur(3px) brightness(0.8);
+    transform: scale(1.05);
+    z-index: 1; /* ★★★ 核心修改：明确指定层级为 1 ★★★ */
+}
+
+/* 4. UI层 (最顶层) */
+.dating-game-ui-overlay {
+    position: relative; /* 相对定位，因为它需要自然地排在最上层 */
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* 将内容推到底部 */
+    padding-bottom: calc(env(safe-area-inset-bottom) + 15px);
+    box-sizing: border-box;
+    z-index: 3; /* ★★★ 核心修改：明确指定层级为 3，比立绘高，确保它永远在最上面！ ★★★ */
+}
+#dating-game-screen .header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: white;
+}
+#dating-game-screen .header .back-btn {
+    color: white;
+}
+
+/* --- ▼▼▼ 这里是本次修改的核心区域 ▼▼▼ --- */
+
+.dating-game-textbox {
+    display: flex; /* 1. 改为Flex布局 */
+    flex-direction: column;
+    justify-content: space-between; /* 2. 让内容和提示分开 */
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 15px 20px;
+    margin: 0 15px 15px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    min-height: 120px; /* 3. 设置一个固定的最小高度 */
+    transition: opacity 0.5s, transform 0.5s;
+    cursor: pointer;
+    /* 4. 移除 overflow: auto，禁止其自身滚动 */
+}
+
+/* --- ▼▼▼ 在 .dating-game-textbox 规则之后，粘贴下面这段新代码 ▼▼▼ --- */
+
+/* 文本内容的容器，我们给它一个淡入淡出的动画 */
+.dating-game-textbox #dating-game-text-content {
+    transition: opacity 0.2s ease-in-out;
+}
+/* 当句子切换时，先让旧句子淡出 */
+.dating-game-textbox #dating-game-text-content.fade-out {
+    opacity: 0;
+}
+
+/* “点击继续”的提示 */
+.dating-game-textbox .continue-indicator {
+    display: block;
+    text-align: right;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #888;
+    animation: pulse-indicator 1.5s infinite;
+}
+@keyframes pulse-indicator {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* --- ▲▲▲ 新增代码结束 ▲▲▲ --- */
+
+
+.dating-game-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 15px;
+    margin-bottom: 15px;
+}
+
+.dating-game-choice-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.dating-game-choice-btn.input-action {
+    background-color: rgba(0, 123, 255, 0.4);
+    border-color: rgba(0, 123, 255, 0.6);
+}
+
+.dating-game-choice-btn:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+.dating-game-choice-btn:active {
+    transform: scale(0.98);
+}
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】约会大作战-文游界面UI增强样式 ▼▼▼ */
+
+/* 1. 为文游界面顶部栏添加按钮容器 (这段代码已包含在步骤1中，如果已添加可忽略) */
+#dating-game-screen .header {
+    justify-content: space-between;
+}
+
+/* 3. 立绘层 (中间层) */
+#dating-game-sprite-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: auto;
+    max-height: 80%;
+    pointer-events: none;
+    transition: all 0.5s ease-in-out;
+    z-index: 2; /* ★★★ 核心修改：明确指定层级为 2，比背景高 ★★★ */
+}
+#dating-game-sprite-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+
+/* 3. 设置弹窗样式 */
+#dating-game-settings-modal .modal-content {
+    height: 85%;
+}
+#dating-game-settings-modal .form-group {
+    margin-bottom: 15px;
+}
+#dating-game-settings-modal hr {
+    margin: 15px 0;
+}
+#dating-game-settings-modal .modal-body {
+    padding-bottom: 15px;
+}
+
+/* 4. 立绘定位控制的样式 */
+.position-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.position-controls label {
+    flex-shrink: 0;
+}
+.position-controls input[type="range"] {
+    flex-grow: 1;
+}
+
+/* ▲▲▲ 样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】这是为“立绘预设”功能新增的所有CSS样式 ▼▼▼ */
+
+/* --- 立绘组编辑器 --- */
+.sprite-edit-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    position: relative;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+#phone-screen.dark-mode .sprite-edit-card {
+    background-color: #2c2c2e;
+}
+
+.sprite-edit-card .preview-container {
+    width: 80px;
+    height: 120px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    border: 1px dashed #ccc;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+}
+#phone-screen.dark-mode .sprite-edit-card .preview-container {
+    background-color: #3a3a3c;
+    border-color: #555;
+}
+
+.sprite-edit-card .fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+.sprite-edit-card textarea {
+    min-height: 50px;
+    resize: vertical;
+}
+
+.sprite-edit-card .delete-sprite-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* --- 立绘组管理列表 --- */
+.sprite-group-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.sprite-group-list-item:hover {
+    background-color: #f5f5f5;
+}
+#phone-screen.dark-mode .sprite-group-list-item:hover {
+    background-color: #2c2c2e;
+}
+.sprite-group-list-item .group-name {
+    font-weight: 500;
+}
+.sprite-group-list-item .group-actions button {
+    margin-left: 8px;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】约会大作战-立绘定位控制样式 ▼▼▼ */
+
+/* 这是包裹每个滑块（标签+滑块本身）的容器 */
+.sprite-edit-card .position-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 标签和滑块的间距 */
+    margin-top: 8px;
+}
+
+/* 这是“X 位置”、“Y 位置”、“大小”这些文字标签的样式 */
+.sprite-edit-card .position-controls label {
+    flex-shrink: 0; /* 防止标签文字被压缩换行 */
+    width: 90px;    /* 给一个固定的宽度，让所有滑块能左对齐 */
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* 这是滑块旁边的实时数值显示的样式 */
+.sprite-edit-card .position-controls .pos-value {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* 这是滑块本身的样式 */
+.sprite-edit-card .position-controls input[type="range"] {
+    flex-grow: 1; /* 让滑块占据所有剩余空间 */
+    width: 100%;  /* 确保它能撑满 */
+}
+
+/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】这是约会场景专属的“好感度”和“欲望值”心形UI样式 ▼▼▼ */
+
+/* ▼▼▼ 【独家定制】这是为你修改后的“左上角”版本 ▼▼▼ */
+
+/* 这是包裹两个数值条的总容器 */
+#dating-values-container {
+    position: absolute;
+    
+    /* ▼▼▼ 核心修改1：调整垂直位置，把它明确地放到Header下方 ▼▼▼ */
+    /* 你的Header高度是110px，我们再加10px的间距，所以设置为120px */
+    top: 120px; 
+    
+    /* ▼▼▼ 核心修改2：调整水平位置，从右边移动到左边 ▼▼▼ */
+    left: 15px; /* 原来是 right: 15px; */
+
+    z-index: 5;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    
+    /* ▼▼▼ 核心修改3：让内部元素靠左对齐，更好看 ▼▼▼ */
+    align-items: flex-start; /* 原来是 align-items: flex-end; */
+}
+/* ▲▲▲ 替换结束 ▲▲▲ */
+
+
+/* 这是每一行数值条（例如“浪漫值”那一行）的样式 */
+.value-display {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* 心与心之间的间距 */
+    background-color: rgba(0, 0, 0, 0.2); /* 给一个半透明的深色背景板，让心形更突出 */
+    padding: 4px 8px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* 这是单个心形图标的样式 */
+.value-display svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5; /* 描边宽度 */
+    transition: all 0.3s ease-in-out; /* 为填充和颜色变化添加动画 */
+}
+
+/* 这是“浪漫值”图标的颜色 */
+#romance-value svg {
+    color: #ff8fab; /* 可爱的粉红色 */
+    stroke: #ffc2d1; /* 描边用更淡的粉色 */
+}
+/* 这是“性欲值”图标的颜色 */
+#lust-value svg {
+    color: #ffde59; /* 诱人的金黄色 */
+    stroke: #ffeda6; /* 描边用更淡的黄色 */
+}
+
+/* “空心”状态：填充色为透明 */
+.value-display svg .heart-fill {
+    fill: transparent;
+}
+/* “实心”状态：填充色为图标的颜色 */
+.value-display svg.filled .heart-fill {
+    fill: currentColor;
+}
+/* ▲▲▲ 新增CSS样式结束 ▲▲▲ */
+/* ▼▼▼ 【全新】约会完成度进度条样式 ▼▼▼ */
+
+/* ▼▼▼ 这是为你修复后的进度条样式 ▼▼▼ */
+
+/* 这是进度条的容器 (已移至底部) */
+#dating-completion-bar-container {
+    position: absolute;
+    bottom: calc(20px + env(safe-area-inset-bottom)); 
+    
+    /* 其他样式保持不变 */
+    left: 15px;
+    right: 15px;
+    height: 18px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2) inset;
+    overflow: hidden;
+    z-index: 4;
+    display: none;
+    transition: width 0.5s ease-in-out;
+}
+/* ▲▲▲ 替换结束 ▲▲▲ */
+
+/* 进度条的填充部分 */
+#dating-completion-bar-fill {
+    width: 0%; /* 初始为0% */
+    height: 100%;
+    /* 使用一个漂亮的粉色渐变作为填充色 */
+    background: linear-gradient(90deg, #ff8fab, #fb6f92);
+    border-radius: 9px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* 平滑的宽度变化动画 */
+}
+
+/* 进度条上的百分比文字 */
+#dating-completion-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6); /* 文字阴影，确保清晰 */
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】约会结算卡片样式 ▼▼▼ */
+
+#dating-summary-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.dating-summary-card {
+    background-color: transparent;
+    width: 320px;
+    height: 500px;
+    perspective: 1000px; /* 为3D翻转效果设置透视 */
+}
+
+.dating-summary-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    border-radius: 20px;
+}
+
+/* 当卡片被翻转时 */
+.dating-summary-card.is-flipped .dating-summary-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* 卡片的正面和背面 */
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 正面样式 */
+.card-front {
+    color: white;
+    background: linear-gradient(135deg, #a8b2c5, #8e9eab); /* 期待之夜的默认灰色渐变 */
+    transition: background 0.3s;
+}
+
+/* 不同评级的背景颜色 */
+.card-front.romantic {
+    background: linear-gradient(135deg, #ff8fab, #fb6f92); /* 粉色渐变 */
+}
+.card-front.passionate {
+    background: linear-gradient(135deg, #ffda79, #ffb142); /* 黄色渐变 */
+}
+/* ▼▼▼ 这是为你定制的“完美之夜”薰衣草色，请用它替换旧的 .card-front.perfect 样式 ▼▼▼ */
+.card-front.perfect {
+    /* 核心修改：这里使用了从淡紫到略深紫色的优雅渐变，营造出浪漫梦幻的感觉 */
+    background: linear-gradient(135deg, #d1c4e9, #b39ddb); 
+}
+
+.card-front #summary-card-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.card-front #summary-card-rating {
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin: 0 0 10px 0;
+}
+
+.card-front .summary-card-tip {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: auto; /* 将提示推到底部 */
+}
+
+.summary-card-actions {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.summary-card-actions button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#summary-share-btn {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+#summary-close-btn {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+/* 背面样式 */
+.card-back {
+    background-color: #f8f9fa;
+    color: #333;
+    transform: rotateY(180deg);
+    justify-content: flex-start; /* 内容从顶部开始 */
+}
+
+.card-back-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+.card-back-header span {
+    font-weight: 600;
+}
+.card-back-header button {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.card-back-content {
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+    text-align: left;
+    line-height: 1.6;
+    font-size: 14px;
+}
+.card-back-content p {
+    margin: 0 0 10px 0;
+}
+
+/* 聊天记录里分享卡片的样式 */
+.message-bubble.is-dating-summary .content {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.dating-summary-chat-card {
+    width: 220px;
+    height: 120px;
+    border-radius: 12px;
+    padding: 15px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.dating-summary-chat-card::before {
+    content: '💖';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    font-size: 40px;
+    opacity: 0.1;
+    transform: rotate(-15deg);
+}
+
+.dating-summary-chat-card .rating {
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.dating-summary-chat-card .tip {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 8px;
+}
+/* ▲▲▲ 新增CSS样式结束 ▲▲▲ */
+/* ▼▼▼ 把这一整块全新的CSS，粘贴到 <style> 的末尾 ▼▼▼ */
+
+/* --- 【全新】约会历史记录功能样式 --- */
+
+/* 历史记录页面的主容器 */
+#dating-history-list {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #dating-history-list {
+    background-color: #1c1c1e;
+}
+
+/* 历史列表中的卡片，我们让它更适合列表显示 */
+#dating-history-list .dating-summary-card {
+    width: 100%; /* 卡片宽度撑满 */
+    height: 180px; /* 给一个固定的高度，让列表更整齐 */
+    position: relative; 
+    transform: none;
+    left: auto;
+    top: auto;
+    margin: 0; /* 移除模态框的居中外边距 */
+}
+
+/* 历史列表中的卡片，正面样式微调 */
+#dating-history-list .card-front {
+    padding: 15px;
+    justify-content: center;
+    cursor: pointer; /* 鼠标放上去时显示小手，提示可以点击 */
+}
+
+#dating-history-list .card-front img {
+    width: 70px !important;
+    height: 70px !important;
+    margin-bottom: 10px !important;
+    border-radius: 50% !important;
+    border: 3px solid rgba(255,255,255,0.7) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+}
+
+#dating-history-list .card-front h2 {
+    font-size: 22px !important;
+    margin: 0 0 5px 0 !important;
+}
+
+#dating-history-list .card-front p {
+    margin-top: 5px !important;
+}
+
+/* 历史列表中的卡片，背面样式微调 */
+#dating-history-list .card-back-header {
+    flex-shrink: 0; /* 防止头部被压缩 */
+}
+#dating-history-list .card-back-content {
+    font-family: sans-serif; /* 背面可以用更易读的非衬线字体 */
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ▲▲▲ 新增CSS样式结束 ▲▲▲ */
+
+
 
     </style>
     <!-- ▼▼▼ 在这里添加下面这行 ▼▼▼ -->
     <style id="custom-theme-style"></style>
-<script src="main-app.js" defer></script>
- <script src="game-hall.js" defer></script>
+
 </head>
 <body>
         <div id="phone-screen">
@@ -14790,6 +15642,15 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     <div class="desktop-app-icon" id="taobao-app-icon">
         <div class="icon-bg-desktop"><img id="icon-img-taobao" src="https://i.postimg.cc/k47tXg1j/taologo.png" alt="桃宝"></div>
         <span class="label" style="color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">桃宝</span>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 在这里粘贴下面这块新代码 ▼▼▼ -->
+<!-- 这是我们新增的“约会大作战”App图标 -->
+<div style="position: absolute; bottom: 75px; left: 105px;">
+    <div class="desktop-app-icon" id="date-a-live-app-icon">
+        <div class="icon-bg-desktop"><img id="icon-img-date-a-live" src="https://i.postimg.cc/W36mYgP5/DAL-icon.jpg" alt="约会大作战"></div>
+        <span class="label" style="color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">约会大作战</span>
     </div>
 </div>
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
@@ -17123,7 +17984,18 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     <div id="member-settings-modal" class="modal"><div class="modal-content"><div class="modal-header"><span>编辑群成员</span></div><div class="modal-body">
     <div class="form-group"><label for="member-name-input">名字</label><input type="text" id="member-name-input"></div>
     <div class="form-group"><label for="member-persona-input">人设</label><textarea id="member-persona-input" rows="4"></textarea></div>
-    <div class="form-group"><label>头像</label><div class="avatar-upload"><img id="member-avatar-preview"><button onclick="document.getElementById('member-avatar-input').click()">上传头像</button><input type="file" id="member-avatar-input" accept="image/*"></div></div>
+<!-- ▼▼▼ 用下面这整块代码，替换旧的头像上传区域 ▼▼▼ -->
+<div class="form-group">
+    <label>头像</label>
+    <div class="avatar-upload">
+        <img id="member-avatar-preview">
+        <button onclick="document.getElementById('member-avatar-input').click()">上传头像</button>
+        <!-- ★★★ 我们在这里新增了一个更换头像框的按钮 ★★★ -->
+        <button id="member-editor-change-frame-btn" class="change-frame-btn">更换头像框</button>
+        <input type="file" id="member-avatar-input" accept="image/*" hidden>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
     </div><div class="modal-footer"><button class="cancel" id="cancel-member-settings-btn">取消</button><button class="save" id="save-member-settings-btn">保存</button></div></div></div>
     
     <div id="custom-modal-overlay">
@@ -19562,7 +20434,38 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
 
-<!-- ▲▲▲ 全新的HTML粘贴结束 ▲▲▲ -->
+<!-- ▼▼▼ 用这整块【已添加新按钮】的代码，替换你旧的 id="date-a-live-screen" ▼▼▼ -->
+<div id="date-a-live-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
+        <span>约会大作战</span>
+        <div class="header-actions">
+
+            <!-- ★★★★★ 这就是我们为你新增的“+”号按钮 ★★★★★ -->
+            <span class="action-btn" id="create-dating-scene-btn" title="创建新场景">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </span>
+            <!-- ★★★★★ 新增结束 ★★★★★ -->
+
+            <span class="action-btn" id="dating-history-btn" title="历史约会">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <polyline points="3 3 3 8 8 8"/>
+                    <path d="M12 6V12L16 14"/>
+                 </svg>
+            </span>
+            <span class="action-btn" id="refresh-dating-scene-btn" title="刷新场景">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            </span>
+        </div>
+    </div>
+    <div id="dating-scene-content" class="list-container">
+        <!-- 约会场景卡片将由JS动态生成在这里 -->
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
+
 
 
 <!-- ▼▼▼ 【增强版】宠物功能模态框 ▼▼▼ -->
@@ -19986,6 +20889,294 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 </div>
 
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】约会邀请与支付模态框 ▼▼▼ -->
+<div id="dating-payment-modal" class="modal">
+    <div class="modal-content" style="width: 300px; height: auto;">
+        <div class="modal-header">
+            <span id="dating-modal-title">发起约会邀请</span>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+            <p>你选择的约会是：</p>
+            <h3 id="dating-modal-scene-name" style="color: var(--accent-color); margin: 10px 0;"></h3>
+            <p id="dating-modal-scene-cost" style="font-weight: bold;"></p>
+            <hr style="opacity: 0.2; margin: 20px 0;">
+            <p>由谁来买单呢？</p>
+            <div id="dating-payment-options" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- 支付选项按钮将由JS动态生成 -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="dating-cancel-btn" style="width:100%;">下次再说</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】约会角色选择弹窗 ▼▼▼ -->
+<div id="dating-char-selector-modal" class="modal">
+    <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+            <span>选择约会对象</span>
+        </div>
+        <div class="modal-body" id="dating-char-selector-list" style="padding: 0;">
+            <!-- 角色列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="dating-cancel-char-select-btn" style="width: 100%;">取消</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 用这整块【最终修复版】的代码，替换你旧的 id="dating-game-screen" 的 div ▼▼▼ -->
+<div id="dating-game-screen" class="screen">
+    <!-- 1. 动态背景图 (最底层) -->
+    <div id="dating-game-background"></div>
+
+    <!-- 2. 角色立绘容器 (中间层) -->
+    <div id="dating-game-sprite-container">
+        <img id="dating-game-sprite" src="">
+    </div>
+
+    <!-- 3. UI覆盖层 (最顶层, 包含头部/文本框/选项) -->
+    <div class="dating-game-ui-overlay">
+<!-- ▼▼▼ 请用这块【已添加心形UI】的代码，完整替换掉你旧的 id="dating-game-screen" 里的那个 .header ▼▼▼ -->
+<div class="header">
+    <span class="back-btn" id="end-date-btn">结束约会</span>
+    <span id="dating-game-char-name"></span>
+    <div class="header-actions">
+
+        <!-- ★★★★★ 这就是我们新加的心形数值条 ★★★★★ -->
+        <div id="dating-values-container">
+            <div id="romance-value" class="value-display">
+                <!-- 我们会用JS在这里生成5个粉色心形 -->
+            </div>
+            <div id="lust-value" class="value-display">
+                <!-- 我们会用JS在这里生成5个黄色心形 -->
+            </div>
+        </div>
+        <!-- ★★★★★ 新增HTML结束 ★★★★★ -->
+
+        <span class="action-btn" id="dating-game-settings-btn" title="场景设置">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </span>
+        <span class="action-btn" id="dating-game-reroll-btn" title="重Roll回应">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </span>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
+
+        <!-- 3b. 底部文本框 -->
+        <div class="dating-game-textbox">
+            <p id="dating-game-text-content">约会即将开始...</p>
+        </div>
+
+        <!-- 3c. 玩家操作区 -->
+        <div id="dating-game-choices" class="dating-game-choices">
+            <!-- 选项按钮将由JS动态生成在这里 -->
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+    <div id="dating-completion-bar-container">
+        <div id="dating-completion-bar-fill"></div>
+        <span id="dating-completion-text">0%</span>
+    </div>
+
+
+<!-- ▼▼▼ 【全新】借钱对象选择弹窗（带滚动和头像）▼▼▼ -->
+<div id="borrow-money-modal" class="modal">
+    <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+            <span>向谁借钱？</span>
+        </div>
+        <div class="modal-body" id="borrow-money-char-list" style="padding: 0; overflow-y: auto;">
+            <!-- 借钱对象列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="borrow-money-cancel-btn" style="width: 100%;">取消</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 用这块【立绘功能增强版】代码，完整替换旧的 id="dating-game-settings-modal" ▼▼▼ -->
+<div id="dating-game-settings-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>约会场景设置</span>
+        </div>
+        <div class="modal-body">
+            <!-- 预设管理 (保持不变) -->
+            <div class="form-group">
+                <label>预设方案</label>
+                <div class="bubble-preset-manager">
+                    <select id="dating-preset-select" class="form-group select"></select>
+                    <button id="manage-dating-presets-btn" class="action-btn">管理</button>
+                </div>
+            </div>
+
+            <hr style="opacity: 0.2;">
+            
+            <!-- ★★★ 核心新增：立绘组选择器 ★★★ -->
+            <div class="form-group">
+                <label>选择角色立绘组</label>
+                <div class="bubble-preset-manager">
+                    <select id="dating-sprite-group-select" class="form-group select">
+                        <option value="">-- 不使用立绘 --</option>
+                        <!-- 立绘组将由JS动态填充 -->
+                    </select>
+                    <button id="manage-sprite-groups-btn" class="action-btn">管理立绘组</button>
+                </div>
+            </div>
+            <!-- ★★★ 新增结束 ★★★ -->
+
+            <hr style="opacity: 0.2;">
+
+            <!-- 核心设置 (保持不变) -->
+            <div class="form-group">
+                <label for="dating-prompt-input">场景/角色提示词 (Prompt)</label>
+                <textarea id="dating-prompt-input" rows="4" placeholder="例如：你是一个傲娇但内心温柔的少女，在海边对用户的表白感到不知所措..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="dating-style-input">文风 (Style)</label>
+                <textarea id="dating-style-input" rows="3" placeholder="例如：请使用细腻的心理描写和优美的风景描写..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>约会背景图</label>
+                <div class="bg-upload-container">
+                    <button class="form-button-secondary" onclick="document.getElementById('dating-bg-upload-input').click()" style="margin-top:0;">上传图片</button>
+                    <input type="text" id="dating-bg-url-input" placeholder="或粘贴网络图片URL" style="flex-grow:1;">
+                </div>
+                 <input type="file" id="dating-bg-upload-input" accept="image/*" hidden>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-dating-settings-btn">取消</button>
+            <button class="save" id="save-dating-settings-btn">应用并保存</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+<!-- ▼▼▼ 在 </body> 前，粘贴下面这两块全新的弹窗HTML ▼▼▼ -->
+
+<!-- 1. 【全新】立绘组管理弹窗 -->
+<div id="sprite-group-manager-modal" class="modal">
+    <div class="modal-content" style="height: 60%;">
+        <div class="modal-header">
+            <span>管理立绘组</span>
+            <span class="action-btn" id="create-new-sprite-group-btn" style="font-size: 16px;">新建</span>
+        </div>
+        <div class="modal-body" id="sprite-group-list-container" style="padding: 0;">
+            <!-- 立绘组列表将由JS动态生成 -->
+        </div>
+        <div class="modal-footer">
+            <button class="save" id="close-sprite-group-manager-btn" style="width: 100%;">完成</button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. 【全新】立绘组编辑器弹窗 -->
+<div id="sprite-editor-modal" class="modal">
+    <div class="modal-content" style="height: 90%;">
+        <div class="modal-header">
+            <span id="sprite-editor-title">编辑立绘组</span>
+        </div>
+        <div class="modal-body" id="sprite-editor-body">
+            <div class="form-group">
+                <label for="sprite-group-name-input">立绘组名称</label>
+                <input type="text" id="sprite-group-name-input" placeholder="例如：日常、战斗、害羞...">
+            </div>
+            <hr style="opacity: 0.2;">
+            <label>立绘列表</label>
+            <div id="sprite-list-editor" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+                <!-- 单个立绘的编辑卡片将由JS动态生成 -->
+            </div>
+            <button id="add-new-sprite-btn" class="form-button form-button-secondary" style="margin-top: 20px;">+ 添加一个新立绘</button>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-sprite-editor-btn">取消</button>
+            <button class="save" id="save-sprite-editor-btn">保存立绘组</button>
+        </div>
+    </div>
+</div>
+
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 约会结算卡片 ▼▼▼ -->
+<div id="dating-summary-overlay" class="modal">
+    <div class="dating-summary-card">
+        <div class="dating-summary-card-inner">
+            <!-- 卡片正面 -->
+            <div class="card-front">
+                <img id="summary-card-avatar" src="" alt="角色头像">
+                <h2 id="summary-card-rating"></h2>
+                <p class="summary-card-tip">点击卡片查看完整约会记录</p>
+                <div class="summary-card-actions">
+                    <button id="summary-share-btn">分享给Ta</button>
+                    <button id="summary-close-btn">关闭</button>
+                </div>
+            </div>
+            <!-- 卡片背面 -->
+            <div class="card-back">
+                <div class="card-back-header">
+                    <span>完整约会记录</span>
+                    <button id="summary-flip-back-btn">返回</button>
+                </div>
+                <div id="summary-card-history" class="card-back-content">
+                    <!-- 约会历史记录将由JS动态生成在这里 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ▼▼▼ 【全新】这是为约会结算卡片分享功能新增的HTML ▼▼▼ -->
+<input type="file" id="dating-summary-image-upload" accept="image/*" hidden>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 把这一整块全新的代码，粘贴到 </body> 标签的正上方 ▼▼▼ -->
+
+<!-- 【全新】约会历史记录界面 -->
+<div id="dating-history-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="dating-history-back-btn">‹</span>
+        <span>历史约会</span>
+        <span style="width: 30px;"></span> <!-- 占位符，保持标题居中 -->
+    </div>
+    <div id="dating-history-list" class="list-container">
+        <!-- 历史约会卡片将由JS动态生成在这里 -->
+    </div>
+</div>
+
+<!-- ▲▲▲ 新增HTML代码结束 ▲▲▲ -->
+<!-- ▼▼▼ 用这块【已优化提示】的代码，替换旧的创建场景弹窗 ▼▼▼ -->
+<div id="create-dating-scene-modal" class="modal">
+    <div class="modal-content" style="width: 300px; height: auto;">
+        <div class="modal-header">
+            <span>创建约会场景</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="scene-name-input">场景名称</label>
+                <input type="text" id="scene-name-input" placeholder="例如：月光下的海滩漫步">
+            </div>
+            <div class="form-group">
+                <label for="scene-image-url-input">图片 URL (可选)</label>
+                <!-- ★★★ 核心修改：更新了 placeholder 提示文字 ★★★ -->
+                <input type="text" id="scene-image-url-input" placeholder="留空则由AI根据场景名生成图片...">
+            </div>
+            <div class="form-group">
+                <label for="scene-cost-input">花费 (金币)</label>
+                <input type="number" id="scene-cost-input" placeholder="例如：520">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-create-scene-btn">取消</button>
+            <button class="save" id="save-custom-scene-btn">保存</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
 
 
 <!-- ▼▼▼ 用这整块代码替换旧的 inner-voice-modal ▼▼▼ -->
@@ -20340,7 +21531,25 @@ function findLuckyKing(packet) {
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
 let state = { chats: {}, activeChatId: null, globalSettings: {}, apiConfig: {}, userStickers: [], worldBooks: [], personaPresets: [], qzoneSettings: {}, activeAlbumId: null };
+let datingGameState = {
+    isActive: false,
+    scene: null,
+    characterId: null,
+    storyHistory: [],
+    romance: 0,
+    lust: 0,
+    currentStoryText: "",
+    currentSentenceIndex: -1,
+    sentences: [],
+    isSwitchingSentence: false,
+    isNsfwMode: false,
+    completion: 0
+};
+// ▼▼▼ 在这里粘贴下面这一行新代码 ▼▼▼
+let currentDatingSummary = null; // 用于暂存当前结算卡片的数据
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
 
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
         const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models'
         // gemini如果是多个密钥, 那么随机获取一个
     function getRandomValue(str) {
@@ -20577,8 +21786,285 @@ const CHAR_PHONE_APPS = [
     // 这就是我们新加的App
     { id: 'appearance', name: '外观设置', screen: 'character-phone-appearance-screen', svg: `<svg viewBox="0 0 24 24" fill="#9C27B0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.17 14.34c-.21.21-.46.32-.71.32s-.5-.11-.71-.32l-1.41-1.41c-.2-.2-.31-.45-.31-.71 0-.26.11-.51.31-.71l1.41-1.41c.2-.2.45-.31.71-.31s.51.11.71.31l1.41 1.41c.4.4.4 1.04 0 1.41l-1.41 1.41zm3.34-5.34c-.21.21-.46.32-.71.32s-.5-.11-.71-.32L11.41 8.5c-.2-.2-.31-.45-.31-.71 0-.26.11-.51.31-.71l1.41-1.41c.2-.2.45-.31.71-.31s.51.11.71.31l1.41 1.41c.4.4.4 1.04 0 1.41l-1.41 1.41zm3.34 5.34c-.21.21-.46.32-.71.32s-.5-.11-.71-.32l-1.41-1.41c-.4-.4-.4-1.04 0-1.41l1.41-1.41c.2-.2.45-.31.71-.31s.51.11.71.31l1.41 1.41c.2.2.31.45.31.71 0 .26-.11.51-.31.71l-1.41 1.41z"/></svg>` }
 ];
+// ▼▼▼ 在这里粘贴下面这一整块新代码 ▼▼▼
+
+// ▼▼▼ 在这里粘贴下面这一整块新代码 ▼▼▼
+
+// ▼▼▼ 在这里粘贴下面这一整块新代码 ▼▼▼
+
+/* --- 【全新 | AI生成版 V4】约会大作战App核心功能 --- */
+
+// 1. 全局变量，用于存储所有已生成的约会场景
+let currentDatingScenes = []; 
+let isGeneratingScenes = false;
+let currentDatingUISettings = null; 
+/* --- 【全新 | V5 - 永久保存修复版】约会大作战App核心功能 --- */
+
+/**
+ * 【总入口 V6】打开“约会大作战”App，快速显示已保存数据
+ */
+async function openDatingApp() {
+    showScreen('date-a-live-screen');
+    // 从数据库加载所有已保存的场景
+    currentDatingScenes = await db.datingScenes.toArray();
+    console.log(`从数据库加载了 ${currentDatingScenes.length} 个约会场景。`);
+    // 渲染这些场景（只会先显示文字和加载动画）
+    renderDatingScenes();
+}
+
+/**
+ * 【AI核心 V6】调用AI生成【新的一批】约会场景，并【只保存场景数据】
+ */
+async function refreshDatingScenes() {
+    if (isGeneratingScenes) {
+        alert("正在加载中，请不要着急哦~");
+        return;
+    }
+    isGeneratingScenes = true;
+
+    const contentEl = document.getElementById('dating-scene-content');
+    const loadingIndicator = document.createElement('p');
+    loadingIndicator.textContent = "AI正在构思新的约会方案...";
+    loadingIndicator.style.textAlign = 'center';
+    loadingIndicator.style.color = 'var(--text-secondary)';
+    contentEl.innerHTML = ''; // 先清空旧场景
+    contentEl.appendChild(loadingIndicator);
+
+    const { proxyUrl, apiKey, model } = state.apiConfig;
+    if (!proxyUrl || !apiKey || !model) {
+        loadingIndicator.textContent = 'API未配置，无法生成场景！';
+        loadingIndicator.style.color = 'red';
+        isGeneratingScenes = false;
+        return;
+    }
+    
+    // Prompt保持不变
+    const prompt = `
+# 任务
+你是一位顶级约会策划师，尤其擅长营造浪漫氛围。请为我策划 3-5 个适合情侣的、日常且极具浪漫情调的约会场景。
+
+# 核心规则
+1.  **场景风格**: 场景必须是现实生活中可以实现的，但要富有想象力和浪漫气息。**绝对禁止**任何黑暗、恐怖或令人不适的元素。
+2.  **场景多样性**: 请包含多种类型的地点，例如：
+    -   **户外**: 公园、海边、路边小吃摊。
+    -   **室内**: 温馨的咖啡馆、艺术展、书店。
+    -   **住宿**: 普通的温馨酒店、电竞酒店、甚至可以来点新奇的情趣酒店。
+3.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON数组，直接以'['开头, 以']'结尾。
+4.  **内容要求**: 每个场景对象【必须】包含以下三个字段:
+    -   \`"name"\`: (字符串) 一个充满浪漫想象的日常约会场景名称 (例如: "星空下的电竞双排夜", "微醺路边摊的夏日晚风", "私语书店的角落")。
+    -   \`"cost"\`: (数字) 一个代表浪漫程度的虚拟花费 (例如: 288, 520, 999)。
+    -   \`"imagePrompt"\`: (字符串) 一个用于文生图的、纯英文的、详细的【纯风景或静物】描述，用于生成场景图片。【绝对不能包含人物、情侣或任何人】。图片风格必须是【浪漫唯美的 (romantic, beautiful, aesthetic)】，可以使用 anime style, vibrant colors, soft lighting, masterpiece 等词汇来增强艺术感。
+
+# JSON输出格式示例:
+[
+  {
+    "name": "雨后公园的七彩霓虹",
+    "cost": 188,
+    "imagePrompt": "a peaceful park after rain, wet cobblestone path reflecting neon city lights, rainbow puddle, glowing lanterns on trees, beautiful, aesthetic, anime style, masterpiece, vibrant colors"
+  }
+]
+`;
+
+    try {
+        const messagesForApi = [{ role: 'user', content: prompt }];
+        let isGemini = proxyUrl === GEMINI_API_URL;
+        let geminiConfig = toGeminiRequestData(model, apiKey, prompt, messagesForApi, isGemini);
+        
+        const response = isGemini 
+            ? await fetch(geminiConfig.url, geminiConfig.data) 
+            : await fetch(`${proxyUrl}/v1/chat/completions`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+                body: JSON.stringify({ model: model, messages: messagesForApi, temperature: 1.1, response_format: { type: "json_object" } })
+            });
+
+        if (!response.ok) throw new Error(`API请求失败: ${await response.text()}`);
+        
+        const data = await response.json();
+        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content);
+        const cleanedContent = rawContent.replace(/^```json\s*|```$/g, '').trim();
+        const newScenes = JSON.parse(cleanedContent);
+
+        if (Array.isArray(newScenes)) {
+            // ★★★ 核心修改：只添加uid和空的imageUrl，不再立即生成图片 ★★★
+            const scenesWithId = newScenes.map((scene, index) => ({
+                ...scene,
+                uid: 'scene_' + Date.now() + index,
+                imageUrl: '' // 初始化时图片链接为空
+            }));
+
+            await db.datingScenes.bulkAdd(scenesWithId);
+
+            // 更新内存数据，并重新渲染（此时图片还是加载中状态）
+            currentDatingScenes.push(...scenesWithId); 
+            renderDatingScenes(); 
+            
+        } else {
+            throw new Error("AI返回的数据不是有效的数组。");
+        }
+    } catch (error) {
+        console.error("生成约会场景失败:", error);
+        contentEl.innerHTML = `<p style="text-align:center; color:red;">生成失败: ${error.message}</p>`;
+    } finally {
+        isGeneratingScenes = false;
+    }
+}
+
+/**
+ * 【渲染函数 - 已改造】渲染所有约会场景卡片，并【异步】加载图片
+ */
+function renderDatingScenes() {
+    const contentEl = document.getElementById('dating-scene-content');
+    contentEl.innerHTML = ''; // 每次都清空再渲染
+
+    if (currentDatingScenes.length === 0) {
+        // 如果数据库是空的，显示提示并触发一次生成
+        if (!isGeneratingScenes) {
+            contentEl.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 50px 0;">正在为你构思浪漫的约会方案...</p>';
+            refreshDatingScenes(); 
+        }
+        return;
+    }
+    
+    // ★★★ 核心修改：使用 forEach 立即渲染所有卡片 ★★★
+    currentDatingScenes.forEach(scene => {
+        const card = createDatingSceneCard(scene);
+        contentEl.appendChild(card);
+        // ★★★ 核心修改：调用新的异步函数去处理图片 ★★★
+        loadAndDisplaySceneImage(scene);
+    });
+}
+/**
+ * 【全新辅助函数】为单个场景加载或生成图片，并更新其卡片
+ * @param {object} scene - 约会场景对象
+ */
+async function loadAndDisplaySceneImage(scene) {
+    const card = document.querySelector(`.dating-scene-card[data-uid="${scene.uid}"]`);
+    if (!card) return;
+    const imageContainer = card.querySelector('.dating-scene-image-container');
+
+    // 1. 如果数据库里已经有图片URL，直接使用它
+    if (scene.imageUrl) {
+        imageContainer.innerHTML = `<img src="${scene.imageUrl}" alt="${scene.name}">`;
+        return;
+    }
+
+    // 2. 如果没有URL，说明需要生成
+    try {
+        const imageUrl = await generateAndLoadImage(scene.imagePrompt);
+        // 生成成功后，更新UI
+        if (document.body.contains(imageContainer)) {
+             imageContainer.innerHTML = `<img src="${imageUrl}" alt="${scene.name}">`;
+        }
+       
+        // ★★★ 关键：将新生成的URL保存回数据库！★★★
+        scene.imageUrl = imageUrl;
+        await db.datingScenes.update(scene.uid, { imageUrl: imageUrl });
+        console.log(`为场景 "${scene.name}" 生成并保存了新图片。`);
+
+    } catch (error) {
+        console.error(`场景 "${scene.name}" 图片渲染失败:`, error);
+        if (document.body.contains(imageContainer)) {
+            imageContainer.innerHTML = `<span>图片加载失败</span>`;
+        }
+    }
+}
+
+/**
+ * 【全新】根据唯一ID删除一个约会场景 (已添加数据库操作)
+ * @param {string} sceneUid - 场景的唯一ID
+ */
+async function deleteDatingScene(sceneUid) {
+    const cardToRemove = document.querySelector(`.dating-scene-card[data-uid="${sceneUid}"]`);
+    if (cardToRemove) {
+        cardToRemove.style.transition = 'transform 0.3s, opacity 0.3s';
+        cardToRemove.style.transform = 'scale(0.9)';
+        cardToRemove.style.opacity = '0';
+        setTimeout(async () => {
+            await db.datingScenes.delete(sceneUid);
+            currentDatingScenes = currentDatingScenes.filter(scene => scene.uid !== sceneUid);
+            cardToRemove.remove();
+        }, 300);
+    }
+}
+
+
+// (你原来的其他辅助函数 processSceneImages, createDatingSceneCard, generateAndLoadImage 保持不变，我已经帮你整合好了)
+async function processSceneImages(newScenes) {
+    const contentEl = document.getElementById('dating-scene-content');
+
+    for (const scene of newScenes) {
+        const card = createDatingSceneCard(scene);
+        contentEl.appendChild(card);
+        
+        try {
+            const imageUrl = await generateAndLoadImage(scene.imagePrompt);
+            const imageContainer = card.querySelector('.dating-scene-image-container');
+            if (imageContainer) {
+                imageContainer.innerHTML = `<img src="${imageUrl}" alt="${scene.name}">`;
+            }
+        } catch (error) {
+            console.error(`场景 "${scene.name}" 图片生成失败:`, error);
+            const imageContainer = card.querySelector('.dating-scene-image-container');
+            if (imageContainer) {
+                imageContainer.innerHTML = `<span>图片生成失败</span>`;
+            }
+        }
+    }
+}
+
+function createDatingSceneCard(scene) {
+    const card = document.createElement('div');
+    card.className = 'dating-scene-card';
+    card.dataset.uid = scene.uid;
+
+    card.innerHTML = `
+        <button class="dating-scene-delete-btn" title="删除此场景">×</button>
+        <div class="dating-scene-image-container">
+            <div class="loading-spinner"></div>
+        </div>
+        <div class="dating-scene-info">
+            <div class="name">${scene.name}</div>
+            <div class="cost">花费: ${scene.cost}金币</div>
+        </div>
+    `;
+    return card;
+}
+
+function generateAndLoadImage(prompt) {
+    return new Promise((resolve, reject) => {
+        const encodedPrompt = encodeURIComponent(prompt);
+        const seed = Math.floor(Math.random() * 100000);
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=640&seed=${seed}`;
+        
+        const img = new Image();
+        img.src = imageUrl;
+
+        img.onload = () => resolve(imageUrl);
+        img.onerror = () => {
+            console.warn(`主URL加载失败，尝试备用URL for: ${prompt}`);
+            const fallbackUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=640&seed=${seed}`;
+            img.src = fallbackUrl;
+            img.onload = () => resolve(fallbackUrl);
+            img.onerror = () => reject(new Error('主域名和备用域名均加载失败'));
+        };
+    });
+}
+/* --- 约会大作战功能结束 --- */
+
+// ▲▲▲ 新增代码结束 ▲▲▲
+
+
+// ▲▲▲ 新增代码结束 ▲▲▲
+
+// ▲▲▲ 新增代码结束 ▲▲▲
+
 // ▲▲▲ 代码粘贴结束 ▲▲▲
 const db = new Dexie('GeminiChatDB');
+// ▼▼▼ 在这里粘贴下面这一整块新代码 ▼▼▼
+
+// ▲▲▲ 新增代码结束 ▲▲▲
+
         // ▼▼▼ 把下面这一整块全新的微博功能代码，粘贴到这里 ▼▼▼
 
 /**
@@ -21086,7 +22572,7 @@ let activeCharPhonePresetId = null; // 用于追踪角色手机外观预设的�
 let activeCharacterPhoneId = null;
 let activeLoversSpaceCharId = null; // 用于追踪当前情侣空间的角色ID
 let waimaiTimers = {}; // 用于存储外卖倒计时
-
+let editingSpriteGroupId = null;
 let activeMessageTimestamp = null;
 
 
@@ -21775,7 +23261,8 @@ const DEFAULT_APP_ICONS = {
     'lovers-space': 'https://i.postimg.cc/d1wZ39xW/lovers-space-icon.png',
     'game-hall': 'https://i.postimg.cc/P5gL5z2g/game-controller-icon.png',
     'x-social': 'https://i.postimg.cc/8P1H0vQ8/x-logo.png',
-    'taobao': 'https://i.postimg.cc/k47tXg1j/taologo.png'
+    'taobao': 'https://i.postimg.cc/k47tXg1j/taologo.png',
+    'date-a-live': 'https://i.postimg.cc/Kjdss1j9/1761142686734.png' 
 };
 // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
 const DEFAULT_APP_LABELS = {
@@ -21790,7 +23277,8 @@ const DEFAULT_APP_LABELS = {
     'lovers-space': '情侣空间',
     'game-hall': '游戏大厅',
     'x-social': 'X社交',
-    'taobao': '桃宝'
+    'taobao': '桃宝',
+    'date-a-live': '约会大作战'
 };
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
 
@@ -21979,10 +23467,9 @@ function getRandomItem(arr) {
         // 2. 数据库结构定义
         // ===================================================================
 
-// ▼▼▼ 用这块【V43版本】的代码替换你旧的 db.version(...).stores(...) ▼▼▼
-db.version(43).stores({ // 版本号 +1 = 43
-    chats: '&id, isGroup, groupId, ownerId, isPinned, characterPhoneData, latestInnerVoice, innerVoiceHistory, loversSpaceData.emotionDiaries, settings.summary, settings.weiboNickname, settings.innerVoiceHideHeaderBorder, settings.innerVoiceAdopterLabelFormat', // <-- 在这里修改了
-    // ... 其他表格保持不变 ...
+// ▼▼▼ 【V47修复版】请用这块新代码替换旧的 db.version(...).stores(...) ▼▼▼
+db.version(47).stores({ // 版本号 +1 = 47
+    chats: '&id, isGroup, groupId, ownerId, isPinned, characterPhoneData, latestInnerVoice, innerVoiceHistory, loversSpaceData.emotionDiaries, settings.summary, settings.weiboNickname, settings.innerVoiceHideHeaderBorder, settings.innerVoiceAdopterLabelFormat', 
     apiConfig: '&id',
     globalSettings: '&id, activeThemeId', 
     userStickers: '&id, url, name', 
@@ -22019,9 +23506,17 @@ db.version(43).stores({ // 版本号 +1 = 43
     userWalletTransactions: '++id, timestamp' ,
     charPhonePresets: '++id, name',
     ludoQuestionBanks: '++id, name',
-    ludoQuestions: '++id, bankId, text, type'
+    ludoQuestions: '++id, bankId, text, type',
+    datingScenes: '&uid, imageUrl',
+    datingPresets: '++id, name, settings.spriteGroupId',
+    datingSpriteGroups: '++id, name',
+    datingSprites: '++id, groupId, description, url',
+    // ★★★ 在这里添加我们的新表格 ★★★
+    datingHistory: '++id, characterId, timestamp'
 });
 // ▲▲▲ 替换结束 ▲▲▲
+
+
 
 window.db = db;
 
@@ -23657,7 +25152,7 @@ function applyCustomFont(fontUrl, isPreviewOnly = false) {
 
 
 async function loadAllDataFromDB() {
-    // ▼▼▼ 【核心修改在这里】 ▼▼▼
+    // 【核心修改】我们把 Promise.all 的内容扩充了
     const [
         chatsArr,
         apiConfig,
@@ -23669,9 +25164,10 @@ async function loadAllDataFromDB() {
         personaPresets,
         qzoneSettings,
         initialFavorites,
-    apiPresets,
-bubbleStylePresets
-] = await Promise.all([
+        apiPresets,
+        bubbleStylePresets,
+        datingScenes // <--- 在这里新增
+    ] = await Promise.all([
         db.chats.toArray(),
         db.apiConfig.get('main'),
         db.globalSettings.get('main'),
@@ -23682,9 +25178,10 @@ bubbleStylePresets
         db.personaPresets.toArray(),
         db.qzoneSettings.get('main'),
         db.favorites.orderBy('timestamp').reverse().toArray(),
-    db.apiPresets.toArray(),    db.bubbleStylePresets.toArray()
-]);
-    // ▲▲▲ 【修改结束】 ▲▲▲
+        db.apiPresets.toArray(),
+        db.bubbleStylePresets.toArray(),
+        db.datingScenes.toArray() // <--- 在这里新增
+    ]);
 
     state.chats = chatsArr.reduce((acc, chat) => {
             // 【全新】为旧的群聊数据兼容专属表情库
@@ -24111,6 +25608,7 @@ state.globalSettings.appIcons = { ...DEFAULT_APP_ICONS, ...(state.globalSettings
     state.userStickers = userStickers || [];
     state.charStickers = charStickers || []; 
     state.worldBooks = worldBooks || [];
+    currentDatingScenes = datingScenes || [];
     musicState.playlist = musicLib?.playlist || [];
     state.personaPresets = personaPresets || [];
 state.apiPresets = apiPresets || [];
@@ -25450,6 +26948,30 @@ else if (msg.type === 'share_card') {
     `;
 }
 // 在这里粘贴下面的新代码 ▼▼▼
+// ▼▼▼ 用这块【简化版】代码替换旧的 'borrow_money_request' 逻辑 ▼▼▼
+else if (msg.type === 'borrow_money_request') {
+    bubble.classList.add('is-borrow-request'); // 应用透明气泡样式
+    const payload = msg.payload;
+    // 直接将卡片的HTML赋给contentHtml，不再拼接任何文本
+    contentHtml = `
+        <div class="borrow-card">
+            <div class="borrow-header">
+                向 <span>${payload.lenderName}</span> 借钱
+            </div>
+            <div class="borrow-body">
+                <p class="label">借款金额</p>
+                <p class="amount">¥${payload.amount.toFixed(2)}</p>
+                <p class="reason">
+                    <strong>借款用途:</strong><br>
+                    ${payload.reason}
+                </p>
+            </div>
+        </div>
+    `;
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
 
 else if (msg.type === 'repost_forum_post') {
     bubble.classList.add('is-link-share'); // 复用链接分享的样式，省事！
@@ -27196,7 +28718,7 @@ ${petContext}
 - **微博身份**:
     - **职业**: ${chat.settings.weiboProfession || '无'}
     - **特殊指令**: ${chat.settings.weiboInstruction || '无特殊指令'}
-
+- 你的钱包余额: ${chat.characterPhoneData?.bank?.balance?.toFixed(2) || '0.00'} 金币
 **3. 你的头像库:**
 你可以根据对话内容或心情，从下方选择更换头像。
 - **可用头像列表**:
@@ -27333,6 +28855,14 @@ ${chat.settings.aiAvatarLibrary && chat.settings.aiAvatarLibrary.length > 0
 - **回应好友申请**: \`{"type": "friend_request_response", "decision": "accept" or "reject"}\`
 - **分享链接**: \`{"type": "share_link", "title": "文章标题", "description": "摘要...", "source_name": "来源", "content": "文章【完整】正文..."}\`
 - **拉黑用户**: \`{"type": "block_user"}\`
+- **回应约会全款支付请求**: \`{"type": "dating_payment_response", "decision": "accept" or "reject"}\`
+- **回应约会AA制请求**: \`{"type": "dating_aa_response", "decision": "accept" or "reject"}\`
+- **回应借钱请求**:
+  1.  看到 \`[用户向你发起借钱请求...]\` 的系统提示后，你必须根据人设和钱包余额决定是否同意。
+  2.  你的回复JSON数组中【必须包含两个对象】:
+      - **第一个对象**:\`{"type": "lend_money_response", "decision": "accept"或"reject"}\` 指令。
+      - **第二个对象**: \`{"type": "text", "content": "你的回复内容..."}\` 消息，用你自己的话说出同意或拒绝的理由。
+  - **示例**: \`[ {"type": "lend_money_response", "decision": "reject"}, {"type": "text", "content": "抱歉，我最近手头也有些紧。"} ]\`
 
 **四、 财务指令**
 - **发起转账**: \`{"type": "transfer", "amount": 5.20, "note": "一点心意"}\`
@@ -28108,6 +29638,39 @@ case 'kick_member': {
     }
     continue; // 保持后台操作，继续处理
 }
+
+
+    // ▼▼▼ 【全新】在这里粘贴下面的新代码块 ▼▼▼
+    case 'dating_summary_card': {
+        bubble.classList.add('is-dating-summary'); // 应用透明气泡样式
+        const payload = msg.payload;
+        let cardClass = '';
+        
+        // 根据卡片类型设置背景色
+        if (payload.ratingType === 'romantic') {
+            cardClass = 'romantic';
+        } else if (payload.ratingType === 'passionate') {
+            cardClass = 'passionate';
+        } else if (payload.ratingType === 'perfect') {
+            cardClass = 'perfect';
+        }
+
+        // 把 payload 字符串化后存入 data-* 属性，方便点击时读取
+        const payloadString = JSON.stringify(payload).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+        
+        contentHtml = `
+            <div class="dating-summary-chat-card ${cardClass}" data-summary-payload='${payloadString}'>
+                <div class="rating">${payload.rating}</div>
+                <div class="tip">点击查看详情</div>
+            </div>
+        `;
+        break;
+    }
+    // ▲▲▲ 新增 case 结束 ▲▲▲
+
+    // ... 其他 case ...
+
+
 // ▲▲▲ 替换结束 ▲▲▲
 // ▼▼▼ 在这里粘贴下面这整块【全新的】代码 ▼▼▼
 case 'set_group_announcement': {
@@ -29417,7 +30980,76 @@ case 'sticker': {
                 }
                 break;
             }
+// ▼▼▼ 在 switch (msgData.type) 结构内，粘贴这整块新代码 ▼▼▼
 
+case 'dating_payment_response': {
+    const originalRequest = chat.history.filter(m => m.role === 'system' && m.content.includes("dating_payment_response")).pop();
+    if (!originalRequest) continue;
+
+    const costMatch = originalRequest.content.match(/费用（(\d+(\.\d+)?)金币）/);
+    const cost = costMatch ? parseFloat(costMatch[1]) : 0;
+    
+    if (msgData.decision === 'accept') {
+        const charBalance = chat.characterPhoneData.bank.balance || 0;
+        if (charBalance >= cost) {
+            await updateCharacterPhoneBankBalance(chat.id, -cost, `约会支出: 为用户买单`);
+            aiMessage = { ...baseMessage, content: msgData.responseText || "好呀，这次我来请客吧！" };
+        } else {
+            aiMessage = { ...baseMessage, content: msgData.responseText || "呜呜，我也想请客，但是钱包好像不太够呢..." };
+        }
+    } else {
+        aiMessage = { ...baseMessage, content: msgData.responseText || "这次还是算了吧..." };
+    }
+    break;
+}
+
+case 'dating_aa_response': {
+    const originalRequest = chat.history.filter(m => m.role === 'system' && m.content.includes("dating_aa_response")).pop();
+    if (!originalRequest) continue;
+
+    const costMatch = originalRequest.content.match(/各自支付 (\d+(\.\d+)?) 金币/);
+    const splitCost = costMatch ? parseFloat(costMatch[1]) : 0;
+
+    if (msgData.decision === 'accept') {
+        const charBalance = chat.characterPhoneData.bank.balance || 0;
+        if (charBalance >= splitCost) {
+            await updateUserBalanceAndLogTransaction(-splitCost, `约会AA支出`);
+            await updateCharacterPhoneBankBalance(chat.id, -splitCost, `约会AA支出`);
+            aiMessage = { ...baseMessage, content: msgData.responseText || "好啊，AA制完全没问题！" };
+        } else {
+            aiMessage = { ...baseMessage, content: msgData.responseText || "这个...我的钱好像不太够付我自己的那份呢。" };
+        }
+    } else {
+        aiMessage = { ...baseMessage, content: msgData.responseText || "我觉得AA制有点太见外了，还是我来请吧？或者你请？" };
+    }
+    break;
+}
+
+case 'lend_money_response': {
+    const originalRequest = chat.history.filter(m => m.role === 'system' && m.content.includes("lend_money_response")).pop();
+    if (!originalRequest) continue;
+
+    const amountMatch = originalRequest.content.match(/借 (\d+(\.\d+)?) 金币/);
+    const amount = amountMatch ? parseFloat(amountMatch[1]) : 0;
+
+    // 只处理接受借款时的金钱逻辑
+    if (msgData.decision === 'accept') {
+        const lenderBalance = chat.characterPhoneData.bank.balance || 0;
+        if (lenderBalance >= amount) {
+            await updateCharacterPhoneBankBalance(chat.id, -amount, `借钱给用户`);
+            await updateUserBalanceAndLogTransaction(amount, `从 ${chat.name} 处借款`);
+        } else {
+            // 如果AI决定同意但钱不够，我们信任AI会在下一条消息中解释。
+            // 这里的金融逻辑可以做得更复杂，但目前保持简单，相信AI的判断。
+            console.warn(`AI "${chat.name}" 同意借钱，但余额不足，交易未执行。`);
+        }
+    } 
+    // 如果是拒绝(reject)，则不执行任何金融操作。
+
+    // 【核心修改】我们不再在这里创建任何 aiMessage。
+    // 使用 'continue' 跳到AI回复数组的下一项，也就是AI自己生成的文本消息，让循环的后续部分去处理它。
+    continue;
+}
 // ▼▼▼ 请用这块【最终修复版】代码，替换旧的 case 'forum_comment' 代码块 ▼▼▼
 
 case 'forum_comment': { // 使用大括号创建块级作用域
@@ -31011,7 +32643,7 @@ function hideMessageActions() {
     activeMessageTimestamp = null;
 }
 
-// ▼▼▼ 用这个【已更新】的版本，替换旧的 openMessageEditor 函数 ▼▼▼
+// ▼▼▼ 用这块【功能增强版】的代码，完整替换旧的 openMessageEditor 函数 ▼▼▼
 async function openMessageEditor() {
     if (!activeMessageTimestamp) return;
 
@@ -31023,32 +32655,37 @@ async function openMessageEditor() {
     hideMessageActions(); 
 
     let contentForEditing;
-    // 【核心修正】将 share_link 也加入特殊类型判断
-    const isSpecialType = message.type && ['voice_message', 'ai_image', 'transfer', 'share_link'].includes(message.type);
+    const isSpecialType = message.type && ['voice_message', 'ai_image', 'transfer', 'share_link', 'borrow_money_request'].includes(message.type);
 
     if (isSpecialType) {
-        let fullMessageObject = { type: message.type };
-        if (message.type === 'voice_message') fullMessageObject.content = message.content;
-        else if (message.type === 'ai_image') fullMessageObject.description = message.content; 
-        else if (message.type === 'transfer') {
-            fullMessageObject.amount = message.amount;
-            fullMessageObject.note = message.note;
-        } 
-        // 【核心修正】处理分享链接类型的消息
-        else if (message.type === 'share_link') {
-            fullMessageObject.title = message.title;
-            fullMessageObject.description = message.description;
-            fullMessageObject.source_name = message.source_name;
-            fullMessageObject.content = message.content;
+        if (message.type === 'borrow_money_request') {
+            // ★★★ 这就是我们新增的核心逻辑！ ★★★
+            // 当编辑的是借钱卡片时，我们从 payload 中提取数据并拼接成你想要的文本格式
+            const payload = message.payload;
+            contentForEditing = `向你借钱${payload.amount}元，用于${payload.reason}`;
+        } else {
+            // 其他特殊类型的处理逻辑保持不变
+            let fullMessageObject = { type: message.type };
+            if (message.type === 'voice_message') fullMessageObject.content = message.content;
+            else if (message.type === 'ai_image') fullMessageObject.description = message.content; 
+            else if (message.type === 'transfer') {
+                fullMessageObject.amount = message.amount;
+                fullMessageObject.note = message.note;
+            } 
+            else if (message.type === 'share_link') {
+                fullMessageObject.title = message.title;
+                fullMessageObject.description = message.description;
+                fullMessageObject.source_name = message.source_name;
+                fullMessageObject.content = message.content;
+            }
+            contentForEditing = JSON.stringify(fullMessageObject, null, 2);
         }
-        contentForEditing = JSON.stringify(fullMessageObject, null, 2);
     } else if (typeof message.content === 'object') {
         contentForEditing = JSON.stringify(message.content, null, 2);
     } else {
         contentForEditing = message.content;
     }
 
-    // 【核心修改1】在这里添加 'link' 模板
     const templates = {
         voice: { type: 'voice_message', content: '在这里输入语音内容' },
         image: { type: 'ai_image', description: '在这里输入图片描述' },
@@ -31056,7 +32693,6 @@ async function openMessageEditor() {
         link: { type: 'share_link', title: '文章标题', description: '文章摘要...', source_name: '来源网站', content: '文章完整内容...' }
     };
 
-    // 【核心修改2】在这里添加新的“链接”按钮
     const helpersHtml = `
         <div class="format-helpers">
             <button class="format-btn" data-template='${JSON.stringify(templates.voice)}'>语音</button>
@@ -31075,11 +32711,11 @@ async function openMessageEditor() {
     );
 
     if (newContent !== null) {
-        // 【核心修正】这里调用的应该是 saveEditedMessage，而不是 saveAdvancedEditor
-        await saveEditedMessage(timestampToEdit, newContent, true);
+        await saveEditedMessage(timestampToEdit, newContent);
     }
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
 
 /**
  * 复制消息的文本内容到剪贴板
@@ -31239,38 +32875,58 @@ function openAdvancedMessageEditor() {
 }
 // ▲▲▲ 替换结束 ▲▲▲
 
-/**
- * 解析编辑后的文本，并返回一个标准化的消息片段对象
- * @param {string} text - 用户在编辑框中输入的文本
- * @returns {object} - 一个包含 type, content, 等属性的对象
- */
+// ▼▼▼ 【最终正确版】请用这块代码完整替换旧的 parseEditedContent 函数 ▼▼▼
 function parseEditedContent(text) {
     const trimmedText = text.trim();
 
-    // 1. 尝试解析为JSON对象（用于修复语音、转账等格式）
+    // ★★★ 核心修改：优先检查是否匹配“借钱”格式 ★★★
+    const borrowMatch = trimmedText.match(/向你借钱(\d+(\.\d+)?)元，用于(.+)/);
+    if (borrowMatch) {
+        const amount = parseFloat(borrowMatch[1]);
+        const reason = borrowMatch[3].trim();
+
+        // 1. 创建文本消息对象
+        const textMessage = {
+            type: 'text',
+            content: trimmedText
+        };
+
+        // 2. 创建借条卡片对象
+        const cardMessage = {
+            type: 'borrow_money_request',
+            payload: {
+                lenderName: '你', // 默认是向“你”借钱
+                amount: amount,
+                reason: reason
+            }
+        };
+
+        // 3. 将两条消息打包成一个数组返回！
+        return [textMessage, cardMessage];
+    }
+    // ★★★ 修改结束 ★★★
+
+    // 如果不是借钱格式，则执行原来的逻辑，但为了统一，也返回一个数组
     if (trimmedText.startsWith('{') && trimmedText.endsWith('}')) {
         try {
             const parsed = JSON.parse(trimmedText);
-            // 必须包含 type 属性才认为是有效格式
             if (parsed.type) {
-                return parsed;
+                return [parsed]; // 单个对象也包装成数组
             }
         } catch (e) { /* 解析失败，继续往下走 */ }
     }
     
-    // 2. 尝试解析为表情包
     if (STICKER_REGEX.test(trimmedText)) {
-        // 对于编辑的表情，我们暂时无法知道其`meaning`，所以只存URL
-        return { type: 'sticker', content: trimmedText };
+        return [{ type: 'sticker', content: trimmedText }];
     }
 
-    // 3. 否则，视为普通文本消息
-    return { type: 'text', content: trimmedText };
+    // 默认返回一个只包含单条文本消息的数组
+    return [{ type: 'text', content: trimmedText }];
 }
+// ▲▲▲ 替换结束 ▲▲▲
 
 
-// ▼▼▼ 请用这块【最终修复版】的代码，完整替换你旧的 saveEditedMessage 函数 ▼▼▼
-
+// ▼▼▼ 【数组兼容版】请用这块代码完整替换旧的 saveEditedMessage 函数 ▼▼▼
 async function saveEditedMessage(timestamp, simpleContent = null) {
     if (!timestamp) return;
 
@@ -31278,96 +32934,41 @@ async function saveEditedMessage(timestamp, simpleContent = null) {
     const messageIndex = chat.history.findIndex(m => m.timestamp === timestamp);
     if (messageIndex === -1) return;
 
-    // ▼▼▼ 核心修复1：获取原始消息的元数据 ▼▼▼
-    // 我们需要原始消息的 role, senderName 等信息，所以先把它找出来。
     const originalMessage = chat.history[messageIndex];
-    if (!originalMessage) return; // 安全检查
+    if (!originalMessage) return;
 
-    let newMessages = [];
+    let newMessagesData = [];
 
-    // 处理来自高级编辑器（拆分消息）或简单编辑器（修改单条消息）的数据
     if (simpleContent !== null) {
-        const rawContent = simpleContent.trim();
-        if (rawContent) {
-            newMessages.push(parseEditedContent(rawContent));
-        }
+        newMessagesData = parseEditedContent(simpleContent.trim());
     } else {
+        // 高级编辑器的逻辑保持不变，但要确保它也返回数组
         const editorContainer = document.getElementById('message-editor-container');
         const editorBlocks = editorContainer.querySelectorAll('.message-editor-block');
         for (const block of editorBlocks) {
             const textarea = block.querySelector('textarea');
             const rawContent = textarea.value.trim();
             if (rawContent) {
-                newMessages.push(parseEditedContent(rawContent));
+                // parseEditedContent 现在总是返回数组，我们用concat来合并
+                newMessagesData = newMessagesData.concat(parseEditedContent(rawContent));
             }
         }
     }
 
-    if (newMessages.length === 0) {
+    if (newMessagesData.length === 0) {
         document.getElementById('message-editor-modal').classList.remove('visible');
         return;
     }
 
-    // ▼▼▼ 核心修复2：合并元数据和新内容，创建完整的消息对象 ▼▼▼
-    // 我们不再创建只有 type 和 content 的“残缺”对象，
-    // 而是使用原始消息的元数据，只更新内容部分。
-    const messagesToInsert = newMessages.map(newMsgData => {
-        // 使用扩展运算符(...)，先复制原始消息的所有属性（role, senderName等）
-        // 然后用新解析出的数据（type, content等）覆盖旧的。
-        const finalMessage = {
-            ...originalMessage,
-            ...newMsgData
-        };
+    const messagesToInsert = newMessagesData.map(newMsgData => ({
+        ...originalMessage, // 继承原消息的角色、发送者等信息
+        ...newMsgData      // 用新解析出的数据覆盖 type, content, payload 等
+    }));
 
-        // 单独处理特殊类型的 content 字段
-        if (newMsgData.type === 'voice_message') {
-            finalMessage.content = newMsgData.content;
-        } else if (newMsgData.type === 'ai_image') {
-            finalMessage.content = newMsgData.description;
-            delete finalMessage.description; // 清理多余字段
-        } else if (newMsgData.type === 'transfer') {
-            finalMessage.amount = newMsgData.amount;
-            finalMessage.note = newMsgData.note;
-            finalMessage.content = `[转账] 金额: ${newMsgData.amount}, 备注: ${newMsgData.note || '无'}`;
-        } else if (newMsgData.type === 'share_link') {
-            finalMessage.title = newMsgData.title;
-            finalMessage.description = newMsgData.description;
-            finalMessage.source_name = newMsgData.source_name;
-            finalMessage.content = newMsgData.content; // 正文
-        }
-
-        // 处理定位信息的特殊逻辑
-        const rawContent = newMsgData.content || '';
-        if (rawContent.startsWith('[SEND_LOCATION]')) {
-            const dataString = rawContent.replace('[SEND_LOCATION]', '').trim();
-            const parts = dataString.split('|');
-            const locationData = { userLocation: '', aiLocation: '', distance: '', trajectoryPoints: [] };
-            parts.forEach(part => {
-                const [key, ...valueParts] = part.split(':');
-                const value = valueParts.join(':').trim();
-                if (key && value) {
-                    const trimmedKey = key.trim();
-                    if (trimmedKey === '我的位置') locationData.userLocation = value;
-                    else if (trimmedKey === '你的位置') locationData.aiLocation = value;
-                    else if (trimmedKey === '相距') locationData.distance = value;
-                    else if (trimmedKey === '途经点') {
-                        locationData.trajectoryPoints = value.split(/[,，]/).map(name => ({ name: name.trim() })).filter(p => p.name);
-                    }
-                }
-            });
-            finalMessage.type = 'location';
-            finalMessage.userLocation = locationData.userLocation;
-            finalMessage.aiLocation = locationData.aiLocation;
-            finalMessage.distance = locationData.distance;
-            finalMessage.trajectoryPoints = locationData.trajectoryPoints;
-        }
-
-        return finalMessage;
-    });
-
-    // 后续的保存和刷新逻辑保持不变
+    // ★★★ 核心修改：使用扩展运算符 ... 将数组内容一次性插入 ★★★
     chat.history.splice(messageIndex, 1, ...messagesToInsert);
 
+    // 后续的时间戳重新分配和UI刷新逻辑保持不变
     let reassignTimestamp = timestamp;
     for (let i = messageIndex; i < chat.history.length; i++) {
         chat.history[i].timestamp = reassignTimestamp;
@@ -31379,9 +32980,7 @@ async function saveEditedMessage(timestamp, simpleContent = null) {
     renderChatInterface(state.activeChatId);
     await showCustomAlert('成功', '消息已更新！');
 }
-
-
-
+// ▲▲▲ 替换结束 ▲▲▲
 
 // ▼▼▼ 请将这【一整块新函数】粘贴到JS功能函数定义区的末尾 ▼▼▼
 
@@ -50728,8 +52327,1817 @@ ${requirements || '无特殊要求，请自由发挥。'}
     }
 }
 // ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 【全新 | 彻底重构】约会大作战 - 邀请与支付核心功能函数 ▼▼▼
+
+/**
+ * 【总入口 V2】当用户点击约会卡片时，打开角色选择器
+ * @param {object} scene - 被选中的约会场景对象
+ */
+async function openDatingCharacterSelector(scene) {
+    const modal = document.getElementById('dating-char-selector-modal');
+    const listEl = document.getElementById('dating-char-selector-list');
+    listEl.innerHTML = '';
+
+    // 1. 找出所有可约会的单聊角色
+    const singleChats = Object.values(state.chats).filter(chat => !chat.isGroup);
+
+    if (singleChats.length === 0) {
+        alert("你还没有任何可以约会的角色哦，先去创建一个吧！");
+        return;
+    }
+
+    // 2. 为每个角色创建列表项
+    singleChats.forEach(chat => {
+        const item = document.createElement('div');
+        item.className = 'character-select-item'; // 复用现有的样式
+        item.dataset.charId = chat.id; // 将角色ID存起来
+        item.innerHTML = `
+            <img src="${chat.settings.aiAvatar || defaultAvatar}" alt="${chat.name}">
+            <span class="name">${chat.name}</span>
+        `;
+        // 3. 【核心】为每个角色项绑定点击事件
+        item.addEventListener('click', () => {
+            modal.classList.remove('visible'); // 点击后先关闭选择器
+            openDatingInvitationModal(scene, chat.id); // 然后带着场景和角色ID，打开支付弹窗
+        });
+        listEl.appendChild(item);
+    });
+
+    // 绑定取消按钮
+    document.getElementById('dating-cancel-char-select-btn').onclick = () => modal.classList.remove('visible');
+    
+    // 4. 显示角色选择弹窗
+    modal.classList.add('visible');
+}
 
 
+// ▼▼▼ 请用这【一整块】全新的代码，完整替换掉你旧的 openDatingInvitationModal 函数 ▼▼▼
+/**
+ * 【V2 | 文游改造版】打开支付方式选择的模态框
+ * @param {object} scene - 约会场景对象
+ * @param {string} targetCharId - 被邀请角色的ID
+ */
+async function openDatingInvitationModal(scene, targetCharId) {
+    const modal = document.getElementById('dating-payment-modal');
+    document.getElementById('dating-modal-scene-name').textContent = scene.name;
+    document.getElementById('dating-modal-scene-cost').textContent = `预计花费: ${scene.cost}金币`;
+
+    const optionsContainer = document.getElementById('dating-payment-options');
+    optionsContainer.innerHTML = '';
+
+    const chat = state.chats[targetCharId];
+    if (!chat) return;
+
+    // --- ★★★ 核心修改在这里 ★★★ ---
+    // 我们现在将所有支付选项的处理函数都改为调用 startDatingScene
+
+    const createButton = (text, handler, requiresBalanceCheck = 0) => {
+        const button = document.createElement('button');
+        button.className = 'form-button';
+        button.textContent = text;
+        button.onclick = async () => {
+            modal.classList.remove('visible');
+            
+            // 如果需要检查余额
+            if (requiresBalanceCheck > 0) {
+                const userBalance = state.globalSettings.userBalance || 0;
+                if (userBalance < requiresBalanceCheck) {
+                    await showCustomAlert("余额不足", "你的钱包空空如也，无法支付这次约会的花费！");
+                    return;
+                }
+                // 扣款并记录
+                await updateUserBalanceAndLogTransaction(-requiresBalanceCheck, `约会支出: ${scene.name}`);
+                await showCustomAlert("支付成功", `已成功支付 ${requiresBalanceCheck}金币！`);
+            }
+            // 调用新的开始约会函数！
+            handler(scene, targetCharId);
+        };
+        optionsContainer.appendChild(button);
+    };
+
+    // 1. 我来付全款：检查并扣除全款，然后开始约会
+    createButton('我来付全款', startDatingScene, scene.cost);
+
+    // 2. 让对方付全款：直接开始约会 (我们假设对方同意了)
+    createButton(`让 ${chat.name} 付全款`, startDatingScene);
+
+    // 3. AA制：检查并扣除一半款项，然后开始约会
+    createButton('我们AA制吧', startDatingScene, scene.cost / 2);
+    
+    // 4. 找人借钱：这个逻辑保持不变，它会打开借钱的流程
+    const otherChars = Object.values(state.chats).filter(c => !c.isGroup && c.id !== targetCharId);
+    if (otherChars.length > 0) {
+        const borrowBtn = document.createElement('button');
+        borrowBtn.className = 'form-button';
+        borrowBtn.textContent = '我钱不够，找别人借点...';
+        borrowBtn.onclick = () => {
+            modal.classList.remove('visible');
+            openBorrowMoneyModal(scene, targetCharId); // 调用旧的借钱函数
+        };
+        optionsContainer.appendChild(borrowBtn);
+    }
+    // --- ★★★ 修改结束 ★★★ ---
+
+    document.getElementById('dating-cancel-btn').onclick = () => modal.classList.remove('visible');
+    modal.classList.add('visible');
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+/**
+ * 【重构版】处理用户付全款的逻辑
+ * @param {object} scene - 约会场景对象
+ * @param {string} targetCharId - 被邀请角色的ID
+ */
+async function handleUserPaysForDate(scene, targetCharId) {
+    const cost = scene.cost;
+    const userBalance = state.globalSettings.userBalance || 0;
+
+    if (userBalance < cost) {
+        await showCustomAlert("余额不足", "你的钱包空空如也，无法支付这次约会的花费！");
+        return;
+    }
+
+    await updateUserBalanceAndLogTransaction(-cost, `约会支出: ${scene.name}`);
+    await showCustomAlert("支付成功", `已成功支付 ${cost}金币！现在可以开始你们的约会了。`);
+
+    const hiddenMessage = {
+        role: 'system',
+        content: `[系统提示：用户已为约会“${scene.name}”付款，花费${cost}金币。现在约会正式开始，请根据场景和人设，开启一段浪漫的约会对话。]`,
+        timestamp: Date.now(),
+        isHidden: true
+    };
+    
+    // 【核心修改】将消息添加到【目标角色】的聊天记录中
+    const chat = state.chats[targetCharId];
+    chat.history.push(hiddenMessage);
+    await db.chats.put(chat);
+    
+    // 打开与该角色的聊天并触发回应
+    openChat(targetCharId);
+    triggerAiResponse();
+}
+
+/**
+ * 【重构版】向AI请求让它付全款
+ * @param {object} scene - 约会场景对象
+ * @param {string} targetCharId - 被邀请角色的ID
+ */
+async function requestCharToPay(scene, targetCharId) {
+    const chat = state.chats[targetCharId];
+    const cost = scene.cost;
+
+    const hiddenMessage = {
+        role: 'system',
+        content: `[系统指令：用户邀请你进行约会“${scene.name}”，并希望由你来支付全部费用（${cost}金币）。你的钱包余额是 ${chat.characterPhoneData.bank.balance.toFixed(2)} 金币。请根据你的人设、你与用户的关系以及你的钱包余额，决定是否同意。你【必须】使用 'dating_payment_response' 指令，并设置 "decision" 为 "accept" 或 "reject" 来回应。]`,
+        timestamp: Date.now(),
+        isHidden: true
+    };
+
+    chat.history.push(hiddenMessage);
+    await db.chats.put(chat);
+    
+    await showCustomAlert("请求已发送", `已向 ${chat.name} 发出请求，请到聊天中查看Ta的回应吧。`);
+    openChat(targetCharId);
+    triggerAiResponse();
+}
+
+/**
+ * 【重构版】向AI请求AA制
+ * @param {object} scene - 约会场景对象
+ * @param {string} targetCharId - 被邀请角色的ID
+ */
+async function requestAAsplit(scene, targetCharId) {
+    const chat = state.chats[targetCharId];
+    const splitCost = scene.cost / 2;
+
+    if ((state.globalSettings.userBalance || 0) < splitCost) {
+        await showCustomAlert("余额不足", `你的余额不足以支付AA制的费用（${splitCost.toFixed(2)}金币）！`);
+        return;
+    }
+    
+    const hiddenMessage = {
+        role: 'system',
+        content: `[系统指令：用户邀请你进行约会“${scene.name}”，并提议AA制，即各自支付 ${splitCost.toFixed(2)} 金币。你的钱包余额是 ${chat.characterPhoneData.bank.balance.toFixed(2)} 金币。请根据你的人设和你与用户的关系，决定是否同意。你【必须】使用 'dating_aa_response' 指令，并设置 "decision" 为 "accept" 或 "reject" 来回应。]`,
+        timestamp: Date.now(),
+        isHidden: true
+    };
+    
+    chat.history.push(hiddenMessage);
+    await db.chats.put(chat);
+
+    await showCustomAlert("请求已发送", `已向 ${chat.name} 发出AA制的提议，请到聊天中查看Ta的回应吧。`);
+    openChat(targetCharId);
+    triggerAiResponse();
+}
+
+
+// ▼▼▼ 【全新 | V2版】约会借钱功能核心函数 ▼▼▼
+
+/**
+ * 【V2 | 带头像、可滑动】打开“找人借钱”的选择列表
+ * @param {object} scene - 约会场景对象
+ * @param {string} dateTargetCharId - 你的约会对象ID
+ */
+async function openBorrowMoneyModal(scene, dateTargetCharId) {
+    const modal = document.getElementById('borrow-money-modal');
+    const listEl = document.getElementById('borrow-money-char-list');
+    listEl.innerHTML = '';
+
+    const otherChars = Object.values(state.chats).filter(c => !c.isGroup && c.id !== dateTargetCharId);
+
+    if (otherChars.length === 0) {
+        alert("没有其他可以借钱的朋友了。");
+        return;
+    }
+
+    otherChars.forEach(char => {
+        const item = document.createElement('div');
+        item.className = 'character-select-item'; // 复用样式
+        item.dataset.charId = char.id;
+        item.innerHTML = `
+            <img src="${char.settings.aiAvatar || defaultAvatar}" alt="${char.name}">
+            <span class="name">${char.name}</span>
+        `;
+        item.addEventListener('click', async () => {
+            modal.classList.remove('visible');
+            const borrowAmountStr = await showCustomPrompt("借多少？", "请输入你想借的金额", "", "number");
+            const borrowAmount = parseFloat(borrowAmountStr);
+            if (borrowAmount > 0) {
+                await requestToBorrowMoney(scene, dateTargetCharId, char.id, borrowAmount);
+            } else if (borrowAmountStr !== null) {
+                alert("请输入有效的借款金额！");
+            }
+        });
+        listEl.appendChild(item);
+    });
+
+    document.getElementById('borrow-money-cancel-btn').onclick = () => modal.classList.remove('visible');
+    modal.classList.add('visible');
+}
+
+async function requestToBorrowMoney(scene, dateTargetCharId, lenderChatId, amount) {
+    const dateTargetChat = state.chats[dateTargetCharId]; 
+    const lenderChat = state.chats[lenderChatId];     
+    if (!lenderChat || !dateTargetChat) return;
+
+    const myNickname = dateTargetChat.settings.myNickname || '我';
+
+    // 1. 先构建payload和文本内容，方便复用
+    const reasonText = `用于和“${dateTargetChat.name}”在“${scene.name}”的约会。`;
+    const payloadData = {
+        lenderName: lenderChat.name,
+        amount: amount,
+        reason: reasonText
+    };
+    // ★★★ 这就是我们新增的文本消息内容 ★★★
+    const textContent = `向 ${lenderChat.name} 借钱 ${amount.toFixed(2)}元，${reasonText}`;
+
+    // 2. 创建完整的消息对象，同时包含 payload 和 content
+    const borrowRequestMessage = {
+        role: 'user',
+        type: 'borrow_money_request',
+        timestamp: Date.now(),
+        payload: payloadData,      // payload 用于渲染借条卡片（保持不变）
+        content: textContent       // content 用于显示为文本消息（这是新增的）
+    };
+    
+    // 将借条发到“债主”的聊天里 (这部分代码保持不变)
+    lenderChat.history.push(borrowRequestMessage);
+    
+    // 3. 【核心修改】创建给AI看的、带有详细信息的隐藏指令
+    const hiddenMessage = {
+        role: 'system',
+        content: `[系统指令：用户 “${myNickname}” 想向你借 ${amount.toFixed(2)} 金币，用于和 “${dateTargetChat.name}” 在 “${scene.name}” 约会。你的钱包余额是 ${lenderChat.characterPhoneData.bank.balance.toFixed(2)} 金币。请根据你的人设、你和用户的关系以及你的钱包余额，决定是否借钱。你【必须】使用 'lend_money_response' 指令，并设置 "decision" 为 "accept" 或 "reject" 来回应，并可以在文本消息中说明理由。]`,
+        timestamp: Date.now() + 1, // 确保时间戳在后
+        isHidden: true
+    };
+    lenderChat.history.push(hiddenMessage);
+    await db.chats.put(lenderChat);
+
+    await showCustomAlert("借钱请求已发送", `已向“${lenderChat.name}”发起了借款请求，请到和Ta的聊天中查看结果。`);
+    
+    // 打开与“债主”的聊天并触发回应
+    openChat(lenderChatId);
+    triggerAiResponse();
+}
+// ▼▼▼ 【全新】约会大作战-文游模式核心功能 ▼▼▼
+
+let datingGameState = {
+    isActive: false,
+    scene: null,
+    characterId: null,
+    storyHistory: [], // 用于记录对话历史，方便AI生成后续内容
+};
+// ▼▼▼ 【最终渐变版】用这整块新代码，替换旧的 renderDatingValues 函数 ▼▼▼
+/**
+ * 【最终版 | SVG 渐变填充】渲染约会数值条（心形UI）
+ * 这个版本使用线性渐变，最稳定、最高效。
+ */
+function renderDatingValues() {
+    const romanceContainer = document.getElementById('romance-value');
+    const lustContainer = document.getElementById('lust-value');
+    if (!romanceContainer || !lustContainer) return;
+
+    // 清空旧的心形
+    romanceContainer.innerHTML = '';
+    lustContainer.innerHTML = '';
+
+    // 辅助函数：渲染一个完整的数值条
+    const renderValueBar = (container, value, type) => {
+        // ★★★ 核心修复：直接在这里定义颜色，不再使用CSS变量 ★★★
+        const fillColor = type === 'romance' ? '#ff8fab' : '#ffde59'; // 粉色代表浪漫，黄色代表性欲
+        // ★★★ 修复结束 ★★★
+
+        const emptyColor = '#ccc';
+        const emptyOpacity = '0.3';
+
+        for (let i = 0; i < 5; i++) {
+            // 计算当前这颗心应该被填充的百分比 (0-100)
+            const fillPercentage = Math.max(0, Math.min(100, (value - i * 20) * 5));
+            
+            // 为每个SVG的渐变效果生成一个唯一的ID
+            const gradientId = `heart-gradient-${type}-${i}`;
+
+            const heartSvg = `
+                <svg viewBox="0 0 24 24">
+                    <defs>
+                        <linearGradient id="${gradientId}" x1="0" x2="0" y1="1" y2="0">
+                            <stop offset="${fillPercentage}%" stop-color="${fillColor}" />
+                            <stop offset="${fillPercentage}%" stop-color="${emptyColor}" stop-opacity="${emptyOpacity}" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                          fill="url(#${gradientId})"
+                          stroke="#aaa" 
+                          stroke-width="1.5"/>
+                </svg>
+            `;
+            container.innerHTML += heartSvg;
+        }
+    };
+    
+    // 调用函数，渲染两个数值条
+    renderValueBar(romanceContainer, datingGameState.romance, 'romance');
+    renderValueBar(lustContainer, datingGameState.lust, 'lust');
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+
+
+/**
+ * 【总入口 V3】开始一场约会 (已适配新版文游逻辑)
+ */
+async function startDatingScene(scene, targetCharId) {
+    console.log(`开始约会: 场景="${scene.name}", 角色ID=${targetCharId}`);
+
+    datingGameState = {
+        isActive: true,
+        scene: scene,
+        characterId: targetCharId,
+        storyHistory: [],
+        romance: 0,
+        lust: 0,
+        currentStoryText: "",
+        currentSentenceIndex: -1,
+        sentences: [],
+        isSwitchingSentence: false,
+        // ▼▼▼ 在这里添加下面这行新代码 ▼▼▼
+        isNsfwMode: false, 
+        // ▲▲▲ 添加结束 ▲▲▲
+    };
+
+
+    const chat = state.chats[targetCharId];
+    if (!chat) return;
+
+    // 2. 准备UI元素
+    const backgroundEl = document.getElementById('dating-game-background');
+    const charNameEl = document.getElementById('dating-game-char-name');
+    const textContentEl = document.getElementById('dating-game-text-content');
+    const choicesEl = document.getElementById('dating-game-choices');
+
+    // 3. 重置UI到初始状态
+    charNameEl.textContent = chat.name;
+    backgroundEl.style.backgroundImage = 'none';
+    textContentEl.innerHTML = '<p>AI正在精心构筑你们的约会世界...</p>';
+    textContentEl.parentElement.style.opacity = 1;
+    choicesEl.innerHTML = '';
+    
+    // 4. 显示游戏界面
+    showScreen('dating-game-screen');
+
+    // 5. 并行加载背景图和第一段剧情
+    const imagePrompt = scene.imagePrompt + ", vertical, phone wallpaper, cinematic lighting, masterpiece, best quality, beautiful anime style art";
+    generateAndLoadImage(imagePrompt)
+        .then(imageUrl => { backgroundEl.style.backgroundImage = `url(${imageUrl})`; })
+        .catch(error => { 
+            console.error("约会背景图加载失败:", error);
+            backgroundEl.style.backgroundColor = '#1c1e26';
+        });
+    // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
+    // 重置数值
+    datingGameState.romance = 0;
+    datingGameState.lust = 0;
+        // 重置并显示完成度进度条
+    datingGameState.completion = 0;
+    renderDatingCompletion();
+    document.getElementById('dating-completion-bar-container').style.display = 'block';
+    // 渲染并显示心形UI
+    renderDatingValues();
+    document.getElementById('dating-values-container').style.display = 'flex';
+    // ▲▲▲ 新代码粘贴结束 ▲▲▲
+    await triggerDatingStory("start");
+}
+// ▼▼▼ 【全新】这是渲染完成度进度条的UI函数 ▼▼▼
+/**
+ * 渲染并更新约会完成度进度条的UI
+ */
+function renderDatingCompletion() {
+    const container = document.getElementById('dating-completion-bar-container');
+    const fill = document.getElementById('dating-completion-bar-fill');
+    const text = document.getElementById('dating-completion-text');
+
+    if (!container || !fill || !text) return;
+    
+    // 从游戏状态中获取完成度
+    const completion = datingGameState.completion || 0;
+    
+    // 更新填充条的宽度和百分比文字
+    fill.style.width = `${completion}%`;
+    text.textContent = `${Math.round(completion)}%`;
+}
+// ▲▲▲ 新增函数结束 ▲▲▲
+
+// ▼▼▼ 【V5 | 最终浪漫版】请用这整块代码，完整替换掉你旧的 triggerDatingStory 函数 ▼▼▼
+async function triggerDatingStory(userAction) {
+  datingGameState.isNsfwMode = false;
+    if (!datingGameState.isActive) return;
+
+    const { scene, characterId, storyHistory } = datingGameState;
+    const chat = state.chats[characterId];
+    const { proxyUrl, apiKey, model } = state.apiConfig;
+    if (!proxyUrl || !apiKey || !model) {
+        alert("API未配置，无法继续约会。");
+        return;
+    }
+    
+    if (userAction !== "start") {
+        storyHistory.push(`【你的选择】: ${userAction}`);
+    }
+
+    const textContentEl = document.getElementById('dating-game-text-content');
+    const choicesEl = document.getElementById('dating-game-choices');
+    
+    textContentEl.innerHTML = '<p><i>对方正在思考...</i></p>';
+    choicesEl.innerHTML = '';
+
+    const uiSettings = chat.settings.datingUISettings || {};
+    const customPrompt = uiSettings.prompt || '';
+    const customStyle = uiSettings.style || '你的回复必须是【第三人称】的旁白，详细描绘场景、角色的动作、神态、心理活动以及对话。让用户感觉像在看小说。';
+
+    let spriteContext = '';
+    let spriteChoiceInstruction = '';
+    const spriteGroupId = uiSettings.spriteGroupId;
+
+    if (spriteGroupId) {
+        const sprites = await db.datingSprites.where('groupId').equals(spriteGroupId).toArray();
+        if (sprites.length > 0) {
+            spriteContext = `
+# 可用角色立绘
+你有一个立绘库，请根据当前情景选择一个最能表达角色“${chat.name}”心情和动作的立绘描述。
+- ${sprites.map(s => `[描述: ${s.description}]`).join('\n- ')}
+`;
+            spriteChoiceInstruction = `"sprite": "【从上方列表中选择一个最合适的描述，并填在这里】",`;
+        }
+    }
+
+// ▼▼▼ 【V6 | 完成度版】用这整块代码，替换旧的 triggerDatingStory 函数里的 systemPrompt ▼▼▼
+// ▼▼▼ 【V2 | 智能评分版】用这整块代码，替换旧的 triggerDatingStory 函数里的 systemPrompt ▼▼▼
+    const systemPrompt = `
+# 角色扮演：恋爱互动小说游戏引擎
+你现在是一个顶级的恋爱互动小说游戏引擎。你的任务是根据用户选择，推动一个浪漫约会故事的发展。
+## 故事背景
+- **你的角色**: 你将扮演角色“${chat.name}”。
+- **你的角色人设**: ${chat.settings.aiPersona}\n${customPrompt}
+- **用户的人设**: ${chat.settings.myPersona}
+- **约会场景**: ${scene.name}
+${spriteContext}
+## 当前约会状态 (重要参考)
+- **浪漫值**: ${datingGameState.romance}/100
+- **性欲值**: ${datingGameState.lust}/100
+- **约会完成度**: ${datingGameState.completion}%
+
+## 核心规则
+1.  **沉浸式叙事**: ${customStyle}
+2.  **提供选择**: 在每段叙事后，你【必须】提供 2-4 个供用户选择的行动或对话选项。
+3.  **【【【智能评分铁律】】】**: 你【必须】根据当前的故事进展、用户的选择以及你的回应，对本次互动的“质量”进行评估，并给出三个数值的【增加值】。
+    - **"romance" (浪漫值)**: 如果互动是甜蜜、温馨或感人的，可以增加5-15分。
+    - **"lust" (性欲值)**: 如果互动包含挑逗、暗示或身体接触，可以增加5-15分。
+    - **"completion_increase" (完成度增加值)**:
+        -   这是一个【可正可负】的数值。
+        -   **正面互动**: 如果用户的选择让关系升温（例如，选择了更浪漫或大胆的选项），你应该给一个正数，范围在 **3到10** 之间。
+        -   **负面互动**: 如果用户的选择很煞风景、粗鲁或导致尴尬，你应该给一个【负数】，范围在 **-10到-1** 之间，表示约会进度倒退。
+        -   **平淡互动**: 如果互动很平淡或只是过渡，可以给 **0** 或 **1-2** 分。
+4.  **【【【结束时机铁律】】】**: 当你认为故事已经发展到一个完美的、可以自然结束的节点时（例如：互相道别、回到家中），并且总完成度已接近100%，你【必须】将 \`"isDateOver"\` 字段设置为 \`true\`。
+5.  **【【【格式铁律】】】**: 你的回复【必须且只能】是一个严格的JSON对象，格式如下:
+    {
+      ${spriteChoiceInstruction}
+      "story": "【这里是你的叙事内容...】",
+      "choices": [
+        "【选项1的文字描述】",
+        "【选项2的文字描述】"
+      ],
+      "valuesUpdate": {
+        "romance": 5,
+        "lust": 0,
+        "completion_increase": 8
+      },
+      "isDateOver": false
+    }
+## 故事历史 (供你参考)
+${storyHistory.join('\n')}
+现在，请根据用户的最新选择“${userAction}”，生成下一段故事、新的选项和智能评分。
+`;
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+    try {
+        const messagesForApi = [{ role: 'user', content: systemPrompt }];
+        let isGemini = proxyUrl === GEMINI_API_URL;
+        let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi, isGemini);
+        
+        const response = isGemini 
+            ? await fetch(geminiConfig.url, geminiConfig.data) 
+            : await fetch(`${proxyUrl}/v1/chat/completions`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+                body: JSON.stringify({ model: model, messages: messagesForApi, temperature: 0.9, response_format: { type: "json_object" } })
+            });
+
+        if (!response.ok) throw new Error(`API 请求失败: ${await response.text()}`);
+        
+        const data = await response.json();
+        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content).replace(/^```json\s*|```$/g, '').trim();
+        const gameData = JSON.parse(rawContent);
+
+// ▼▼▼ 【V6 | 完成度最终版】用这整块代码，替换旧的 triggerDatingStory 函数里的 if (gameData.story...) 代码块 ▼▼▼
+if (gameData.story && Array.isArray(gameData.choices)) {
+    if (gameData.valuesUpdate) {
+        const romanceChange = gameData.valuesUpdate.romance || 0;
+        const lustChange = gameData.valuesUpdate.lust || 0;
+        const completionIncrease = gameData.valuesUpdate.completion_increase || 0;
+
+        datingGameState.romance = Math.max(0, Math.min(100, datingGameState.romance + romanceChange));
+        datingGameState.lust = Math.max(0, Math.min(100, datingGameState.lust + lustChange));
+        datingGameState.completion = Math.max(0, Math.min(100, datingGameState.completion + completionIncrease));
+        
+        console.log(`数值更新 -> 浪漫: ${datingGameState.romance}/100, 性欲: ${datingGameState.lust}/100, 完成度: ${datingGameState.completion}% (本次变化: ${completionIncrease})`);
+
+        renderDatingValues();
+        renderDatingCompletion();
+    }
+    
+    const isDateOver = gameData.isDateOver || false;
+    // ★★★ 核心修改：检查约会是否结束，并且完成度达到100% ★★★
+    if (isDateOver && datingGameState.completion >= 100) {
+        // 如果满足条件，就显示结算卡片，而不是直接结束
+        showDatingSummaryCard(gameData.story); 
+        return; // 显示卡片后，结束本次函数执行
+    }
+    
+    // 如果约会未结束，则继续正常流程
+    const spriteContainer = document.getElementById('dating-game-sprite-container');
+    const spriteImg = document.getElementById('dating-game-sprite');
+    if (gameData.sprite && spriteGroupId) {
+        const chosenSprite = await db.datingSprites.where({ groupId: spriteGroupId, description: gameData.sprite }).first();
+        if (chosenSprite) {
+            spriteContainer.style.display = 'block';
+            spriteContainer.style.left = `${chosenSprite.x}%`;
+            spriteContainer.style.bottom = `${100 - chosenSprite.y}%`;
+            spriteContainer.style.width = `${chosenSprite.size}%`;
+            spriteContainer.style.transform = `translateX(-50%) translateY(${100 - chosenSprite.y}%)`;
+            spriteImg.style.opacity = 0;
+            setTimeout(() => { spriteImg.src = chosenSprite.url; spriteImg.style.opacity = 1; }, 300);
+        } else {
+            if (spriteContainer) spriteContainer.style.display = 'none';
+        }
+    } else {
+        if (spriteContainer) spriteContainer.style.display = 'none';
+    }
+    
+    datingGameState.storyHistory.push(`【旁白】: ${gameData.story}`);
+    displayStoryText(gameData.story, gameData.choices);
+    
+    if (datingGameState.lust >= 100 && !datingGameState.isNsfwMode) {
+        await triggerNsfwScene();
+    }
+
+} else {
+    throw new Error("AI返回的数据格式不正确。");
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+
+    } catch (error) {
+        console.error("约会剧情生成失败:", error);
+        textContentEl.innerHTML = `<p style="color: #ff8a80;">错误: 剧情加载失败，AI可能开小差了... \n(${error.message})</p>`;
+    }
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+// ▼▼▼ 请用这整块【最终修复版】代码，完整替换旧的 triggerNsfwScene 函数 ▼▼▼
+/**
+ * 【V5 | 最终修复版】当欲望值满时，触发并推进NSFW剧情
+ * @param {string} userAction - 用户的选择或自定义行动
+ */
+async function triggerNsfwScene(userAction = "故事自然发展") {
+    // 1. 设置并确认NSFW模式标志
+    datingGameState.isNsfwMode = true;
+    console.log("NSFW模式已激活，正在生成NSFW剧情...");
+
+    if (!datingGameState.isActive) return;
+
+    // 2. 获取所需的所有数据 (这部分不变)
+    const { scene, characterId, storyHistory } = datingGameState;
+    const chat = state.chats[characterId];
+    const { proxyUrl, apiKey, model } = state.apiConfig;
+    if (!proxyUrl || !apiKey || !model) {
+        alert("API未配置，无法继续约会。");
+        return;
+    }
+    
+    storyHistory.push(`【你的选择】: ${userAction}`);
+    
+    // 3. 更新UI为等待状态 (这部分不变)
+    const textContentEl = document.getElementById('dating-game-text-content');
+    const choicesEl = document.getElementById('dating-game-choices');
+    textContentEl.innerHTML = '<p><i>气氛变得有些不一样了...</i></p>';
+    choicesEl.innerHTML = '';
+
+    // 4. 读取约会场景的通用设置 (这部分不变)
+    const uiSettings = chat.settings.datingUISettings || {};
+    const customPrompt = uiSettings.prompt || '';
+    const baseStyle = uiSettings.style || '你的回复必须是【第三人称】的旁白，详细描绘场景、角色的动作、神态、心理活动以及对话。让用户感觉像在看小说。';
+    const nsfwStyleInstruction = `
+# NSFW剧情指令 (最高优先级)
+接下来的故事【必须】包含详细、露骨、毫不避讳的性爱场面描写。你需要大胆地描绘角色的身体接触、动作、喘息、对话和内心感受，让故事进入高潮。叙事必须连贯、自然，符合角色性格。`;
+    const customStyleWithNsfw = `${baseStyle}\n${nsfwStyleInstruction}`;
+    
+    // 立绘逻辑 (这部分不变)
+    let spriteContext = '';
+    let spriteChoiceInstruction = '';
+    const spriteGroupId = uiSettings.spriteGroupId;
+    if (spriteGroupId) {
+        const sprites = await db.datingSprites.where('groupId').equals(spriteGroupId).toArray();
+        if (sprites.length > 0) {
+            spriteContext = `\n# 可用角色立绘\n${sprites.map(s => `- [描述: ${s.description}]`).join('\n')}`;
+            spriteChoiceInstruction = `"sprite": "【从上方列表中选择一个最合适的描述，并填在这里】",`;
+        }
+    }
+
+    // 5. ★★★ 核心修复：构建全新的、更清晰的System Prompt ★★★
+    const systemPrompt = `
+# 角色扮演：NSFW恋爱互动小说游戏引擎
+你现在是一个顶级的成人小说游戏引擎。你的任务是根据用户选择，续写一段已经发展到高潮的浪漫约会故事。
+
+## 故事背景
+- **你的角色**: 你将扮演角色“${chat.name}”。
+- **你的角色人设**: ${chat.settings.aiPersona}\n${customPrompt}
+- **用户的人设**: ${chat.settings.myPersona}
+- **约会场景**: ${scene.name}
+${spriteContext}
+## 当前约会状态 (重要参考)
+- **浪漫值**: ${datingGameState.romance}/100
+- **性欲值**: ${datingGameState.lust}/100
+- **约会完成度**: ${datingGameState.completion}%
+
+## 核心规则
+1.  **沉浸式叙事**: ${customStyleWithNsfw}
+2.  **提供选择**: 在每段NSFW叙事后，你【必须】提供 2-4 个供用户选择的、符合当前情景的行动或对话选项。
+3.  **智能评分**: 你【必须】根据当前的故事进展、用户的选择以及你的回应，对本次互动的“质量”进行评估，并给出三个数值的【增加值】。
+    - "romance" (浪漫值): 如果互动是甜蜜、温馨或感人的，可以增加5-15分。
+    - "lust" (性欲值): 因为是NSFW剧情，此项应该持续增加，范围在10-25分之间。
+    - "completion_increase" (完成度增加值): 如果用户的选择让关系升温（例如，选择了更浪漫或大胆的选项），你应该给一个正数，范围在 3到10 之间。如果用户的选择很煞风景，你应该给一个负数，范围在 -10到-1 之间。
+4.  **【【【结束时机铁律】】】**: 你的主要任务是推进剧情，但当故事发展到一个**自然且满足的结局**时（例如：激情后的温存、相拥而眠、约定下次再见等），你【必须】将 \`"isDateOver"\` 字段设置为 \`true\` 来结束本次约会。这是结束的唯一方式。**不要无限地进行下去。**
+5.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON对象，格式如下:
+    {
+      ${spriteChoiceInstruction}
+      "story": "【这里是你的NSFW叙事内容...】",
+      "choices": [
+        "【选项1的文字描述】",
+        "【选项2的文字描述】"
+      ],
+      "valuesUpdate": {
+        "romance": 5,
+        "lust": 15,
+        "completion_increase": 7
+      },
+      "isDateOver": false
+    }
+## 故事历史 (供你参考)
+${storyHistory.join('\n')}
+
+现在，请根据用户的最新选择“${userAction}”，生成下一段NSFW故事、新的选项和智能评分。
+`;
+
+    try {
+        const messagesForApi = [{ role: 'user', content: systemPrompt }];
+        let isGemini = proxyUrl === GEMINI_API_URL;
+        let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi, isGemini);
+        
+        const response = await fetch(isGemini ? geminiConfig.url : `${proxyUrl}/v1/chat/completions`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+            body: JSON.stringify({ model: model, messages: messagesForApi, temperature: 1.0, response_format: { type: "json_object" } })
+        });
+
+        if (!response.ok) throw new Error(`API 请求失败: ${await response.text()}`);
+        
+        const data = await response.json();
+        const rawContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content).replace(/^```json\s*|```$/g, '').trim();
+        const gameData = JSON.parse(rawContent);
+
+        if (gameData.story && Array.isArray(gameData.choices)) {
+            // 数值更新逻辑 (不变)
+            if (gameData.valuesUpdate) {
+                const romanceChange = gameData.valuesUpdate.romance || 0;
+                const lustChange = gameData.valuesUpdate.lust || 0;
+                const completionIncrease = gameData.valuesUpdate.completion_increase || 1; 
+                datingGameState.romance = Math.max(0, Math.min(100, datingGameState.romance + romanceChange));
+                datingGameState.lust = Math.max(0, Math.min(100, datingGameState.lust + lustChange));
+                datingGameState.completion = Math.max(0, Math.min(100, datingGameState.completion + completionIncrease));
+                renderDatingValues();
+                renderDatingCompletion();
+            }
+
+            // ★★★ 核心修复：只根据 AI 的 `isDateOver` 标志来决定是否结束 ★★★
+            const isDateOver = gameData.isDateOver || false;
+            if (isDateOver) {
+                showDatingSummaryCard(gameData.story); 
+                return; 
+            }
+            
+            // 后续的立绘更新、故事记录和文本显示逻辑保持不变
+            const spriteContainer = document.getElementById('dating-game-sprite-container');
+            const spriteImg = document.getElementById('dating-game-sprite');
+            if (gameData.sprite && spriteGroupId) {
+                const chosenSprite = await db.datingSprites.where({ groupId: spriteGroupId, description: gameData.sprite }).first();
+                if (chosenSprite) {
+                    spriteContainer.style.display = 'block';
+                    spriteContainer.style.left = `${chosenSprite.x}%`;
+                    spriteContainer.style.bottom = `${100 - chosenSprite.y}%`;
+                    spriteContainer.style.width = `${chosenSprite.size}%`;
+                    spriteContainer.style.transform = `translateX(-50%) translateY(${100 - chosenSprite.y}%)`;
+                    spriteImg.style.opacity = 0;
+                    setTimeout(() => { spriteImg.src = chosenSprite.url; spriteImg.style.opacity = 1; }, 300);
+                } else {
+                    if (spriteContainer) spriteContainer.style.display = 'none';
+                }
+            } else {
+                if (spriteContainer) spriteContainer.style.display = 'none';
+            }
+            
+            datingGameState.storyHistory.push(`【旁白】: ${gameData.story}`);
+            displayStoryText(gameData.story, gameData.choices);
+        } else {
+            throw new Error("AI返回的数据格式不正确。");
+        }
+    } catch (error) {
+        console.error("NSFW剧情生成失败:", error);
+        textContentEl.innerHTML = `<p style="color: #ff8a80;">错误: NSFW剧情加载失败... \n(${error.message})</p>`;
+    }
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+/**
+ * 【全新】处理剧情文本的逐句显示
+ * @param {string} storyText - AI返回的完整剧情文本
+ * @param {Array<string>} choices - AI返回的选项数组
+ */
+function displayStoryText(storyText, choices) {
+    // 1. 按标点符号分割句子
+    const sentences = storyText.match(/[^。！？\s][^。！？]*[。！？]?/g) || [storyText];
+    
+    // 2. 更新游戏状态
+    datingGameState.sentences = sentences;
+    datingGameState.currentSentenceIndex = -1; // 重置索引
+    datingGameState.choices = choices; // 暂存选项
+
+    // 3. 准备UI，但【不显示】选项
+    document.getElementById('dating-game-text-content').innerHTML = '';
+    document.getElementById('dating-game-choices').innerHTML = '';
+    
+    // 4. 显示第一句
+    showNextSentence();
+}
+
+// ▼▼▼ 【最终修正版 V3】请用这块代码，完整替换旧的 showNextSentence 函数 ▼▼▼
+
+// ▼▼▼ 【最终决战版】请用这块代码，完整替换旧的 showNextSentence 函数 ▼▼▼
+
+/**
+ * 【最终版V4】显示下一句剧情文本，或在结束后显示选项
+ * - 修正了文本意外消失的bug (使用appendChild代替innerHTML)
+ * - 增加了点击保护，防止跳过句子
+ */
+function showNextSentence() {
+    // 如果正在切换句子，则阻止任何新的操作，防止用户快速点击跳过剧情
+    if (datingGameState.isSwitchingSentence) return;
+    datingGameState.isSwitchingSentence = true; // 加锁
+
+    const { sentences, choices } = datingGameState;
+    const textContentEl = document.getElementById('dating-game-text-content');
+    const choicesEl = document.getElementById('dating-game-choices');
+    const textboxEl = textContentEl.parentElement;
+
+    // 句子索引+1
+    datingGameState.currentSentenceIndex++;
+    const nextIndex = datingGameState.currentSentenceIndex;
+    
+    // 用安全的方式移除旧的“点击继续”提示
+    const oldIndicator = textboxEl.querySelector('.continue-indicator');
+    if (oldIndicator) {
+        oldIndicator.remove();
+    }
+    
+    // 先让旧文本淡出
+    textContentEl.classList.add('fade-out');
+
+    // 设定一个延迟来执行文本替换和动画
+    setTimeout(() => {
+        if (nextIndex < sentences.length) {
+            const nextSentence = sentences[nextIndex];
+            
+            // 【关键修正1】使用textContent进行安全的文本替换，绝对不会累积
+            textContentEl.textContent = nextSentence;
+            
+            // 如果这不是最后一句...
+            if (nextIndex < sentences.length - 1) {
+                // 【关键修正2】用安全的方式创建并添加“点击继续”的提示，不会再破坏现有内容
+                const indicator = document.createElement('div');
+                indicator.className = 'continue-indicator';
+                indicator.textContent = '▼';
+                textboxEl.appendChild(indicator);
+            } else {
+                 // 如果是最后一句了，才显示选项
+                choices.forEach(choiceText => {
+                    const choiceBtn = document.createElement('button');
+                    choiceBtn.className = 'dating-game-choice-btn';
+                    choiceBtn.textContent = choiceText;
+                                    // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
+                // ★★★ 核心修改：根据是否在NSFW模式，调用不同的函数 ★★★
+                choiceBtn.onclick = () => {
+                    if (datingGameState.isNsfwMode) {
+                        triggerNsfwScene(choiceText);
+                    } else {
+                        triggerDatingStory(choiceText);
+                    }
+                };
+                // ▲▲▲ 新代码粘贴结束 ▲▲▲
+                    choicesEl.appendChild(choiceBtn);
+                });
+
+                // 添加“自由输入”按钮
+                const inputBtn = document.createElement('button');
+                inputBtn.className = 'dating-game-choice-btn input-action';
+                inputBtn.textContent = '自定义行动...';
+            // ▼▼▼ 用下面这段新的 onclick 代码替换旧的 ▼▼▼
+            // ★★★ 核心修改：同样根据模式调用不同函数 ★★★
+            inputBtn.onclick = async () => {
+                const userInput = await showCustomPrompt("你的行动", "请输入你想说的话或想做的事：");
+                if (userInput && userInput.trim()) {
+                    if (datingGameState.isNsfwMode) {
+                        triggerNsfwScene(userInput.trim());
+                    } else {
+                        triggerDatingStory(userInput.trim());
+                    }
+                }
+            };
+            // ▲▲▲ 替换结束 ▲▲▲
+                choicesEl.appendChild(inputBtn);
+            }
+        }
+        
+        // 让新文本淡入
+        textContentEl.classList.remove('fade-out');
+
+        // 所有操作完成后，解锁，允许下一次点击
+        datingGameState.isSwitchingSentence = false; 
+
+    }, 250); // 稍微增加一点时间，确保动画流畅
+}
+
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+
+// ▼▼▼ 【V2 | 流程重构版】用这块新代码替换旧的 endDate 函数 ▼▼▼
+/**
+ * 【总入口】当用户点击“结束约会”时，弹出选择框
+ */
+async function endDate() {
+    if (!datingGameState.isActive) return;
+
+    // 1. 弹出选择框，让用户决定如何结束
+    const choice = await showChoiceModal(
+        '结束约会',
+        [
+            { text: '生成并记录约会', value: 'record' },
+            { text: '直接结束不记录', value: 'discard' }
+        ]
+    );
+    
+    // 2. 根据用户的选择执行不同操作
+    if (choice === 'record') {
+        // 如果选择“记录”，就显示结算卡片
+        showDatingSummaryCard();
+    } else if (choice === 'discard') {
+        // 如果选择“不记录”，就直接结束并返回聊天列表
+        finalizeAndExitDate();
+    }
+    // 如果用户点了取消，则什么也不做，约会继续
+}
+
+/**
+ * 【全新】最终结束约会并重置状态的函数
+ */
+async function finalizeAndExitDate() {
+    if (!datingGameState.isActive) return;
+
+    const chat = state.chats[datingGameState.characterId];
+    if (chat) {
+        const endMessage = { role: 'system', type: 'pat_message', content: `你和“${chat.name}”在“${datingGameState.scene.name}”的约会结束了。`, timestamp: Date.now() };
+        chat.history.push(endMessage);
+        await db.chats.put(chat);
+    }
+    
+    // ▼▼▼【核心修复】就是在这里加上这一行！▼▼▼
+    document.getElementById('dating-completion-bar-container').style.display = 'none';
+    // ▲▲▲ 修复结束 ▲▲▲
+
+    // 重置游戏状态
+    datingGameState = {
+        isActive: false, scene: null, characterId: null, storyHistory: [], romance: 0,
+        lust: 0, completion: 0, currentStoryText: "", currentSentenceIndex: -1,
+        sentences: [], isSwitchingSentence: false, isNsfwMode: false
+    };
+
+    // 隐藏结算卡片（如果它还开着）
+    document.getElementById('dating-summary-overlay').classList.remove('visible');
+
+    // 返回聊天列表并刷新
+    showScreen('chat-list-screen');
+    await renderChatList();
+}
+
+
+
+/* ▲▲▲ 约会大作战文游改造函数结束 ▲▲▲ */
+// ▼▼▼ 用这块【已集成新功能】的代码，完整替换旧的 openDatingSettingsModal 函数 ▼▼▼
+/**
+ * 【总入口】打开约会场景设置弹窗
+ */
+async function openDatingSettingsModal() {
+    const modal = document.getElementById('dating-game-settings-modal');
+    const chat = state.chats[datingGameState.characterId];
+    if (!chat) return;
+
+    // 1. 加载当前角色的约会UI设置
+    currentDatingUISettings = JSON.parse(JSON.stringify(chat.settings.datingUISettings || {
+        prompt: '', style: '', backgroundUrl: '',
+        spriteGroupId: null, // ★★★ 确保这个属性存在 ★★★
+        sprite: { url: '', x: 50, y: 100, size: 80 }
+    }));
+    
+    // 2. 填充弹窗内容 (保持不变)
+    document.getElementById('dating-prompt-input').value = currentDatingUISettings.prompt;
+    document.getElementById('dating-style-input').value = currentDatingUISettings.style;
+    document.getElementById('dating-bg-url-input').value = currentDatingUISettings.backgroundUrl;
+    
+    // 3. ★★★ 核心修改：在这里调用新的渲染函数 ★★★
+    await renderDatingSpriteGroupSelector();
+    await renderDatingPresetSelector();
+
+    // 4. 显示弹窗
+    modal.classList.add('visible');
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+/**
+ * 【核心】应用当前的UI设置到游戏界面
+ */
+function applyDatingUISettings() {
+    if (!currentDatingUISettings) return;
+    
+    // 应用背景图
+    const backgroundEl = document.getElementById('dating-game-background');
+    if (currentDatingUISettings.backgroundUrl) {
+        backgroundEl.style.backgroundImage = `url(${currentDatingUISettings.backgroundUrl})`;
+    } else {
+        // 如果没有设置，可以恢复到场景默认图或一个通用背景
+        const imagePrompt = datingGameState.scene.imagePrompt + ", vertical, phone wallpaper, cinematic lighting, masterpiece, best quality, beautiful anime style art";
+        generateAndLoadImage(imagePrompt)
+            .then(imageUrl => { backgroundEl.style.backgroundImage = `url(${imageUrl})`; })
+            .catch(() => { backgroundEl.style.backgroundColor = '#1c1e26'; });
+    }
+
+    // 应用立绘
+    const spriteContainer = document.getElementById('dating-game-sprite-container');
+    const spriteImg = document.getElementById('dating-game-sprite');
+    const sprite = currentDatingUISettings.sprite;
+    if (sprite.url) {
+        spriteImg.src = sprite.url;
+        spriteContainer.style.display = 'block';
+        spriteContainer.style.left = `${sprite.x}%`;
+        spriteContainer.style.bottom = `${100 - sprite.y}%`;
+        spriteContainer.style.width = `${sprite.size}%`;
+        // 根据Y坐标调整transform，使立绘的“脚”能贴住设定的位置
+        spriteContainer.style.transform = `translateX(-50%) translateY(${100 - sprite.y}%)`;
+
+    } else {
+        spriteImg.src = '';
+        spriteContainer.style.display = 'none';
+    }
+}
+
+// ▼▼▼ 用这块【已集成新功能】的代码，完整替换旧的 saveDatingSettings 函数 ▼▼▼
+/**
+ * 【核心】保存当前设置到角色数据中
+ */
+async function saveDatingSettings() {
+    if (!datingGameState.characterId) return;
+    const chat = state.chats[datingGameState.characterId];
+    
+    // 从UI读取所有设置值
+    currentDatingUISettings.prompt = document.getElementById('dating-prompt-input').value.trim();
+    currentDatingUISettings.style = document.getElementById('dating-style-input').value.trim();
+    currentDatingUISettings.backgroundUrl = document.getElementById('dating-bg-url-input').value.trim();
+    
+    // ★★★ 核心新增：保存选中的立绘组ID ★★★
+    const selectedSpriteGroupId = document.getElementById('dating-sprite-group-select').value;
+    currentDatingUISettings.spriteGroupId = selectedSpriteGroupId ? parseInt(selectedSpriteGroupId) : null;
+
+    // 立绘位置和大小的保存逻辑保持不变 (但我们现在不再在这里保存立绘URL了)
+    currentDatingUISettings.sprite.x = 50;
+    currentDatingUISettings.sprite.y = 100;
+    currentDatingUISettings.sprite.size = 80;
+    currentDatingUISettings.sprite.url = ''; // URL由AI动态决定，这里不保存
+
+    // 确保角色的settings对象存在
+    if (!chat.settings) chat.settings = {};
+    // 保存
+    chat.settings.datingUISettings = currentDatingUISettings;
+    await db.chats.put(chat);
+    
+    // 应用并关闭弹窗
+    applyDatingUISettings();
+    document.getElementById('dating-game-settings-modal').classList.remove('visible');
+    alert("场景设置已保存！");
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+/**
+ * 【辅助】处理图片上传
+ * @param {'bg' | 'sprite'} type - 上传类型
+ */
+function handleDatingImageUpload(type) {
+    const inputId = type === 'bg' ? 'dating-bg-upload-input' : 'dating-sprite-upload-input';
+    const urlInputId = type === 'bg' ? 'dating-bg-url-input' : 'dating-sprite-url-input';
+    document.getElementById(inputId).click();
+
+    document.getElementById(inputId).onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const dataUrl = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.readAsDataURL(file);
+            });
+            document.getElementById(urlInputId).value = dataUrl;
+            if(type === 'bg') currentDatingUISettings.backgroundUrl = dataUrl;
+            else currentDatingUISettings.sprite.url = dataUrl;
+            applyDatingUISettings();
+        }
+        e.target.value = null; // 清空以便下次选择
+    };
+}
+
+/**
+ * 【重Roll功能】
+ */
+async function handleDatingReroll() {
+    if (!datingGameState.isActive || datingGameState.storyHistory.length === 0) {
+        alert("还没有可以重Roll的内容哦！");
+        return;
+    }
+
+    // 1. 找到最后一次用户的行动
+    let lastUserActionIndex = -1;
+    for (let i = datingGameState.storyHistory.length - 1; i >= 0; i--) {
+        if (datingGameState.storyHistory[i].startsWith('【你的选择】')) {
+            lastUserActionIndex = i;
+            break;
+        }
+    }
+    
+    // 如果找不到用户的行动（比如刚开始），就重Roll第一段剧情
+    if (lastUserActionIndex === -1) {
+        datingGameState.storyHistory = [];
+        await triggerDatingStory("start");
+        return;
+    }
+
+    // 2. 截取历史记录，回到用户做出选择之前的状态
+    const lastUserAction = datingGameState.storyHistory[lastUserActionIndex].replace('【你的选择】: ', '');
+    datingGameState.storyHistory = datingGameState.storyHistory.slice(0, lastUserActionIndex);
+    
+    // 3. 重新触发AI，使用户的最后一次行动再次生效
+    await triggerDatingStory(lastUserAction);
+}
+
+// --- 以下是预设管理功能 (逻辑与你其他预设功能类似) ---
+
+async function renderDatingPresetSelector() {
+    const select = document.getElementById('dating-preset-select');
+    const presets = await db.datingPresets.toArray();
+    select.innerHTML = '<option value="">-- 自定义 --</option>';
+    presets.forEach(p => {
+        select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+    });
+}
+
+async function handleDatingPresetSelect() {
+    const select = document.getElementById('dating-preset-select');
+    const presetId = parseInt(select.value);
+    if (presetId) {
+        const preset = await db.datingPresets.get(presetId);
+        if (preset) {
+            // 加载预设到当前设置并刷新UI
+            currentDatingUISettings = preset.settings;
+            // 重新填充弹窗内容
+            document.getElementById('dating-prompt-input').value = currentDatingUISettings.prompt;
+            document.getElementById('dating-style-input').value = currentDatingUISettings.style;
+            document.getElementById('dating-bg-url-input').value = currentDatingUISettings.backgroundUrl;
+            document.getElementById('dating-sprite-url-input').value = currentDatingUISettings.sprite.url;
+            document.getElementById('sprite-x-slider').value = currentDatingUISettings.sprite.x;
+            document.getElementById('sprite-y-slider').value = currentDatingUISettings.sprite.y;
+            document.getElementById('sprite-size-slider').value = currentDatingUISettings.sprite.size;
+            // 实时应用预览
+            applyDatingUISettings();
+        }
+    }
+}
+
+async function openDatingPresetManager() {
+    const select = document.getElementById('dating-preset-select');
+    const selectedId = select.value ? parseInt(select.value) : null;
+
+    const choice = await showChoiceModal("管理场景预设", [
+        { text: '💾 保存当前为新预设', value: 'save' },
+        { text: '🔄 更新选中预设', value: 'update', disabled: !selectedId },
+        { text: '🗑️ 删除选中预设', value: 'delete', disabled: !selectedId }
+    ]);
+
+    if (choice === 'save') {
+        const name = await showCustomPrompt("保存预设", "请输入预设名称：");
+        if (name && name.trim()) {
+            const currentSettings = {
+                prompt: document.getElementById('dating-prompt-input').value.trim(),
+                style: document.getElementById('dating-style-input').value.trim(),
+                backgroundUrl: document.getElementById('dating-bg-url-input').value.trim(),
+                sprite: {
+                    url: document.getElementById('dating-sprite-url-input').value.trim(),
+                    x: parseInt(document.getElementById('sprite-x-slider').value),
+                    y: parseInt(document.getElementById('sprite-y-slider').value),
+                    size: parseInt(document.getElementById('sprite-size-slider').value)
+                }
+            };
+            await db.datingPresets.add({ name: name.trim(), settings: currentSettings });
+            await renderDatingPresetSelector();
+            alert('预设已保存！');
+        }
+    } else if (choice === 'update' && selectedId) {
+        const currentSettings = { /* ... (同上) ... */ };
+        await db.datingPresets.update(selectedId, { settings: currentSettings });
+        alert('预设已更新！');
+    } else if (choice === 'delete' && selectedId) {
+        const confirmed = await showCustomConfirm("确认删除", "确定要删除这个预设吗？");
+        if(confirmed) {
+            await db.datingPresets.delete(selectedId);
+            await renderDatingPresetSelector();
+            alert('预设已删除。');
+        }
+    }
+}
+// ▲▲▲ 新功能函数粘贴结束 ▲▲▲
+/* ▼▼▼ 【全新】约会立绘功能核心函数 ▼▼▼ */
+
+/**
+ * 【渲染】约会设置中“立绘组”的下拉选择器
+ */
+async function renderDatingSpriteGroupSelector() {
+    const select = document.getElementById('dating-sprite-group-select');
+    select.innerHTML = '<option value="">-- 不使用立绘 --</option>'; // 默认选项
+
+    const groups = await db.datingSpriteGroups.toArray();
+    groups.forEach(group => {
+        select.innerHTML += `<option value="${group.id}">${group.name}</option>`;
+    });
+
+    // 根据当前加载的预设，自动选中对应的立绘组
+    if (currentDatingUISettings && currentDatingUISettings.spriteGroupId) {
+        select.value = currentDatingUISettings.spriteGroupId;
+    }
+}
+
+/**
+ * 【总入口】打开立绘组管理器
+ */
+async function openSpriteGroupManager() {
+    await renderSpriteGroupManagerList();
+    document.getElementById('sprite-group-manager-modal').classList.add('visible');
+}
+
+/**
+ * 【渲染】在管理器中渲染立绘组列表
+ */
+async function renderSpriteGroupManagerList() {
+    const container = document.getElementById('sprite-group-list-container');
+    container.innerHTML = '';
+    const groups = await db.datingSpriteGroups.orderBy('name').toArray();
+
+    if (groups.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">还没有任何立绘组，点击“新建”创建一个吧！</p>';
+        return;
+    }
+
+    groups.forEach(group => {
+        const item = document.createElement('div');
+        item.className = 'sprite-group-list-item';
+        item.innerHTML = `
+            <span class="group-name">${group.name}</span>
+            <div class="group-actions">
+                <button class="form-button-secondary" data-action="edit" data-id="${group.id}">编辑</button>
+                <button class="form-button-secondary" data-action="delete" data-id="${group.id}" style="color: #ff3b30;">删除</button>
+            </div>
+        `;
+        container.appendChild(item);
+    });
+}
+
+/**
+ * 【总入口】打开立绘组编辑器（用于新建或编辑）
+ * @param {number|null} groupId - 如果是编辑，则传入ID；如果是新建，则为null
+ */
+async function openSpriteEditor(groupId = null) {
+    editingSpriteGroupId = groupId;
+    const modal = document.getElementById('sprite-editor-modal');
+    const titleEl = document.getElementById('sprite-editor-title');
+    const nameInput = document.getElementById('sprite-group-name-input');
+    const listEditor = document.getElementById('sprite-list-editor');
+    
+    listEditor.innerHTML = ''; // 清空旧的立绘
+    
+    if (groupId) {
+        // 编辑模式
+        const group = await db.datingSpriteGroups.get(groupId);
+        const sprites = await db.datingSprites.where('groupId').equals(groupId).toArray();
+        titleEl.textContent = `编辑立绘组: ${group.name}`;
+        nameInput.value = group.name;
+        sprites.forEach(sprite => {
+            listEditor.appendChild(createSpriteEditCard(sprite));
+        });
+    } else {
+        // 新建模式
+        titleEl.textContent = '新建立绘组';
+        nameInput.value = '';
+        // 默认创建一个空的立绘卡片
+        listEditor.appendChild(createSpriteEditCard());
+    }
+
+    modal.classList.add('visible');
+}
+
+/**
+ * 【辅助函数 V2 - 已添加位置大小滑块】创建一个立绘编辑卡片的DOM元素
+ * @param {object} sprite - 可选的立绘数据对象
+ * @returns {HTMLElement}
+ */
+function createSpriteEditCard(sprite = {}) {
+    const card = document.createElement('div');
+    card.className = 'sprite-edit-card';
+    card.dataset.spriteId = sprite.id || `new_${Date.now()}_${Math.random()}`;
+
+    // ★★★ 核心修改：为 x, y, size 提供默认值 ★★★
+    const xPos = sprite.x ?? 50;  // 默认水平居中
+    const yPos = sprite.y ?? 100; // 默认垂直贴底
+    const size = sprite.size ?? 80; // 默认大小为80%
+
+    // ★★★ 核心修改：在HTML中加入了三个滑块和数值显示 ★★★
+    card.innerHTML = `
+        <div class="preview-container" style="background-image: url(${sprite.url || ''})"></div>
+        <div class="fields-container">
+            <div class="form-group" style="margin:0;">
+                <label>描述 (用于AI识别)</label>
+                <textarea class="sprite-desc-input" rows="2">${sprite.description || ''}</textarea>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label>图片 (URL或本地上传)</label>
+                <div class="bg-upload-container">
+                    <button class="form-button-secondary upload-sprite-btn" style="margin-top:0;">上传</button>
+                    <input class="sprite-url-input" type="text" value="${sprite.url || ''}" placeholder="或粘贴URL">
+                </div>
+            </div>
+            
+            <!-- ▼▼▼ 从这里开始，是我们新增的滑块UI ▼▼▼ -->
+            <div class="position-controls">
+                <label>X 位置: <span class="pos-value">${xPos}%</span></label>
+                <input type="range" class="sprite-x-slider" min="0" max="100" value="${xPos}">
+            </div>
+            <div class="position-controls">
+                <label>Y 位置: <span class="pos-value">${yPos}%</span></label>
+                <input type="range" class="sprite-y-slider" min="0" max="100" value="${yPos}">
+            </div>
+            <div class="position-controls">
+                <label>大小: <span class="pos-value">${size}%</span></label>
+                <input type="range" class="sprite-size-slider" min="10" max="150" value="${size}">
+            </div>
+            <!-- ▲▲▲ 新增UI结束 ▲▲▲ -->
+
+        </div>
+        <button class="delete-sprite-btn">×</button>
+    `;
+
+    // 为卡片内的按钮绑定事件 (这部分不变)
+    card.querySelector('.delete-sprite-btn').onclick = () => card.remove();
+    card.querySelector('.upload-sprite-btn').onclick = () => handleSpriteImageUpload(card);
+    card.querySelector('.sprite-url-input').oninput = (e) => {
+        card.querySelector('.preview-container').style.backgroundImage = `url(${e.target.value})`;
+    };
+    
+    // ★★★ 核心修改：为新滑块绑定事件，实时更新旁边的数值显示 ★★★
+    card.querySelectorAll('.position-controls input[type="range"]').forEach(slider => {
+        slider.addEventListener('input', () => {
+            const valueSpan = slider.previousElementSibling.querySelector('.pos-value');
+            if(valueSpan) {
+                valueSpan.textContent = `${slider.value}%`;
+            }
+        });
+    });
+
+    return card;
+}
+
+
+/**
+ * 【辅助】处理单个立绘的图片上传
+ * @param {HTMLElement} cardElement - 对应的立绘编辑卡片
+ */
+function handleSpriteImageUpload(cardElement) {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = async () => {
+        const file = fileInput.files[0];
+        if (file) {
+            const dataUrl = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.readAsDataURL(file);
+            });
+            cardElement.querySelector('.sprite-url-input').value = dataUrl;
+            cardElement.querySelector('.preview-container').style.backgroundImage = `url(${dataUrl})`;
+        }
+    };
+    fileInput.click();
+}
+
+/**
+ * 【核心 V2 - 已支持位置大小】保存整个立绘组（包括所有立绘）
+ */
+async function saveSpriteGroup() {
+    const name = document.getElementById('sprite-group-name-input').value.trim();
+    if (!name) {
+        alert("立绘组名称不能为空！");
+        return;
+    }
+
+    // 1. 保存或更新立绘组的名称 (这部分不变)
+    let groupId;
+    if (editingSpriteGroupId) {
+        await db.datingSpriteGroups.update(editingSpriteGroupId, { name });
+        groupId = editingSpriteGroupId;
+    } else {
+        groupId = await db.datingSpriteGroups.add({ name });
+    }
+
+    // 2. 准备更新的立绘数据 (★★★ 核心修改在这里 ★★★)
+    const spriteCards = document.querySelectorAll('#sprite-list-editor .sprite-edit-card');
+    const spritesToSave = [];
+    let hasError = false;
+
+    spriteCards.forEach(card => {
+        const description = card.querySelector('.sprite-desc-input').value.trim();
+        const url = card.querySelector('.sprite-url-input').value.trim();
+        
+        // ▼▼▼ 从新增的滑块中读取 x, y, size 的值 ▼▼▼
+        const x = parseInt(card.querySelector('.sprite-x-slider').value);
+        const y = parseInt(card.querySelector('.sprite-y-slider').value);
+        const size = parseInt(card.querySelector('.sprite-size-slider').value);
+        // ▲▲▲ 读取结束 ▲▲▲
+
+        if (!description || !url) {
+            hasError = true;
+        }
+
+        spritesToSave.push({
+            id: card.dataset.spriteId.startsWith('new_') ? undefined : parseInt(card.dataset.spriteId),
+            groupId: groupId,
+            description,
+            url,
+            // ▼▼▼ 将读取到的值添加到要保存的对象中 ▼▼▼
+            x: x,
+            y: y,
+            size: size
+            // ▲▲▲ 添加结束 ▲▲▲
+        });
+    });
+
+    if (hasError) {
+        alert("存在描述或图片URL为空的立绘，请填写完整！");
+        return;
+    }
+
+    // 3. 使用事务，一次性更新所有数据 (这部分不变)
+    await db.transaction('rw', db.datingSprites, async () => {
+        await db.datingSprites.where('groupId').equals(groupId).delete();
+        await db.datingSprites.bulkAdd(spritesToSave);
+    });
+
+    // 4. 关闭弹窗并刷新UI (这部分不变)
+    document.getElementById('sprite-editor-modal').classList.remove('visible');
+    await renderSpriteGroupManagerList();
+    await renderDatingSpriteGroupSelector();
+    
+    if (document.getElementById('dating-game-settings-modal').classList.contains('visible')) {
+        document.getElementById('dating-sprite-group-select').value = groupId;
+    }
+    
+    alert('立绘组已保存！');
+}
+
+
+/**
+ * 【核心】删除一个立绘组及其所有立绘
+ * @param {number} groupId - 要删除的立绘组的ID
+ */
+async function deleteSpriteGroup(groupId) {
+    const group = await db.datingSpriteGroups.get(groupId);
+    const confirmed = await showCustomConfirm('删除立绘组', `确定要删除立绘组 “${group.name}” 吗？此操作不可恢复。`, {confirmButtonClass: 'btn-danger'});
+    if (confirmed) {
+        await db.transaction('rw', db.datingSpriteGroups, db.datingSprites, db.datingPresets, async () => {
+            // 1. 删除该组下的所有立绘
+            await db.datingSprites.where('groupId').equals(groupId).delete();
+            // 2. 删除立绘组本身
+            await db.datingSpriteGroups.delete(groupId);
+            // 3. 【关键】找到所有引用了这个立绘组的约会预设，并将它们的引用清空
+            const presetsToUpdate = await db.datingPresets.where('settings.spriteGroupId').equals(groupId).toArray();
+            for (const preset of presetsToUpdate) {
+                preset.settings.spriteGroupId = null;
+                await db.datingPresets.put(preset);
+            }
+        });
+        await renderSpriteGroupManagerList();
+        await renderDatingSpriteGroupSelector();
+        alert('立绘组已删除。');
+    }
+}
+/* ▲▲▲ 约会立绘功能核心函数结束 ▲▲▲ */
+
+
+// ▼▼▼ 用这块【新代码】完整替换旧的 showDatingSummaryCard 函数 ▼▼▼
+/**
+ * 【全新V2】当约会结束时，显示结算卡片，并自动保存到历史记录
+ * @param {string} [finalStory=""] - 约会的最后一段剧情文本
+ */
+async function showDatingSummaryCard(finalStory = "") { // <--- 关键：将函数声明为 async
+    const overlay = document.getElementById('dating-summary-overlay');
+    const card = document.querySelector('.dating-summary-card');
+    const cardInner = document.querySelector('.dating-summary-card-inner');
+    const cardFront = document.querySelector('.card-front');
+    const avatarEl = document.getElementById('summary-card-avatar');
+    const ratingEl = document.getElementById('summary-card-rating');
+    const historyEl = document.getElementById('summary-card-history');
+
+    document.getElementById('summary-share-btn').style.display = 'block';
+
+    card.classList.remove('is-flipped');
+    cardFront.classList.remove('romantic', 'passionate', 'perfect');
+    cardFront.style.background = 'linear-gradient(135deg, #a8b2c5, #8e9eab)';
+
+    const romance = datingGameState.romance;
+    const lust = datingGameState.lust;
+    const completion = datingGameState.completion;
+    let ratingText = '';
+    let cardClass = '';
+    let finalRatingType = 'anticipation';
+
+    if (romance >= 100 && lust >= 100 && completion >= 100) {
+        ratingText = '完美之夜';
+        cardClass = 'perfect';
+        finalRatingType = 'perfect';
+    } else if (romance >= 100) {
+        ratingText = '浪漫之夜';
+        cardClass = 'romantic';
+        finalRatingType = 'romantic';
+    } else if (lust >= 100) {
+        ratingText = '激情之夜';
+        cardClass = 'passionate';
+        finalRatingType = 'passionate';
+    } else {
+        ratingText = '期待之夜';
+    }
+    
+    const character = state.chats[datingGameState.characterId];
+    avatarEl.src = character.settings.aiAvatar || defaultAvatar;
+    ratingEl.textContent = ratingText;
+    if(cardClass) {
+        cardFront.classList.add(cardClass);
+    }
+
+    const fullHistory = [...datingGameState.storyHistory, `【旁白】: ${finalStory}`].join('\n\n').replace(/\n/g, '<br>');
+    historyEl.innerHTML = `<p>${fullHistory}</p>`;
+    
+    // 暂存数据，以便分享
+    currentDatingSummary = {
+        rating: ratingText,
+        ratingType: finalRatingType,
+        characterId: datingGameState.characterId,
+        avatarUrl: avatarEl.src,
+        storyHistory: datingGameState.storyHistory,
+        finalStory: finalStory,
+        sceneName: datingGameState.scene.name
+    };
+
+    // ★★★★★ 这就是我们新增的、最核心的保存逻辑！ ★★★★★
+    try {
+        const historyRecord = {
+            ...currentDatingSummary, // 将卡片的所有信息都复制过来
+            timestamp: Date.now()   // 加上一个保存时的时间戳
+        };
+        // 使用 await 异步地将这条记录添加到我们的新数据库表中
+        await db.datingHistory.add(historyRecord);
+        console.log('约会结算卡片已保存到历史库:', historyRecord);
+    } catch (error) {
+        console.error('保存约会结算卡片失败:', error);
+    }
+    // ▲▲▲▲▲ 新增逻辑结束 ▲▲▲▲▲
+
+    overlay.classList.add('visible');
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+// ▼▼▼ 【V2 | 编辑内容增强版】用这块新代码替换旧的 shareDatingSummary 函数 ▼▼▼
+/**
+ * 【全新V2】将结算卡片分享到与角色的聊天中 (包含完整记录用于编辑)
+ */
+async function shareDatingSummary() {
+    if (!currentDatingSummary) return;
+
+    const chat = state.chats[currentDatingSummary.characterId];
+    if (!chat) return;
+
+    // --- ★★★ 这就是本次修改的核心！ ★★★ ---
+
+    // 1. 构建一个包含所有详细信息的、用于编辑的文本内容
+    const storyForEdit = [...currentDatingSummary.storyHistory, `【旁白】: ${currentDatingSummary.finalStory}`].join('\n');
+    const contentForEditing = `
+[约会记录]
+约会场所: ${currentDatingSummary.sceneName}
+约会评级: ${currentDatingSummary.rating}
+--------------------
+${storyForEdit}
+    `.trim();
+
+    // 2. 创建消息对象
+    const summaryMessage = {
+        role: 'user', // 用户发出的分享
+        type: 'dating_summary_card',
+        timestamp: Date.now(),
+        // 【核心】将我们刚刚构建的详细文本，作为这条消息的 content
+        content: contentForEditing, 
+        // payload 依然保留，它负责渲染出漂亮的卡片UI
+        payload: {
+            rating: currentDatingSummary.rating,
+            ratingType: currentDatingSummary.ratingType,
+            avatarUrl: currentDatingSummary.avatarUrl,
+            // 为了安全，payload里也存一份，确保数据完整
+            storyHistory: currentDatingSummary.storyHistory,
+            finalStory: currentDatingSummary.finalStory,
+            sceneName: currentDatingSummary.sceneName
+        }
+    };
+    // --- ★★★ 修改结束 ★★★ ---
+
+    chat.history.push(summaryMessage);
+    await db.chats.put(chat);
+    
+    await showCustomAlert('分享成功', '你们的约会记录已发送给Ta！');
+    
+    // 分享后，关闭结算卡片并结束约会
+    document.getElementById('dating-summary-overlay').classList.remove('visible');
+    finalizeAndExitDate();
+    currentDatingSummary = null;
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+// ▼▼▼ 【V2 | 评级样式修复版】用这块新代码替换旧的 reopenDatingSummary 函数 ▼▼▼
+/**
+ * 【全新V2】点击聊天记录里的卡片时，重新打开结算详情
+ * @param {object} payload - 消息中保存的结算数据
+ */
+function reopenDatingSummary(payload) {
+    const overlay = document.getElementById('dating-summary-overlay');
+    const card = document.querySelector('.dating-summary-card');
+    const cardFront = document.querySelector('.card-front');
+    const avatarEl = document.getElementById('summary-card-avatar');
+    const ratingEl = document.getElementById('summary-card-rating');
+    const historyEl = document.getElementById('summary-card-history');
+
+    card.classList.remove('is-flipped');
+    cardFront.classList.remove('romantic', 'passionate', 'perfect');
+    // 恢复默认背景，防止颜色残留
+    cardFront.style.background = 'linear-gradient(135deg, #a8b2c5, #8e9eab)';
+    
+    // 从 payload 中恢复数据
+    avatarEl.src = payload.avatarUrl;
+    ratingEl.textContent = payload.rating;
+    if(payload.ratingType !== 'anticipation') {
+        cardFront.classList.add(payload.ratingType);
+    }
+    
+    const fullHistory = [...payload.storyHistory, `【旁白】: ${payload.finalStory}`].join('\n\n').replace(/\n/g, '<br>');
+    historyEl.innerHTML = `<p>${fullHistory}</p>`;
+
+    // 查看记录时，不应再提供“分享”功能
+    document.getElementById('summary-share-btn').style.display = 'none';
+
+    overlay.classList.add('visible');
+    // 注意：这里不需要调用 endDate，因为只是查看记录
+}
+// ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 把这一整块全新的代码，粘贴到 init() 函数的上方 ▼▼▼
+
+/* --- 【全新】约会历史记录功能核心函数 --- */
+
+/**
+ * 【总入口】打开历史约会界面
+ */
+async function openDatingHistory() {
+    showScreen('dating-history-screen');
+    await renderDatingHistory();
+}
+
+/**
+ * 【渲染函数】渲染历史约会列表
+ */
+async function renderDatingHistory() {
+    const listEl = document.getElementById('dating-history-list');
+    listEl.innerHTML = '';
+
+    // 从数据库读取所有记录，并按时间倒序排列
+    const records = await db.datingHistory.orderBy('timestamp').reverse().toArray();
+
+    if (records.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">还没有任何约会记录哦</p>';
+        return;
+    }
+
+    // 遍历每一条记录，创建对应的卡片并添加到列表中
+    records.forEach(record => {
+        const card = createDatingHistoryCard(record);
+        listEl.appendChild(card);
+    });
+}
+
+/**
+ * 【辅助函数】根据单条历史记录，创建一张可翻转的卡片
+ * @param {object} record - 历史记录对象
+ * @returns {HTMLElement} - 创建好的卡片DOM元素
+ */
+function createDatingHistoryCard(record) {
+    const cardContainer = document.createElement('div');
+    cardContainer.className = 'dating-summary-card'; // 复用结算卡片的样式，很方便！
+
+    // 根据评级类型设置卡片正面的颜色
+    let cardClass = '';
+    if (record.ratingType === 'romantic') cardClass = 'romantic';
+    else if (record.ratingType === 'passionate') cardClass = 'passionate';
+    else if (record.ratingType === 'perfect') cardClass = 'perfect';
+
+    // 拼接卡片背面的完整约会记录HTML
+    const fullHistoryHtml = [...record.storyHistory, `【旁白】: ${record.finalStory}`]
+        .join('\n\n')
+        .replace(/\n/g, '<br>');
+
+    // 获取角色名字，如果角色被删了，就显示“未知角色”
+    const charName = state.chats[record.characterId]?.name || '未知角色';
+    
+    // 最终拼接成一个完整的、包含正反两面的卡片HTML
+    cardContainer.innerHTML = `
+        <div class="dating-summary-card-inner">
+            <!-- 卡片正面 -->
+            <div class="card-front ${cardClass}">
+                <img src="${record.avatarUrl}" alt="角色头像">
+                <h2>${record.rating}</h2>
+                <p>${new Date(record.timestamp).toLocaleDateString()}</p>
+                <p class="summary-card-tip">点击查看详情</p>
+            </div>
+            <!-- 卡片背面 -->
+            <div class="card-back">
+                <div class="card-back-header">
+                    <span>${charName} - ${record.sceneName}</span>
+                </div>
+                <div class="card-back-content">
+                    <p>${fullHistoryHtml}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    return cardContainer;
+}
+
+/* --- 【全新】约会历史记录功能函数结束 --- */
+
+// ▼▼▼ 【全新 | V2 - 支持AI生成】用这整块代码，完整替换旧的 handleSaveCustomDatingScene 函数 ▼▼▼
+/**
+ * 【全新 | V2】处理用户保存自定义约会场景的逻辑
+ * - 如果用户提供了URL，则直接使用。
+ * - 如果用户未提供URL，则根据场景名称生成一个imagePrompt，交由后续流程处理。
+ */
+async function handleSaveCustomDatingScene() {
+    const name = document.getElementById('scene-name-input').value.trim();
+    const imageUrl = document.getElementById('scene-image-url-input').value.trim();
+    const costStr = document.getElementById('scene-cost-input').value.trim();
+
+    // 1. 【核心修改】验证逻辑调整，现在图片URL不再是必填项
+    if (!name || !costStr) {
+        alert("场景名称和花费为必填项！");
+        return;
+    }
+
+    const cost = parseInt(costStr, 10);
+    if (isNaN(cost) || cost < 0) {
+        alert("请输入有效的花费金额！");
+        return;
+    }
+    
+    // 准备一个基础的场景对象
+    const newScene = {
+        name: name,
+        cost: cost,
+        uid: 'scene_user_' + Date.now() // 创建一个独特的ID
+    };
+
+    // 2. 【核心修改】根据用户是否输入了URL，来决定如何处理图片信息
+    if (imageUrl) {
+        // --- 用户提供了URL ---
+        // 验证链接有效性
+        if (!imageUrl.startsWith('http') && !imageUrl.startsWith('data:image')) {
+            alert("请输入一个有效的网络图片URL！");
+            return;
+        }
+        newScene.imageUrl = imageUrl;
+        newScene.imagePrompt = 'User-provided image'; // 给一个占位符
+    } else {
+        // --- 用户没有提供URL，我们将为AI准备好“作画指令” ---
+        newScene.imageUrl = ''; // 明确设置为空字符串
+        // 根据场景名称，生成一个高质量的、用于文生图的英文Prompt
+        newScene.imagePrompt = `${name}, vertical, phone wallpaper, cinematic lighting, masterpiece, best quality, beautiful anime style art, vibrant colors`;
+    }
+
+    try {
+        // 3. 后续的保存和渲染逻辑完全不需要改变！
+        await db.datingScenes.add(newScene);
+        currentDatingScenes.push(newScene);
+        
+        document.getElementById('create-dating-scene-modal').classList.remove('visible');
+        
+        // 重新渲染列表。对于需要AI生成的卡片，它会自动显示加载动画。
+        renderDatingScenes();
+
+        alert('自定义约会场景已成功创建！');
+    } catch (error) {
+        console.error("保存自定义约会场景失败:", error);
+        alert(`保存失败: ${error.message}`);
+    }
+}
+// ▲▲▲ 替换结束 ▲▲▲
 
 
         // ===================================================================
@@ -51095,11 +54503,22 @@ document.getElementById('inner-voice-history-list').addEventListener('click', (e
 });
 // ▲▲▲ 心声历史删除事件绑定结束 ▲▲▲
 
- // ▼▼▼ 这是我们新加的导入功能事件监听 ▼▼▼
-        document.getElementById('import-character-card-btn').addEventListener('click', () => {
-            // 点击我们的新按钮时，就去触发那个隐藏的文件选择框
-            document.getElementById('character-card-input').click();
-        });
+// ▼▼▼ 这是我们新加的导入功能事件监听 (已添加弹窗确认) ▼▼▼
+document.getElementById('import-character-card-btn').addEventListener('click', async () => {
+    // 1. 弹出确认弹窗，并等待用户选择
+    const confirmed = await showCustomConfirm(
+        '导入角色卡须知', // 这是弹窗的标题
+        '🐱不玩酒馆的请不要导入酒馆角色卡，经过写卡老师同意才能导入角色卡，不要随意辱骂侮辱角色🐇' // 这是弹窗的主要内容
+    );
+
+    // 2. 如果用户点击了“确定”
+    if (confirmed) {
+        // 就去触发那个隐藏的文件选择框
+        document.getElementById('character-card-input').click();
+    }
+    // 如果用户点击“取消”，则什么也不会发生
+});
+
 
         document.getElementById('character-card-input').addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -52134,19 +55553,36 @@ function renderGroupMemberSettings(members) {
     }); 
 }
 
+// ▼▼▼ 用这整块代码，替换你旧的 openMemberEditor 函数 ▼▼▼
 function openMemberEditor(memberId) { 
     editingMemberId = memberId; 
     const chat = state.chats[state.activeChatId]; 
     const member = chat.members.find(m => m.id === memberId); 
-        if (typeof member.isMuted === 'undefined') {
-        member.isMuted = false; // 为旧数据兼容，默认设置为“未禁言”
+    if (!member) return;
+
+    if (typeof member.isMuted === 'undefined') {
+        member.isMuted = false; // 为旧数据兼容
     }
-    // ▲▲▲ 添加结束 ▲▲▲
+    
     document.getElementById('member-name-input').value = member.groupNickname; 
     document.getElementById('member-persona-input').value = member.persona; 
     document.getElementById('member-avatar-preview').src = member.avatar; 
+
+    // ★★★ 我们在这里为新按钮绑定了点击事件 ★★★
+    const changeFrameBtn = document.getElementById('member-editor-change-frame-btn');
+    const newChangeFrameBtn = changeFrameBtn.cloneNode(true);
+    changeFrameBtn.parentNode.replaceChild(newChangeFrameBtn, changeFrameBtn);
+    
+    newChangeFrameBtn.addEventListener('click', () => {
+        // 调用头像框选择器，并告诉它我们正在为'member'类型的成员（也就是NPC）设置头像框
+        openFrameSelectorModal('member', memberId);
+    });
+    // ★★★ 添加结束 ★★★
+
     document.getElementById('member-settings-modal').classList.add('visible'); 
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
             document.getElementById('cancel-member-settings-btn').addEventListener('click', () => { document.getElementById('member-settings-modal').classList.remove('visible'); editingMemberId = null; });
             document.getElementById('save-member-settings-btn').addEventListener('click', () => { 
     if (!editingMemberId) return; 
@@ -57448,10 +60884,237 @@ document.getElementById('cancel-ai-generate-members-btn').addEventListener('clic
     document.getElementById('ai-generate-members-modal').classList.remove('visible');
 });
 document.getElementById('confirm-ai-generate-members-btn').addEventListener('click', handleGenerateMembers);
+// ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴下面这整块新代码 ▼▼▼
+
+// ▼▼▼ 在 init() 的事件监听器区域末尾，用这整块新代码替换旧的 ▼▼▼
+
+// ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴下面这整块新代码 ▼▼▼
+
+/* --- 【全新】约会大作战功能事件监听器 --- */
+document.getElementById('date-a-live-app-icon').addEventListener('click', openDatingApp);
+document.getElementById('refresh-dating-scene-btn').addEventListener('click', refreshDatingScenes);
+document.getElementById('end-date-btn').addEventListener('click', endDate); // 绑定结束约会按钮
+
+// ▼▼▼ 在 init() 的事件监听器区域，用这块【新代码】替换旧的 'dating-scene-content' 事件监听器 ▼▼▼
+
+// 使用事件委托处理删除和点击
+document.getElementById('dating-scene-content').addEventListener('click', (e) => {
+    const card = e.target.closest('.dating-scene-card');
+    if (!card) return;
+
+    const sceneUid = card.dataset.uid;
+    const scene = currentDatingScenes.find(s => s.uid === sceneUid);
+    if (!scene) return;
+    
+    // 如果点击的是删除按钮
+    if (e.target.classList.contains('dating-scene-delete-btn')) {
+        deleteDatingScene(sceneUid);
+    } else {
+        // 否则，点击的是卡片本身，打开角色选择器
+        openDatingCharacterSelector(scene);
+    }
+});
+// ▲▲▲ 新增/修改事件绑定结束 ▲▲▲
+
+
+// ▼▼▼ 在 init() 的事件监听器区域，用这块【新代码】替换旧的【文游文本框点击事件】 ▼▼▼
+
+// ▼▼▼ 在 init() 函数中，用这段新代码替换旧的文本框点击事件 ▼▼▼
+
+// 为文游文本框绑定“点击切换下一句”的事件 (已增加保护)
+document.querySelector('.dating-game-textbox').addEventListener('click', () => {
+    if (
+        datingGameState.isActive && 
+        !datingGameState.isSwitchingSentence && // 新增：检查是否正在切换中
+        datingGameState.currentSentenceIndex < datingGameState.sentences.length - 1
+    ) {
+        showNextSentence();
+    }
+});
+
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+
+// ▲▲▲ 替换结束 ▲▲▲
+
+// ▲▲▲ 新增代码粘贴结束 ▲▲▲
+
+
+
+/* --- 事件监听结束 --- */
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+/* --- 事件监听结束 --- */
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
+// ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴下面这整块新代码 ▼▼▼
+
+/* --- 【全新】约会大作战-文游模式UI事件绑定 --- */
+
+// 右上角图标
+document.getElementById('dating-game-settings-btn').addEventListener('click', openDatingSettingsModal);
+document.getElementById('dating-game-reroll-btn').addEventListener('click', handleDatingReroll);
+
+// 设置弹窗内的按钮
+document.getElementById('cancel-dating-settings-btn').addEventListener('click', () => {
+    document.getElementById('dating-game-settings-modal').classList.remove('visible');
+    // 取消时，要恢复到角色已保存的设置，而不是停在临时修改的状态
+    const chat = state.chats[datingGameState.characterId];
+    currentDatingUISettings = JSON.parse(JSON.stringify(chat.settings.datingUISettings || {}));
+    applyDatingUISettings();
+});
+document.getElementById('save-dating-settings-btn').addEventListener('click', saveDatingSettings);
+
+// 图片上传按钮
+document.querySelector('#dating-game-settings-modal .bg-upload-container button').addEventListener('click', () => handleDatingImageUpload('bg'));
+document.querySelector('#dating-game-settings-modal .form-group:nth-of-type(5) .bg-upload-container button').addEventListener('click', () => handleDatingImageUpload('sprite'));
+
+// 图片URL输入实时更新
+document.getElementById('dating-bg-url-input').addEventListener('input', (e) => {
+    currentDatingUISettings.backgroundUrl = e.target.value.trim();
+    applyDatingUISettings();
+});
+// ▼▼▼ 在 init() 的事件监听器区域，粘贴这整块新代码 ▼▼▼
+
+/* --- 【全新】约会立绘功能事件监听器 --- */
+document.getElementById('manage-sprite-groups-btn').addEventListener('click', openSpriteGroupManager);
+document.getElementById('close-sprite-group-manager-btn').addEventListener('click', () => {
+    document.getElementById('sprite-group-manager-modal').classList.remove('visible');
+});
+
+document.getElementById('sprite-group-list-container').addEventListener('click', (e) => {
+    const target = e.target;
+    if (target.tagName === 'BUTTON' && target.dataset.id) {
+        const action = target.dataset.action;
+        const groupId = parseInt(target.dataset.id);
+        if (action === 'edit') {
+            openSpriteEditor(groupId);
+        } else if (action === 'delete') {
+            deleteSpriteGroup(groupId);
+        }
+    }
+});
+
+document.getElementById('create-new-sprite-group-btn').addEventListener('click', () => openSpriteEditor());
+
+document.getElementById('cancel-sprite-editor-btn').addEventListener('click', () => {
+    document.getElementById('sprite-editor-modal').classList.remove('visible');
+});
+
+document.getElementById('save-sprite-editor-btn').addEventListener('click', saveSpriteGroup);
+
+document.getElementById('add-new-sprite-btn').addEventListener('click', () => {
+    document.getElementById('sprite-list-editor').appendChild(createSpriteEditCard());
+});
+/* --- 约会立绘事件监听器结束 --- */
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
-window.openChat = openChat;
-window.triggerAiResponse = triggerAiResponse;
+
+// 预设功能按钮
+document.getElementById('dating-preset-select').addEventListener('change', handleDatingPresetSelect);
+document.getElementById('manage-dating-presets-btn').addEventListener('click', openDatingPresetManager);
+
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】约会结算卡片事件绑定 ▼▼▼
+
+/* --- 约会结算卡片事件绑定 --- */
+const summaryCard = document.querySelector('.dating-summary-card');
+const summaryCardBackBtn = document.getElementById('summary-flip-back-btn');
+
+// 1. 点击卡片正面或背面的返回按钮，都会触发翻转
+summaryCard.addEventListener('click', (e) => {
+    // 确保点击的不是分享或关闭按钮
+    if (!e.target.closest('button')) {
+        summaryCard.classList.toggle('is-flipped');
+    }
+});
+summaryCardBackBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // 阻止事件冒泡到父元素
+    summaryCard.classList.remove('is-flipped');
+});
+
+// 2. 分享按钮
+document.getElementById('summary-share-btn').addEventListener('click', shareDatingSummary);
+
+// ▼▼▼ 【修复版】用这块新代码替换旧的 'summary-close-btn' 事件监听器 ▼▼▼
+// 3. 关闭按钮
+document.getElementById('summary-close-btn').addEventListener('click', async () => {
+    const confirmed = await showCustomConfirm(
+        '确认关闭',
+        '确定要关闭结算卡片吗？关闭后约会即告结束。',
+        { confirmButtonClass: 'btn-danger' } // 使用更醒目的红色按钮
+    );
+    if (confirmed) {
+        // 调用我们新的、真正的结束函数
+        finalizeAndExitDate();
+    }
+});
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+// 4. 聊天记录中的卡片点击事件（事件委托）
+document.getElementById('chat-messages').addEventListener('click', (e) => {
+    const chatCard = e.target.closest('.dating-summary-chat-card');
+    if (chatCard && chatCard.dataset.summaryPayload) {
+        try {
+            // 读取并解析存储的payload数据
+            const payloadString = chatCard.dataset.summaryPayload.replace(/&apos;/g, "'").replace(/&quot;/g, '"');
+            const payload = JSON.parse(payloadString);
+            reopenDatingSummary(payload);
+        } catch (error) {
+            console.error("解析分享的约会记录失败:", error);
+            alert("无法打开这个约会记录。");
+        }
+    }
+});
+// 在 init() 函数的事件监听器区域末尾，粘贴下面这整块代码
+
+// ▼▼▼ 【全新】约会历史记录功能事件绑定 ▼▼▼
+
+// 1. 为“约会大作战”主界面的“历史”图标绑定打开事件
+document.getElementById('dating-history-btn').addEventListener('click', openDatingHistory);
+
+// 2. 为“历史约会”页面的返回按钮绑定返回事件
+document.getElementById('dating-history-back-btn').addEventListener('click', () => showScreen('date-a-live-screen'));
+
+// 3. 使用事件委托，为历史列表中的所有卡片绑定“翻转”事件
+document.getElementById('dating-history-list').addEventListener('click', e => {
+    // 找到被点击的卡片
+    const card = e.target.closest('.dating-summary-card');
+    if (card) {
+        // 切换 is-flipped 类即可触发CSS动画
+        card.classList.toggle('is-flipped');
+    }
+});
+
+// ▲▲▲ 新增事件绑定结束 ▲▲▲
+// 在 init() 函数的事件监听器区域粘贴
+
+// ▼▼▼ 【全新】约会大作战-创建场景功能事件绑定 ▼▼▼
+document.getElementById('create-dating-scene-btn').addEventListener('click', () => {
+    // 打开创建弹窗，并清空输入框
+    document.getElementById('scene-name-input').value = '';
+    document.getElementById('scene-image-url-input').value = '';
+    document.getElementById('scene-cost-input').value = '';
+    document.getElementById('create-dating-scene-modal').classList.add('visible');
+});
+
+document.getElementById('cancel-create-scene-btn').addEventListener('click', () => {
+    document.getElementById('create-dating-scene-modal').classList.remove('visible');
+});
+
+document.getElementById('save-custom-scene-btn').addEventListener('click', handleSaveCustomDatingScene);
+// ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+/* --- 约会结算事件绑定结束 --- */
+
+// ▲▲▲ 新增事件监听器结束 ▲▲▲
+
+
+
+// ▲▲▲ 新增代码粘贴结束 ▲▲▲
+
 
 // ===================================================================
 // 5. 启动！
