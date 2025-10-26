@@ -1123,7 +1123,9 @@ ${formattedLog}
    */
   function waitForUserAction(prompt, actionType, context = {}) {
     const me = werewolfGameState.players.find(p => p.isUser);
-    if (me && !me.isAlive) {
+
+    // ★★★ 核心修复：当用户死亡时，允许'hunter_shoot'动作继续执行 ★★★
+    if (me && !me.isAlive && actionType !== 'hunter_shoot') {
       const actionArea = document.getElementById('werewolf-action-area');
       actionArea.innerHTML = `<h5>您已淘汰，正在观战...</h5>`;
       return new Promise(async resolve => {
@@ -1132,6 +1134,7 @@ ${formattedLog}
         resolve(null);
       });
     }
+    // ★★★ 修复结束 ★★★
 
     return new Promise(resolve => {
       const actionArea = document.getElementById('werewolf-action-area');
@@ -1218,6 +1221,12 @@ ${formattedLog}
         targets = werewolfGameState.players.filter(p => p.isAlive);
       }
 
+      // ★★★ 针对猎人开枪的特殊目标筛选 ★★★
+      // 如果是猎人开枪，目标不应该包括自己
+      if (actionType === 'hunter_shoot') {
+        targets = targets.filter(p => p.id !== me.id);
+      }
+
       targets.forEach(player => {
         const btn = document.createElement('button');
         btn.className = 'form-button-secondary vote-target-btn';
@@ -1242,7 +1251,6 @@ ${formattedLog}
       actionArea.appendChild(grid);
     });
   }
-  // ▲▲▲ 替换结束 ▲▲▲
 
   /**
    * 【狼人杀AI核心 V3 - 终极修复版】
