@@ -1495,36 +1495,7 @@ async function openForumFilterModal(type, id = null) {
 // ▲▲▲ 替换结束 ▲▲▲
 
 
-/**
- * 应用筛选条件并刷新列表
- */
-async function applyForumFilter() {
-    const { type, id } = currentFilterContext;
-    const selectedCategories = Array.from(document.querySelectorAll('#forum-filter-category-list input:checked')).map(cb => cb.value);
 
-    const filterBtnId = type === 'global' ? 'forum-filter-btn' : 'group-filter-btn';
-    const filterBtn = document.getElementById(filterBtnId);
-
-    if (type === 'global') {
-        activeForumFilters.global = selectedCategories;
-        await renderForumScreen();
-    } else if (type === 'group' && id) {
-        if (!activeForumFilters.group[id]) activeForumFilters.group[id] = [];
-        activeForumFilters.group[id] = selectedCategories;
-        await renderGroupPosts(id);
-    }
-    
-    // 根据是否应用了筛选，更新图标状态
-    if (selectedCategories.length > 0) {
-        filterBtn.classList.add('active');
-    } else {
-        filterBtn.classList.remove('active');
-    }
-
-    document.getElementById('forum-filter-modal').classList.remove('visible');
-}
-
-// ▲▲▲ 新增函数结束 ▲▲▲
 // ▼▼▼ 【全新】论坛功能事件监听器 ▼▼▼
 
 // 1. 初始化时创建默认小组
