@@ -39,8 +39,7 @@
     <script src="https://phoebeboo.github.io/mewoooo/pp.js" defer></script>
     <script src="main-app.js" defer></script>
     <script src="game-hall.js" defer></script>
-    <script src="qzone.js" defer></script>
-
+    <script src="forum.js" defer></script>
 
     <style>
         :root { --screen-width: 350px; --screen-height: 650px; --secondary-bg: #ffffff; --border-color: #e0e0e0; --text-primary: #1f1f1f; --text-secondary: #8a8a8a; --accent-color: #007bff;    --status-bar-text-color: var(--accent-color); }
@@ -23807,12 +23806,6 @@ async function searchAndPlaySong(name, artist) {
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
-// ▲▲▲ 新增函数粘贴结束 ▲▲▲
-let activeForumFilters = { 
-    global: [], // 用于主页小组列表的筛选
-    group: {}   // 用于存储每个小组内部帖子的筛选, e.g., { 1: ['科幻'], 2: ['剧情'] }
-};
-let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
 
         let photoViewerState = {
             isOpen: false,
@@ -44989,10 +44982,6 @@ function showCharStickerTab(type) {
 // ▲▲▲ JavaScript新函数粘贴结束 ▲▲▲
 
 
-
-
-
-// ▲▲▲ 替换结束 ▲▲▲
 // ▼▼▼ 把这一整块全新的功能函数，粘贴到 init() 函数的正上方 ▼▼▼
 
 /**
@@ -47270,8 +47259,6 @@ function formatMinutesToDuration(totalMinutes) {
         return `${minutes}分钟`;
     }
 }
-
-
 
 
 // ▼▼▼ 【全新】宠物功能核心函数 ▼▼▼
@@ -55732,42 +55719,14 @@ async function exportDataFor330() {
     }
 }
 // ▲▲▲ 替换结束 ▲▲▲
-/**
- * 应用筛选条件并刷新列表
- */
-async function applyForumFilter() {
-    const { type, id } = currentFilterContext;
-    const selectedCategories = Array.from(document.querySelectorAll('#forum-filter-category-list input:checked')).map(cb => cb.value);
 
-    const filterBtnId = type === 'global' ? 'forum-filter-btn' : 'group-filter-btn';
-    const filterBtn = document.getElementById(filterBtnId);
-
-    if (type === 'global') {
-        activeForumFilters.global = selectedCategories;
-        await renderForumScreen();
-    } else if (type === 'group' && id) {
-        if (!activeForumFilters.group[id]) activeForumFilters.group[id] = [];
-        activeForumFilters.group[id] = selectedCategories;
-        await renderGroupPosts(id);
-    }
-    
-    // 根据是否应用了筛选，更新图标状态
-    if (selectedCategories.length > 0) {
-        filterBtn.classList.add('active');
-    } else {
-        filterBtn.classList.remove('active');
-    }
-
-    document.getElementById('forum-filter-modal').classList.remove('visible');
-}
-
-// ▲▲▲ 新增函数结束 ▲▲▲
 
 
         // ===================================================================
         // 4. 初始化函数 init()
         // ===================================================================
         async function init() {
+           initForum();
     // ▼▼▼ 在 init()    // ▼▼▼ 在这里粘贴下面这几行新代码 ▼▼▼
     // 更新小组件的月份显示
     const monthElement = document.getElementById('widget-month-display');
@@ -60844,22 +60803,13 @@ document.getElementById('clear-following-feed-btn').addEventListener('click', cl
     document.getElementById('weibo-user-preset-select').addEventListener('change', handleWeiboUserPresetSelection);
     document.getElementById('manage-weibo-user-presets-btn').addEventListener('click', openWeiboUserPresetManager);
 // ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 【全新】论坛功能事件监听器 ▼▼▼
 
-// ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴下面这整块新代码 ▼▼▼
+// 1. 初始化时创建默认小组
+await initializeDefaultGroups();
 
-// 使用事件委托，为所有转载的帖子卡片添加点击事件
-document.getElementById('chat-messages').addEventListener('click', (e) => {
-    const repostCard = e.target.closest('.link-share-card[data-post-id]');
-    if (repostCard) {
-        const postId = parseInt(repostCard.dataset.postId);
-        if (!isNaN(postId)) {
-            // 调用你已经写好的“打开帖子”函数
-            openPost(postId);
-        }
-    }
-});
 
-// ▲▲▲ 新增代码结束 ▲▲▲
+
 
 // ▲▲▲ 论坛事件监听器结束 ▲▲▲
 // ▼▼▼ 把这一整块全新的事件监听器代码，粘贴到 init() 函数的末尾，就在 init(); 的正上方 ▼▼▼
@@ -61543,23 +61493,6 @@ document.getElementById('remove-home-font-shadow-toggle').addEventListener('chan
     document.getElementById('phone-screen').classList.toggle('no-home-font-shadow', e.target.checked);
 });
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
-// ▼▼▼ 【全新】圈子/小组分类筛选功能事件监听 ▼▼▼
-// 1. 绑定主页和小组页的筛选按钮
-document.getElementById('forum-filter-btn').addEventListener('click', () => openForumFilterModal('global'));
-document.getElementById('group-filter-btn').addEventListener('click', () => openForumFilterModal('group', activeGroupId));
-
-// 2. 绑定筛选弹窗内的按钮
-document.getElementById('apply-forum-filter-btn').addEventListener('click', applyForumFilter);
-document.getElementById('cancel-forum-filter-btn').addEventListener('click', () => {
-    document.getElementById('forum-filter-modal').classList.remove('visible');
-});
-document.getElementById('reset-forum-filter-btn').addEventListener('click', async () => {
-    // 清空复选框并应用
-    document.querySelectorAll('#forum-filter-category-list input:checked').forEach(cb => cb.checked = false);
-    await applyForumFilter();
-});
-// ▲▲▲ 新增事件监听结束 ▲▲▲
-
 
 
 // ▲▲▲ 新增事件监听结束 ▲▲▲
@@ -62906,6 +62839,7 @@ document.getElementById('import-chunked-data-input').addEventListener('change', 
 document.getElementById('export-for-330-btn').addEventListener('click', exportDataFor330);
 // ▲▲▲ 粘贴结束 ▲▲▲
 
+// ▲▲▲ 新增代码粘贴结束 ▲▲▲
 
 
 // ===================================================================
