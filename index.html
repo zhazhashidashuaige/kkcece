@@ -16436,7 +16436,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 			<hr style="margin:20px 0; opacity:.3">
 <button class="form-button form-button-secondary" id="clear-orphaned-data-btn" style="margin-top: 10px; border-color: #ff9966; color: #ff9966;">🧹 清理失效数据</button>
 			<button class="form-button" id="export-data-btn">导出数据</button>
-
+<button class="form-button" id="advanced-transfer-btn" style="background-color: #6f42c1; margin-top: 10px;">高级导入/导出</button>
 <!-- ① 普通按钮，和“导出”一个 class -->
 <button class="form-button" id="import-btn">导入备份文件</button>
 
@@ -21928,6 +21928,47 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】高级数据转移模态框 v2.0 (按App/角色分类) ▼▼▼ -->
+<div id="advanced-transfer-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>高级导入 / 导出</span>
+        </div>
+        <div class="modal-body">
+            <h4>选择要导出的内容</h4>
+            <p style="font-size: 13px; color: #666;">你可以选择导出某个App的全部数据，或者某个角色的所有相关数据（包括聊天记录、动态、通话记录等）。</p>
+            
+            <!-- App 数据导出区 -->
+            <div class="form-group">
+                <label>App 数据 (多选)</label>
+                <div id="export-apps-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px;">
+                    <!-- App 多选框将由JS动态生成在这里 -->
+                </div>
+            </div>
+
+            <!-- 角色数据导出区 -->
+            <div class="form-group">
+                <label>角色数据 (多选)</label>
+                <div id="export-characters-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px;">
+                    <!-- 角色多选框将由JS动态生成在这里 -->
+                </div>
+            </div>
+            <button id="export-selected-data-btn" class="form-button">导出选中项</button>
+
+            <hr style="margin: 20px 0;">
+
+            <h4>导入补充数据</h4>
+            <p style="font-size: 13px; color: #666;">导入将以【补充和覆盖】的方式进行，不会删除您现有的其他数据。这可以用来合并数据或恢复单个角色的备份。</p>
+            <button id="import-chunked-data-btn" class="form-button form-button-secondary">选择文件并导入</button>
+            <input id="import-chunked-data-input" type="file" accept="application/json" hidden>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="close-advanced-transfer-btn">关闭</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ HTML 替换结束 ▲▲▲ -->
+
 
 
 
@@ -56799,6 +56840,228 @@ async function handleUserSpeakInCall() {
 }
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】分块导入/导出功能 v2.0 (按App/角色分类) ▼▼▼
+
+/**
+ * 打开高级导入导出模态框，并动态生成选项列表
+ */
+async function openAdvancedTransferModal() {
+    const appsListEl = document.getElementById('export-apps-list');
+    const charactersListEl = document.getElementById('export-characters-list');
+    appsListEl.innerHTML = '';
+    charactersListEl.innerHTML = '';
+
+    // 1. 定义可独立导出的App数据及其关联的数据库表
+    const appsToExport = [
+        { id: 'weibo', name: '微博 (全部帖子/角色资料/粉丝数等)', tables: ['weiboPosts', 'qzoneSettings'] },
+        { id: 'forum', name: '圈子 (所有小组/帖子/评论/分类)', tables: ['forumGroups', 'forumPosts', 'forumComments', 'forumCategories'] },
+        { id: 'taobao', name: '桃宝 (所有商品/订单/购物车/余额记录)', tables: ['taobaoProducts', 'taobaoOrders', 'taobaoCart', 'userWalletTransactions'] },
+        { id: 'worldBooks', name: '世界书 (全部书籍及分类)', tables: ['worldBooks', 'worldBookCategories'] },
+        { id: 'userStickers', name: '我的表情包 (包含分类)', tables: ['userStickers', 'userStickerCategories'] },
+        { id: 'charStickers', name: '角色通用表情包', tables: ['charStickers'] },
+        { id: 'gameData', name: '游戏大厅数据 (剧本杀/飞行棋题库等)', tables: ['scriptKillScripts', 'ludoQuestionBanks', 'ludoQuestions'] },
+        { id: 'appearance', name: '通用外观预设 (主题/字体/头像框等)', tables: ['themes', 'fontPresets', 'homeScreenPresets', 'customAvatarFrames', 'apiPresets', 'bubbleStylePresets'] }
+    ];
+
+    appsToExport.forEach(app => {
+        appsListEl.innerHTML += `
+            <label style="display: block; margin-bottom: 5px;">
+                <input type="checkbox" class="export-app-checkbox" value="${app.id}"> ${app.name}
+            </label>
+        `;
+    });
+
+    // 2. 加载所有单聊角色
+    const characters = Object.values(state.chats).filter(chat => !chat.isGroup);
+    if (characters.length === 0) {
+        charactersListEl.innerHTML = '<p>没有可导出的角色</p>';
+    } else {
+        characters.forEach(char => {
+            charactersListEl.innerHTML += `
+                <label style="display: block; margin-bottom: 5px;">
+                    <input type="checkbox" class="export-char-checkbox" value="${char.id}"> ${char.name}
+                </label>
+            `;
+        });
+    }
+
+    // 3. 显示模态框
+    document.getElementById('advanced-transfer-modal').classList.add('visible');
+}
+
+/**
+ * 执行分块导出
+ */
+async function exportChunkedData() {
+    await showCustomAlert("请稍候...", "正在打包您选择的数据...");
+
+    const backupData = {
+        type: 'EPhoneChunkedBackup', // 特殊标识，用于导入时识别
+        version: 3, // 版本升级，代表新的数据结构
+        exportedAt: Date.now(),
+        contains: [], 
+        data: {}
+    };
+
+    try {
+        const appCheckboxes = document.querySelectorAll('.export-app-checkbox:checked');
+        const charCheckboxes = document.querySelectorAll('.export-char-checkbox:checked');
+
+        if (appCheckboxes.length === 0 && charCheckboxes.length === 0) {
+            alert("请至少选择一项要导出的内容！");
+            hideCustomModal();
+            return;
+        }
+
+        const appsToExportMap = {
+            weibo: { tables: ['weiboPosts', 'qzoneSettings'] },
+            forum: { tables: ['forumGroups', 'forumPosts', 'forumComments', 'forumCategories'] },
+            taobao: { tables: ['taobaoProducts', 'taobaoOrders', 'taobaoCart', 'userWalletTransactions'] },
+            worldBooks: { tables: ['worldBooks', 'worldBookCategories'] },
+            userStickers: { tables: ['userStickers', 'userStickerCategories'] },
+            charStickers: { tables: ['charStickers'] },
+            gameData: { tables: ['scriptKillScripts', 'ludoQuestionBanks', 'ludoQuestions'] },
+            appearance: { tables: ['themes', 'fontPresets', 'homeScreenPresets', 'customAvatarFrames', 'apiPresets', 'bubbleStylePresets'] }
+        };
+
+        // 1. 导出选中的App数据
+        for (const checkbox of appCheckboxes) {
+            const appId = checkbox.value;
+            const appInfo = appsToExportMap[appId];
+            if (appInfo) {
+                backupData.contains.push(appId);
+                for (const tableName of appInfo.tables) {
+                    backupData.data[tableName] = await db[tableName].toArray();
+                    console.log(`已打包App数据表: ${tableName}`);
+                }
+            }
+        }
+
+        // 2. 导出选中的角色数据
+        const charIds = Array.from(charCheckboxes).map(cb => cb.value);
+        if (charIds.length > 0) {
+            backupData.data.chats = await db.chats.bulkGet(charIds);
+            backupData.contains.push(...charIds.map(id => `character_${id}`));
+
+            // 打包所有与这些角色关联的数据
+            const relatedDataTables = ['memories', 'callRecords', 'qzonePosts', 'weiboPosts', 'datingHistory', 'pomodoroSessions'];
+            const relatedKey = {
+                'memories': 'chatId',
+                'callRecords': 'chatId',
+                'qzonePosts': 'authorId',
+                'weiboPosts': 'authorId',
+                'datingHistory': 'characterId',
+                'pomodoroSessions': 'chatId'
+            };
+
+            for (const tableName of relatedDataTables) {
+                const items = await db[tableName].where(relatedKey[tableName]).anyOf(charIds).toArray();
+                if (items.length > 0) {
+                    if (!backupData.data[tableName]) backupData.data[tableName] = [];
+                    backupData.data[tableName].push(...items);
+                }
+            }
+            console.log(`已打包 ${charIds.length} 个角色的核心及关联数据。`);
+        }
+
+        // 3. 创建JSON文件并触发下载
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `EPhone-Partial-Backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        await showCustomAlert('导出成功', '已成功导出您选中的数据！');
+
+    } catch (error) {
+        console.error("分块导出失败:", error);
+        await showCustomAlert('导出失败', `发生错误: ${error.message}`);
+    } finally {
+        document.getElementById('advanced-transfer-modal').classList.remove('visible');
+    }
+}
+
+/**
+ * 执行补充式导入
+ * @param {File} file - 用户选择的JSON文件
+ */
+async function importChunkedData(file) {
+    if (!file) return;
+
+    let data;
+    try {
+        const text = await file.text();
+        data = JSON.parse(text);
+    } catch (error) {
+        await showCustomAlert('导入失败', '文件读取或解析失败，请确保文件是有效的JSON格式。');
+        return;
+    }
+    
+    if (data.type !== 'EPhoneChunkedBackup') {
+        const confirmed = await showCustomConfirm(
+            '文件类型不匹配',
+            '这是一个【全量备份】文件，继续导入将会【覆盖】所有数据！是否要继续？',
+            { confirmButtonClass: 'btn-danger' }
+        );
+        if (confirmed) importBackup(file);
+        return;
+    }
+
+    const appNameMap = {
+        weibo: '微博', forum: '圈子', taobao: '桃宝', worldBooks: '世界书',
+        userStickers: '我的表情包', charStickers: '角色通用表情包', 
+        gameData: '游戏大厅数据', appearance: '通用外观预设'
+    };
+    const importedChars = [];
+    const importedApps = [];
+    data.contains.forEach(item => {
+        if (item.startsWith('character_')) {
+            const charId = item.replace('character_', '');
+            const charData = data.data.chats?.find(c => c.id === charId);
+            if (charData) importedChars.push(charData.name);
+        } else {
+            if (appNameMap[item]) importedApps.push(appNameMap[item]);
+        }
+    });
+
+    let confirmationMessage = '即将导入以下内容：\n';
+    if (importedApps.length > 0) confirmationMessage += `\n【App 数据】\n- ${importedApps.join('\n- ')}\n`;
+    if (importedChars.length > 0) confirmationMessage += `\n【角色数据】\n- ${importedChars.join('\n- ')}\n`;
+    confirmationMessage += '\n注意：如果现有数据中已存在同名角色或相同ID的内容，他们的数据将会被导入的数据【完全覆盖】。此操作不可撤销！';
+
+    const confirmed = await showCustomConfirm('确认导入', confirmationMessage);
+    if (!confirmed) return;
+
+    await showCustomAlert("请稍候...", "正在导入数据，请勿关闭页面...");
+
+    try {
+        await db.transaction('rw', ...Object.keys(db.tables), async () => {
+            for (const tableName in data.data) {
+                if (db[tableName] && Array.isArray(data.data[tableName])) {
+                    console.log(`正在向表格 "${tableName}" 中补充/覆盖 ${data.data[tableName].length} 条数据...`);
+                    await db[tableName].bulkPut(data.data[tableName]);
+                }
+            }
+        });
+
+        await loadAllDataFromDB();
+        await renderChatList();
+        
+        await showCustomAlert('导入成功', '数据已成功补充！应用将刷新以确保所有数据正确加载。');
+        setTimeout(() => window.location.reload(), 1500);
+
+    } catch (error) {
+        console.error("补充式导入失败:", error);
+        await showCustomAlert('导入失败', `写入数据库时发生错误: ${error.message}`);
+    } finally {
+        document.getElementById('advanced-transfer-modal').classList.remove('visible');
+    }
+}
+// ▲▲▲ 核心JS代码替换结束 ▲▲▲
 
 
         // ===================================================================
@@ -64048,6 +64311,28 @@ document.getElementById('cancel-sticker-category-btn').addEventListener('click',
 document.getElementById('confirm-sticker-category-btn').addEventListener('click', handleMoveStickers);
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】高级导入/导出功能事件监听器 ▼▼▼
+// ▼▼▼ 在 init() 的事件监听器区域，替换/添加这行代码 ▼▼▼
+document.getElementById('advanced-transfer-btn').addEventListener('click', openAdvancedTransferModal);
+
+document.getElementById('close-advanced-transfer-btn').addEventListener('click', () => {
+    document.getElementById('advanced-transfer-modal').classList.remove('visible');
+});
+
+document.getElementById('export-selected-data-btn').addEventListener('click', exportChunkedData);
+
+document.getElementById('import-chunked-data-btn').addEventListener('click', () => {
+    document.getElementById('import-chunked-data-input').click();
+});
+
+document.getElementById('import-chunked-data-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        importChunkedData(file);
+    }
+    e.target.value = null; // 清空以便下次选择
+});
+// ▲▲▲ 事件监听器粘贴结束 ▲▲▲
 
 
 
