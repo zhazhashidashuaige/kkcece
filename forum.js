@@ -10,6 +10,21 @@ let activeForumFilters = {
 };
 let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
 let isSelectionMode = false;
+
+/**
+ * 【全新】从一个数组中随机获取一个元素
+ * @param {Array} arr - 目标数组
+ * @returns {*} - 数组中的一个随机元素
+ */
+function getRandomItem(arr) {
+  // 安全检查，如果数组为空或不存在，返回空字符串
+  if (!arr || arr.length === 0) return '';
+  // 返回一个随机索引对应的元素
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ▲▲▲ 粘贴结束 ▲▲▲
+
 // ▼▼▼ 用这块【已添加梦角小组】的代码，完整替换掉你旧的 initializeDefaultGroups 函数 ▼▼▼
 function addLongPressListener(element, callback) {
   let pressTimer;
