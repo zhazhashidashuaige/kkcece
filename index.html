@@ -23806,6 +23806,12 @@ async function searchAndPlaySong(name, artist) {
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
+// ▲▲▲ 新增函数粘贴结束 ▲▲▲
+let activeForumFilters = { 
+    global: [], // 用于主页小组列表的筛选
+    group: {}   // 用于存储每个小组内部帖子的筛选, e.g., { 1: ['科幻'], 2: ['剧情'] }
+};
+let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
 
         let photoViewerState = {
             isOpen: false,
@@ -24251,6 +24257,20 @@ function getRandomDefaultProductImage() {
 }
 
 // ▲▲▲ 新增代码粘贴结束 ▲▲▲
+
+/**
+ * 【全新】从一个数组中随机获取一个元素
+ * @param {Array} arr - 目标数组
+ * @returns {*} - 数组中的一个随机元素
+ */
+function getRandomItem(arr) {
+    // 安全检查，如果数组为空或不存在，返回空字符串
+    if (!arr || arr.length === 0) return '';
+    // 返回一个随机索引对应的元素
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ▲▲▲ 粘贴结束 ▲▲▲
 
         // ===================================================================
         // 2. 数据库结构定义
@@ -44968,6 +44988,8 @@ function showCharStickerTab(type) {
 // ▲▲▲ JavaScript新函数粘贴结束 ▲▲▲
 
 
+
+// ▲▲▲ 替换结束 ▲▲▲
 // ▼▼▼ 把这一整块全新的功能函数，粘贴到 init() 函数的正上方 ▼▼▼
 
 /**
@@ -55705,14 +55727,33 @@ async function exportDataFor330() {
     }
 }
 // ▲▲▲ 替换结束 ▲▲▲
+/**
+ * 初始化默认的小组
+ */
+async function initializeDefaultGroups() {
+  const groupCount = await db.forumGroups.count();
+  if (groupCount === 0) {
+    const defaultGroups = [
+      { name: '娱乐小组', description: '分享八卦和快乐', icon: '🍿' },
+      { name: '灵异小组', description: '分享你的灵异经历', icon: '👻' },
+      { name: '今天我crush了吗', description: '记录心动瞬间', icon: '💖' },
+      { name: '请帮我选择小组', description: '选择困难症患者互助', icon: '🤔' },
+      { name: '同人文小组', description: '为爱发电，创作故事', icon: '✍️' },
+      // ▼▼▼ 就是新增了下面这一行！ ▼▼▼
+      { name: '梦角小组', description: 'Char们分享关于user的梦境', icon: '🌙' },
+    ];
+    await db.forumGroups.bulkAdd(defaultGroups);
+    console.log('已成功创建默认小组（包含梦角小组）。');
+  }
+}
 
+// ▲▲▲ 替换结束 ▲▲▲
 
 
         // ===================================================================
         // 4. 初始化函数 init()
         // ===================================================================
         async function init() {
-           initForum();
     // ▼▼▼ 在 init()    // ▼▼▼ 在这里粘贴下面这几行新代码 ▼▼▼
     // 更新小组件的月份显示
     const monthElement = document.getElementById('widget-month-display');
@@ -56443,6 +56484,14 @@ if (state.globalSettings.enableBackgroundActivity) {
     console.log("后台活动模拟已停止。");
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
+// 保存NovelAI配置到localStorage
+const novelaiEnabled = document.getElementById('novelai-switch').checked;
+const novelaiModel = document.getElementById('novelai-model').value;
+const novelaiApiKey = document.getElementById('novelai-api-key').value.trim();
+localStorage.setItem('novelai-enabled', novelaiEnabled);
+localStorage.setItem('novelai-model', novelaiModel);
+localStorage.setItem('novelai-api-key', novelaiApiKey);
 
 alert('API设置已保存!'); });
 
@@ -60794,10 +60843,6 @@ document.getElementById('clear-following-feed-btn').addEventListener('click', cl
 // 1. 初始化时创建默认小组
 await initializeDefaultGroups();
 
-
-
-
-// ▲▲▲ 论坛事件监听器结束 ▲▲▲
 // ▼▼▼ 把这一整块全新的事件监听器代码，粘贴到 init() 函数的末尾，就在 init(); 的正上方 ▼▼▼
 
 // --- 塔罗牌占卜功能事件绑定 ---
@@ -61479,6 +61524,7 @@ document.getElementById('remove-home-font-shadow-toggle').addEventListener('chan
     document.getElementById('phone-screen').classList.toggle('no-home-font-shadow', e.target.checked);
 });
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
+
 
 
 // ▲▲▲ 新增事件监听结束 ▲▲▲

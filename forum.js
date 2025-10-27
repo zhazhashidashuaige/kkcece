@@ -10,7 +10,7 @@ let activeForumFilters = {
 };
 let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
 let isSelectionMode = false;
-
+let weiboHotSearchCache = [];
 /**
  * 【全新】从一个数组中随机获取一个元素
  * @param {Array} arr - 目标数组
@@ -41,27 +41,6 @@ function addLongPressListener(element, callback) {
   element.addEventListener('touchend', cancelPress);
   element.addEventListener('touchmove', cancelPress);
 }
-/**
- * 初始化默认的小组
- */
-async function initializeDefaultGroups() {
-  const groupCount = await db.forumGroups.count();
-  if (groupCount === 0) {
-    const defaultGroups = [
-      { name: '娱乐小组', description: '分享八卦和快乐', icon: '🍿' },
-      { name: '灵异小组', description: '分享你的灵异经历', icon: '👻' },
-      { name: '今天我crush了吗', description: '记录心动瞬间', icon: '💖' },
-      { name: '请帮我选择小组', description: '选择困难症患者互助', icon: '🤔' },
-      { name: '同人文小组', description: '为爱发电，创作故事', icon: '✍️' },
-      // ▼▼▼ 就是新增了下面这一行！ ▼▼▼
-      { name: '梦角小组', description: 'Char们分享关于user的梦境', icon: '🌙' },
-    ];
-    await db.forumGroups.bulkAdd(defaultGroups);
-    console.log('已成功创建默认小组（包含梦角小组）。');
-  }
-}
-
-// ▲▲▲ 替换结束 ▲▲▲
 
 /**
  * 渲染论坛主屏幕，显示所有小组及其分类（已支持筛选）
