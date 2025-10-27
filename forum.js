@@ -1,15 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 这里应该是你已有的其他函数，比如 renderCharStickers, bulkAddCharStickers 等...
-  // ▼▼▼ 【全新 | 修复版】这里是所有论坛/小组功能的核心代码 ▼▼▼
-
+  let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
   let activeGroupId = null; // 记录当前打开的小组ID
   let activeForumPostId = null; // 记录当前打开的帖子ID
-  // ▲▲▲ 新增函数粘贴结束 ▲▲▲
+  let editingGroupId = null; // 用于追踪正在编辑的小组ID
+  // ▼▼▼ 用这块【已添加梦角小组】的代码，完整替换掉你旧的 initializeDefaultGroups 函数 ▼▼▼
   let activeForumFilters = {
     global: [], // 用于主页小组列表的筛选
     group: {}, // 用于存储每个小组内部帖子的筛选, e.g., { 1: ['科幻'], 2: ['剧情'] }
   };
-  let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
   let isSelectionMode = false;
   let weiboHotSearchCache = [];
   /**
@@ -25,8 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ▲▲▲ 粘贴结束 ▲▲▲
-
-  // ▼▼▼ 用这块【已添加梦角小组】的代码，完整替换掉你旧的 initializeDefaultGroups 函数 ▼▼▼
   function addLongPressListener(element, callback) {
     let pressTimer;
     const startPress = e => {
@@ -41,6 +37,64 @@ document.addEventListener('DOMContentLoaded', () => {
     element.addEventListener('touchstart', startPress, { passive: true });
     element.addEventListener('touchend', cancelPress);
     element.addEventListener('touchmove', cancelPress);
+  }
+  /**
+   * 渲染论坛主屏幕，显示所有小组及其分类（已支持筛选）
+   */
+  async function renderForumScreen() {
+    const listEl = document.getElementById('forum-group-list');
+    const allGroups = await db.forumGroups.toArray();
+    listEl.innerHTML = '';
+
+    // --- ▼▼▼ 【核心新增】筛选逻辑 ▼▼▼ ---
+    const globalFilters = activeForumFilters.global;
+    let groupsToRender = allGroups;
+
+    if (globalFilters && globalFilters.length > 0) {
+      groupsToRender = allGroups.filter(
+        group => group.categories && group.categories.some(cat => globalFilters.includes(cat)),
+      );
+    }
+    // --- ▲▲▲ 新增结束 ▲▲▲ ---
+
+    // 检查筛选后是否还有内容
+    if (groupsToRender.length === 0) {
+      const message =
+        globalFilters.length > 0 ? '没有找到符合筛选条件的小组哦' : '还没有任何小组，点击右上角“+”创建一个吧！';
+      listEl.innerHTML = `<p style="text-align:center; color: #8a8a8a; padding: 50px 0;">${message}</p>`;
+      return;
+    }
+
+    // 使用筛选后的 groupsToRender 数组进行渲染
+    groupsToRender.forEach(group => {
+      const item = document.createElement('div');
+      item.className = 'forum-group-item';
+
+      let categoriesHtml = '';
+      if (group.categories && group.categories.length > 0) {
+        categoriesHtml = `
+                <div class="category-tag-container">
+                    ${group.categories.map(cat => `<span class="category-tag">#${cat}</span>`).join('')}
+                </div>
+            `;
+      }
+
+      item.innerHTML = `
+            <div class="forum-group-icon">${group.icon || '📁'}</div>
+            <div class="forum-group-name">${group.name}</div>
+            <div class="forum-group-desc">${group.description}</div>
+            ${categoriesHtml}
+        `;
+      item.addEventListener('click', () => openGroup(group.id, group.name));
+      addLongPressListener(item, () => showGroupActions(group.id, group.name));
+      listEl.appendChild(item);
+    });
+
+    // 更新筛选按钮状态
+    const filterBtn = document.getElementById('forum-filter-btn');
+    if (filterBtn) {
+      filterBtn.classList.toggle('active', globalFilters && globalFilters.length > 0);
+    }
   }
 
   /**
@@ -949,7 +1003,6 @@ ${worldviewContext}
   // ▲▲▲ 替换结束 ▲▲▲
 
   // ▼▼▼ 【全新】圈子/小组高级功能辅助函数 ▼▼▼
-  let editingGroupId = null; // 用于追踪正在编辑的小组ID
 
   /**
    * 打开小组编辑器
@@ -1388,10 +1441,6 @@ ${JSON.stringify(publicFigures, null, 2)}
     }
   }
   // ▲▲▲ 替换结束 ▲▲▲
-
-  // ▲▲▲ 替换结束 ▲▲▲
-  // ▼▼▼ 【全新】圈子/小组分类筛选功能核心函数 ▼▼▼
-
   // ▼▼▼ 用这块【已修复】的代码，完整替换你旧的 openForumFilterModal 函数 ▼▼▼
   /**
    * 【总入口】打开分类筛选模态框 (V3 - 已分离小组和帖子的分类)
@@ -1486,163 +1535,174 @@ ${JSON.stringify(publicFigures, null, 2)}
 
     document.getElementById('forum-filter-modal').classList.remove('visible');
   }
-  function initForum() {
-    // 3. 绑定小组页和帖子页的返回按钮
-    document.getElementById('back-to-forum-list').addEventListener('click', () => showScreen('forum-screen'));
-    document
-      .getElementById('back-to-group-screen')
-      .addEventListener('click', () =>
-        openGroup(activeGroupId, document.getElementById('group-screen-title').textContent),
+
+  // ▲▲▲ 新增函数结束 ▲▲▲
+
+  // ▲▲▲ 替换结束 ▲▲▲
+  // ▼▼▼ 【全新】论坛功能事件监听器 ▼▼▼
+
+  // 2. 当用户点击“圈子”App图标时，渲染小组列表
+  document
+    .querySelector('.desktop-app-icon[onclick="showScreen(\'forum-screen\')"]')
+    .addEventListener('click', renderForumScreen);
+
+  // 3. 绑定小组页和帖子页的返回按钮
+  document.getElementById('back-to-forum-list').addEventListener('click', () => showScreen('forum-screen'));
+  document
+    .getElementById('back-to-group-screen')
+    .addEventListener('click', () =>
+      openGroup(activeGroupId, document.getElementById('group-screen-title').textContent),
+    );
+
+  // 4. 绑定帖子评论区的发送按钮
+  document.getElementById('send-post-comment-btn').addEventListener('click', handleAddComment);
+
+  // 这是【修复后】的代码
+  document.getElementById('trigger-fanfic-generation-btn').addEventListener('click', () => {
+    // 核心修改：使用箭头函数，在点击时获取并传入当前的 activeGroupId
+    generateFanfic(activeGroupId);
+  });
+
+  // 绑定所有小组头部通用的“生成”按钮
+  document.getElementById('generate-group-content-btn').addEventListener('click', handleGenerateGroupContent);
+  // ▲▲▲ 替换结束 ▲▲▲
+
+  // 6. 绑定帖子详情页的“转载”按钮
+  document.getElementById('repost-to-chat-btn').addEventListener('click', repostToChat);
+
+  // ▼▼▼ 在 init() 函数中，用【这一行】替换旧的 create-group-btn 监听器 ▼▼▼
+  document.getElementById('create-group-btn').addEventListener('click', openGroupCreator);
+  // ▲▲▲ 替换结束 ▲▲▲
+
+  // ▼▼▼ 用这块新代码替换 ▼▼▼
+  document.getElementById('create-forum-post-btn').addEventListener('click', () => {
+    // 【核心修改】我们不再弹窗提示，而是调用一个新函数来打开真正的发帖窗口
+    openCreateForumPostModal();
+  });
+  // ▲▲▲ 替换结束 ▲▲▲
+  // ▼▼▼ 在 init() 的事件监听器区域，粘贴下面这块【新代码】 ▼▼▼
+
+  // 使用事件委托，为帖子详情页的“生成评论”按钮绑定事件
+  document.getElementById('post-detail-content').addEventListener('click', e => {
+    if (e.target.id === 'generate-forum-comments-btn') {
+      generateForumComments();
+    }
+  });
+
+  // 在用户手动输入评论后，如果输入框为空就失去焦点时，自动取消回复状态
+  document.getElementById('post-comment-input').addEventListener('blur', e => {
+    const input = e.target;
+    if (input.value.trim() === '') {
+      input.placeholder = '发布你的评论...';
+      delete input.dataset.replyTo;
+    }
+  });
+  // ▲▲▲ 新代码粘贴结束 ▲▲▲
+  // ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴下面这整块新代码 ▼▼▼
+
+  // 使用事件委托，为所有转载的帖子卡片添加点击事件
+  document.getElementById('chat-messages').addEventListener('click', e => {
+    const repostCard = e.target.closest('.link-share-card[data-post-id]');
+    if (repostCard) {
+      const postId = parseInt(repostCard.dataset.postId);
+      if (!isNaN(postId)) {
+        // 调用你已经写好的“打开帖子”函数
+        openPost(postId);
+      }
+    }
+  });
+
+  // ▲▲▲ 新增代码结束 ▲▲▲
+  // ▼▼▼ 【全新】论坛帖子列表事件委托 ▼▼▼
+  document.getElementById('group-post-list').addEventListener('click', async e => {
+    const postItem = e.target.closest('.forum-post-item');
+    if (!postItem) return;
+
+    // 检查点击的是否是删除按钮
+    if (e.target.classList.contains('forum-post-delete-btn')) {
+      const postId = postItem.dataset.postId;
+      if (!postId) return;
+
+      const post = await db.forumPosts.get(parseInt(postId));
+      if (!post) return;
+
+      const confirmed = await showCustomConfirm(
+        '删除帖子',
+        `确定要删除帖子《${post.title}》吗？此操作将同时删除帖子下的所有评论，且无法恢复。`,
+        { confirmButtonClass: 'btn-danger' },
       );
 
-    // 4. 绑定帖子评论区的发送按钮
-    document.getElementById('send-post-comment-btn').addEventListener('click', handleAddComment);
+      if (confirmed) {
+        try {
+          // 使用数据库事务来确保帖子和评论被同时删除
+          await db.transaction('rw', db.forumPosts, db.forumComments, async () => {
+            // 1. 删除所有与该帖子关联的评论
+            await db.forumComments.where('postId').equals(parseInt(postId)).delete();
+            // 2. 删除帖子本身
+            await db.forumPosts.delete(parseInt(postId));
+          });
 
-    // 这是【修复后】的代码
-    document.getElementById('trigger-fanfic-generation-btn').addEventListener('click', () => {
-      // 核心修改：使用箭头函数，在点击时获取并传入当前的 activeGroupId
-      generateFanfic(activeGroupId);
-    });
-
-    // 绑定所有小组头部通用的“生成”按钮
-    document.getElementById('generate-group-content-btn').addEventListener('click', handleGenerateGroupContent);
-    // ▲▲▲ 替换结束 ▲▲▲
-
-    // 6. 绑定帖子详情页的“转载”按钮
-    document.getElementById('repost-to-chat-btn').addEventListener('click', repostToChat);
-
-    // ▼▼▼ 在 init() 函数中，用【这一行】替换旧的 create-group-btn 监听器 ▼▼▼
-    document.getElementById('create-group-btn').addEventListener('click', openGroupCreator);
-    // ▲▲▲ 替换结束 ▲▲▲
-
-    // ▼▼▼ 用这块新代码替换 ▼▼▼
-    document.getElementById('create-forum-post-btn').addEventListener('click', () => {
-      // 【核心修改】我们不再弹窗提示，而是调用一个新函数来打开真正的发帖窗口
-      openCreateForumPostModal();
-    });
-    // ▲▲▲ 替换结束 ▲▲▲
-    // ▼▼▼ 在 init() 的事件监听器区域，粘贴下面这块【新代码】 ▼▼▼
-
-    // 使用事件委托，为帖子详情页的“生成评论”按钮绑定事件
-    document.getElementById('post-detail-content').addEventListener('click', e => {
-      if (e.target.id === 'generate-forum-comments-btn') {
-        generateForumComments();
-      }
-    });
-
-    // 在用户手动输入评论后，如果输入框为空就失去焦点时，自动取消回复状态
-    document.getElementById('post-comment-input').addEventListener('blur', e => {
-      const input = e.target;
-      if (input.value.trim() === '') {
-        input.placeholder = '发布你的评论...';
-        delete input.dataset.replyTo;
-      }
-    });
-    // ▲▲▲ 新代码粘贴结束 ▲▲▲
-    // ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴下面这整块新代码 ▼▼▼
-
-    // 使用事件委托，为所有转载的帖子卡片添加点击事件
-    document.getElementById('chat-messages').addEventListener('click', e => {
-      const repostCard = e.target.closest('.link-share-card[data-post-id]');
-      if (repostCard) {
-        const postId = parseInt(repostCard.dataset.postId);
-        if (!isNaN(postId)) {
-          // 调用你已经写好的“打开帖子”函数
-          openPost(postId);
+          await showCustomAlert('删除成功', '帖子及其所有评论已被删除。');
+          // 刷新帖子列表
+          await renderGroupPosts(activeGroupId);
+        } catch (error) {
+          console.error('删除帖子失败:', error);
+          await showCustomAlert('删除失败', `操作失败: ${error.message}`);
         }
       }
-    });
-
-    // ▲▲▲ 新增代码结束 ▲▲▲
-    // ▼▼▼ 【全新】论坛帖子列表事件委托 ▼▼▼
-    document.getElementById('group-post-list').addEventListener('click', async e => {
-      const postItem = e.target.closest('.forum-post-item');
-      if (!postItem) return;
-
-      // 检查点击的是否是删除按钮
-      if (e.target.classList.contains('forum-post-delete-btn')) {
-        const postId = postItem.dataset.postId;
-        if (!postId) return;
-
-        const post = await db.forumPosts.get(parseInt(postId));
-        if (!post) return;
-
-        const confirmed = await showCustomConfirm(
-          '删除帖子',
-          `确定要删除帖子《${post.title}》吗？此操作将同时删除帖子下的所有评论，且无法恢复。`,
-          { confirmButtonClass: 'btn-danger' },
-        );
-
-        if (confirmed) {
-          try {
-            // 使用数据库事务来确保帖子和评论被同时删除
-            await db.transaction('rw', db.forumPosts, db.forumComments, async () => {
-              // 1. 删除所有与该帖子关联的评论
-              await db.forumComments.where('postId').equals(parseInt(postId)).delete();
-              // 2. 删除帖子本身
-              await db.forumPosts.delete(parseInt(postId));
-            });
-
-            await showCustomAlert('删除成功', '帖子及其所有评论已被删除。');
-            // 刷新帖子列表
-            await renderGroupPosts(activeGroupId);
-          } catch (error) {
-            console.error('删除帖子失败:', error);
-            await showCustomAlert('删除失败', `操作失败: ${error.message}`);
-          }
-        }
-      } else {
-        // 如果点击的不是删除按钮，那就是点击了帖子本身，执行跳转逻辑
-        const postId = postItem.dataset.postId;
-        if (postId) {
-          openPost(parseInt(postId));
-        }
+    } else {
+      // 如果点击的不是删除按钮，那就是点击了帖子本身，执行跳转逻辑
+      const postId = postItem.dataset.postId;
+      if (postId) {
+        openPost(parseInt(postId));
       }
-    });
-    // ▲▲▲ 新事件监听器结束 ▲▲▲
-    // ▼▼▼ 【全新】圈子/小组高级功能事件监听 ▼▼▼
+    }
+  });
+  // ▲▲▲ 新事件监听器结束 ▲▲▲
+  // ▼▼▼ 【全新】圈子/小组高级功能事件监听 ▼▼▼
 
-    // 1. 为“圈子”主页右上角的“+”按钮，绑定创建小组的事件
-    document.getElementById('create-group-btn').addEventListener('click', openGroupCreator);
+  // 1. 为“圈子”主页右上角的“+”按钮，绑定创建小组的事件
+  document.getElementById('create-group-btn').addEventListener('click', openGroupCreator);
 
-    // 2. 为小组编辑器弹窗的“保存”和“取消”按钮绑定事件
-    document.getElementById('save-group-editor-btn').addEventListener('click', saveGroupSettings);
-    document.getElementById('cancel-group-editor-btn').addEventListener('click', () => {
-      document.getElementById('forum-group-editor-modal').classList.remove('visible');
-    });
+  // 2. 为小组编辑器弹窗的“保存”和“取消”按钮绑定事件
+  document.getElementById('save-group-editor-btn').addEventListener('click', saveGroupSettings);
+  document.getElementById('cancel-group-editor-btn').addEventListener('click', () => {
+    document.getElementById('forum-group-editor-modal').classList.remove('visible');
+  });
 
-    // 3. 为分类管理弹窗的按钮绑定事件
-    document.getElementById('add-new-forum-category-btn').addEventListener('click', addNewForumCategory);
-    document.getElementById('close-forum-category-manager-btn').addEventListener('click', () => {
-      document.getElementById('forum-category-manager-modal').classList.remove('visible');
-    });
+  // 3. 为分类管理弹窗的按钮绑定事件
+  document.getElementById('add-new-forum-category-btn').addEventListener('click', addNewForumCategory);
+  document.getElementById('close-forum-category-manager-btn').addEventListener('click', () => {
+    document.getElementById('forum-category-manager-modal').classList.remove('visible');
+  });
 
-    // 4. 使用事件委托，为分类列表中的“删除”按钮绑定事件
-    document.getElementById('existing-forum-categories-list').addEventListener('click', e => {
-      if (e.target.classList.contains('delete-group-btn')) {
-        // 复用样式
-        const categoryId = parseInt(e.target.dataset.id);
-        deleteForumCategory(categoryId);
-      }
-    });
-    // ▲▲▲ 新增事件监听结束 ▲▲▲
-    // ▼▼▼ 【全新】圈子/小组分类筛选功能事件监听 ▼▼▼
-    // 1. 绑定主页和小组页的筛选按钮
-    document.getElementById('forum-filter-btn').addEventListener('click', () => openForumFilterModal('global'));
-    document
-      .getElementById('group-filter-btn')
-      .addEventListener('click', () => openForumFilterModal('group', activeGroupId));
+  // 4. 使用事件委托，为分类列表中的“删除”按钮绑定事件
+  document.getElementById('existing-forum-categories-list').addEventListener('click', e => {
+    if (e.target.classList.contains('delete-group-btn')) {
+      // 复用样式
+      const categoryId = parseInt(e.target.dataset.id);
+      deleteForumCategory(categoryId);
+    }
+  });
+  // ▲▲▲ 新增事件监听结束 ▲▲▲
+  // ▼▼▼ 【全新】圈子/小组分类筛选功能事件监听 ▼▼▼
+  // 1. 绑定主页和小组页的筛选按钮
+  document.getElementById('forum-filter-btn').addEventListener('click', () => openForumFilterModal('global'));
+  document
+    .getElementById('group-filter-btn')
+    .addEventListener('click', () => openForumFilterModal('group', activeGroupId));
 
-    // 2. 绑定筛选弹窗内的按钮
-    document.getElementById('apply-forum-filter-btn').addEventListener('click', applyForumFilter);
-    document.getElementById('cancel-forum-filter-btn').addEventListener('click', () => {
-      document.getElementById('forum-filter-modal').classList.remove('visible');
-    });
-    document.getElementById('reset-forum-filter-btn').addEventListener('click', async () => {
-      // 清空复选框并应用
-      document.querySelectorAll('#forum-filter-category-list input:checked').forEach(cb => (cb.checked = false));
-      await applyForumFilter();
-    });
-    // ▲▲▲ 新增事件监听结束 ▲▲▲
-  }
+  // 2. 绑定筛选弹窗内的按钮
+  document.getElementById('apply-forum-filter-btn').addEventListener('click', applyForumFilter);
+  document.getElementById('cancel-forum-filter-btn').addEventListener('click', () => {
+    document.getElementById('forum-filter-modal').classList.remove('visible');
+  });
+  document.getElementById('reset-forum-filter-btn').addEventListener('click', async () => {
+    // 清空复选框并应用
+    document.querySelectorAll('#forum-filter-category-list input:checked').forEach(cb => (cb.checked = false));
+    await applyForumFilter();
+  });
+  // ▲▲▲ 新增事件监听结束 ▲▲▲
+
+  // ▲▲▲ 论坛事件监听器结束 ▲▲▲
 });

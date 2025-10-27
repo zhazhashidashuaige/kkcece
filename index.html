@@ -15823,21 +15823,6 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transform: scale(1.05);
 }
 /* ▲▲▲ RealImag多图布局样式结束 ▲▲▲ */
-/* ▼▼▼ 【全新】这是“重roll”按钮的SVG图标样式 ▼▼▼ */
-.reroll-btn-icon {
-    width: 14px;
-    height: 14px;
-    stroke: currentColor;
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    fill: none;
-    transition: transform 0.5s ease;
-}
-.reroll-btn-icon:hover {
-    transform: rotate(360deg);
-}
-/* ▲▲▲ 新增样式结束 ▲▲▲ */
 
     </style>
     <!-- ▼▼▼ 在这里添加下面这行 ▼▼▼ -->
@@ -16437,7 +16422,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 			<hr style="margin:20px 0; opacity:.3">
 <button class="form-button form-button-secondary" id="clear-orphaned-data-btn" style="margin-top: 10px; border-color: #ff9966; color: #ff9966;">🧹 清理失效数据</button>
 			<button class="form-button" id="export-data-btn">导出数据</button>
-<button class="form-button" id="advanced-transfer-btn" style="background-color: #6f42c1; margin-top: 10px;">高级导入/导出</button>
+
 <!-- ① 普通按钮，和“导出”一个 class -->
 <button class="form-button" id="import-btn">导入备份文件</button>
 
@@ -17051,7 +17036,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 <div style="width:100%; text-align: left; margin-bottom: 15px;">
     <label style="font-weight: 500; color: var(--text-secondary);">主屏幕 App 名称</label>
 </div>
-<div id="icon-rename-grid" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 15px 20px;">
+<div id="icon-rename-grid" style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
     <!-- App 名称输入框将由JS动态生成在这里 -->
 </div>
 <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
@@ -21929,60 +21914,6 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-<!-- ▼▼▼ 用这块【新代码】替换旧的 advanced-transfer-modal ▼▼▼ -->
-<div id="advanced-transfer-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <span>高级导入 / 导出</span>
-        </div>
-        <div class="modal-body">
-            <h4>选择要导出的内容</h4>
-            
-            <!-- App 数据导出区 -->
-            <div class="form-group">
-                <label>全局App数据 (多选)</label>
-                <div id="export-apps-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px;">
-                    <!-- App 多选框将由JS动态生成在这里 -->
-                </div>
-            </div>
-
-            <!-- 角色数据导出区 -->
-            <div class="form-group">
-                <label style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>角色数据 (多选,qq动态什么的)</span>
-                    <label style="font-size: 13px; font-weight: normal; cursor: pointer;">
-                        <input type="checkbox" id="select-all-characters-checkbox" style="vertical-align: middle; margin-right: 4px;"> 全选/全不选
-                    </label>
-                </label>
-                <div id="export-characters-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px;">
-                    <!-- 角色多选框将由JS动态生成在这里 -->
-                </div>
-            </div>
-            <button id="export-selected-data-btn" class="form-button">导出选中项</button>
-
-            <!-- ★★★★★ 这就是我们新增的部分！ ★★★★★ -->
-            <hr style="margin: 20px 0;">
-            <h4>兼容性导出</h4>
-            <p style="font-size: 13px; color: #666;">
-                将你的所有数据转换为一个可被其他兼容应用（如Ephone 330）识别的备份文件。
-            </p>
-            <button id="export-for-330-btn" class="form-button" style="background-color: #6f42c1;">🚀 兼容330数据导出</button>
-            <!-- ★★★★★ 新增结束 ★★★★★ -->
-
-            <hr style="margin: 20px 0;">
-
-            <h4>导入补充数据</h4>
-            <p style="font-size: 13px; color: #666;">导入将以【补充和覆盖】的方式进行，不会删除您现有的其他数据。这可以用来合并数据或恢复单个角色的备份。</p>
-            <button id="import-chunked-data-btn" class="form-button form-button-secondary">选择文件并导入</button>
-            <input id="import-chunked-data-input" type="file" accept="application/json" hidden>
-        </div>
-        <div class="modal-footer">
-            <button class="cancel" id="close-advanced-transfer-btn">关闭</button>
-        </div>
-    </div>
-</div>
-<!-- ▲▲▲ 替换结束 ▲▲▲ -->
-
 
 
 
@@ -23806,12 +23737,7 @@ async function searchAndPlaySong(name, artist) {
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
-// ▲▲▲ 新增函数粘贴结束 ▲▲▲
-let activeForumFilters = { 
-    global: [], // 用于主页小组列表的筛选
-    group: {}   // 用于存储每个小组内部帖子的筛选, e.g., { 1: ['科幻'], 2: ['剧情'] }
-};
-let currentFilterContext = { type: 'global', id: null }; // 记录当前打开筛选的是哪个页面
+
 
         let photoViewerState = {
             isOpen: false,
@@ -24258,19 +24184,7 @@ function getRandomDefaultProductImage() {
 
 // ▲▲▲ 新增代码粘贴结束 ▲▲▲
 
-/**
- * 【全新】从一个数组中随机获取一个元素
- * @param {Array} arr - 目标数组
- * @returns {*} - 数组中的一个随机元素
- */
-function getRandomItem(arr) {
-    // 安全检查，如果数组为空或不存在，返回空字符串
-    if (!arr || arr.length === 0) return '';
-    // 返回一个随机索引对应的元素
-    return arr[Math.floor(Math.random() * arr.length)];
-}
 
-// ▲▲▲ 粘贴结束 ▲▲▲
 
         // ===================================================================
         // 2. 数据库结构定义
@@ -44987,9 +44901,8 @@ function showCharStickerTab(type) {
 
 // ▲▲▲ JavaScript新函数粘贴结束 ▲▲▲
 
+// 这里应该是你已有的其他函数，比如 renderCharStickers, bulkAddCharStickers 等...
 
-
-// ▲▲▲ 替换结束 ▲▲▲
 // ▼▼▼ 把这一整块全新的功能函数，粘贴到 init() 函数的正上方 ▼▼▼
 
 /**
@@ -47267,7 +47180,6 @@ function formatMinutesToDuration(totalMinutes) {
         return `${minutes}分钟`;
     }
 }
-
 
 // ▼▼▼ 【全新】宠物功能核心函数 ▼▼▼
 
@@ -55349,463 +55261,27 @@ async function handleUserSpeakInCall() {
 }
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
-// ▼▼▼ 【全新】分块导入/导出功能 v3.0 (按App/角色分类 | 已修复错误) ▼▼▼
-
-/**
- * 打开高级导入导出模态框，并动态生成选项列表
- */
-async function openAdvancedTransferModal() {
-    const appsListEl = document.getElementById('export-apps-list');
-    const charactersListEl = document.getElementById('export-characters-list');
-    appsListEl.innerHTML = '';
-    charactersListEl.innerHTML = '';
-
-    // 1. 定义可独立导出的App数据及其关联的数据库表
-    const appsToExport = [
-        { id: 'weibo', name: '微博 (全部帖子/角色资料/粉丝数等)', tables: ['weiboPosts', 'qzoneSettings'] },
-        { id: 'forum', name: '圈子 (所有小组/帖子/评论/分类)', tables: ['forumGroups', 'forumPosts', 'forumComments', 'forumCategories'] },
-        { id: 'taobao', name: '桃宝 (所有商品/订单/购物车/余额记录)', tables: ['taobaoProducts', 'taobaoOrders', 'taobaoCart', 'userWalletTransactions'] },
-        { id: 'worldBooks', name: '世界书 (全部书籍及分类)', tables: ['worldBooks', 'worldBookCategories'] },
-        { id: 'userStickers', name: '我的表情包 (包含分类)', tables: ['userStickers', 'userStickerCategories'] },
-        { id: 'charStickers', name: '角色通用表情包', tables: ['charStickers'] },
-        { id: 'gameData', name: '游戏大厅数据 (剧本杀/飞行棋题库等)', tables: ['scriptKillScripts', 'ludoQuestionBanks', 'ludoQuestions'] },
-        { id: 'appearance', name: '通用外观预设 (主题/字体/头像框等)', tables: ['themes', 'fontPresets', 'homeScreenPresets', 'customAvatarFrames', 'apiPresets', 'bubbleStylePresets'] }
-    ];
-
-    appsToExport.forEach(app => {
-        appsListEl.innerHTML += `
-            <label style="display: block; margin-bottom: 5px;">
-                <input type="checkbox" class="export-app-checkbox" value="${app.id}"> ${app.name}
-            </label>
-        `;
-    });
-
-    // 2. 加载所有单聊角色
-    const characters = Object.values(state.chats).filter(chat => !chat.isGroup);
-    if (characters.length === 0) {
-        charactersListEl.innerHTML = '<p>没有可导出的角色</p>';
-    } else {
-        characters.forEach(char => {
-            charactersListEl.innerHTML += `
-                <label style="display: block; margin-bottom: 5px;">
-                    <input type="checkbox" class="export-char-checkbox" value="${char.id}"> ${char.name}
-                </label>
-            `;
-        });
+  /**
+   * 初始化默认的小组
+   */
+  async function initializeDefaultGroups() {
+    const groupCount = await db.forumGroups.count();
+    if (groupCount === 0) {
+      const defaultGroups = [
+        { name: '娱乐小组', description: '分享八卦和快乐', icon: '🍿' },
+        { name: '灵异小组', description: '分享你的灵异经历', icon: '👻' },
+        { name: '今天我crush了吗', description: '记录心动瞬间', icon: '💖' },
+        { name: '请帮我选择小组', description: '选择困难症患者互助', icon: '🤔' },
+        { name: '同人文小组', description: '为爱发电，创作故事', icon: '✍️' },
+        // ▼▼▼ 就是新增了下面这一行！ ▼▼▼
+        { name: '梦角小组', description: 'Char们分享关于user的梦境', icon: '🌙' },
+      ];
+      await db.forumGroups.bulkAdd(defaultGroups);
+      console.log('已成功创建默认小组（包含梦角小组）。');
     }
-
-    // 重置并绑定全选框
-    const selectAllCheckbox = document.getElementById('select-all-characters-checkbox');
-    selectAllCheckbox.checked = false;
-    
-    // 【重要】使用克隆节点技巧，防止事件重复绑定
-    const newSelectAllCheckbox = selectAllCheckbox.cloneNode(true);
-    selectAllCheckbox.parentNode.replaceChild(newSelectAllCheckbox, selectAllCheckbox);
-    newSelectAllCheckbox.addEventListener('change', (e) => {
-        document.querySelectorAll('.export-char-checkbox').forEach(cb => {
-            cb.checked = e.target.checked;
-        });
-    });
-
-    // 3. 显示模态框
-    document.getElementById('advanced-transfer-modal').classList.add('visible');
-}
-
-/**
- * 执行分块导出 (v3.0)
- */
-async function exportChunkedData() {
-    await showCustomAlert("请稍候...", "正在打包您选择的数据...");
-
-    const backupData = {
-        type: 'EPhoneChunkedBackup',
-        version: 3,
-        exportedAt: Date.now(),
-        contains: [], 
-        data: {}
-    };
-
-    try {
-        const appCheckboxes = document.querySelectorAll('.export-app-checkbox:checked');
-        const charCheckboxes = document.querySelectorAll('.export-char-checkbox:checked');
-
-        if (appCheckboxes.length === 0 && charCheckboxes.length === 0) {
-            alert("请至少选择一项要导出的内容！");
-            hideCustomModal();
-            return;
-        }
-
-        const appsToExportMap = {
-            weibo: { tables: ['weiboPosts', 'qzoneSettings'] },
-            forum: { tables: ['forumGroups', 'forumPosts', 'forumComments', 'forumCategories'] },
-            taobao: { tables: ['taobaoProducts', 'taobaoOrders', 'taobaoCart', 'userWalletTransactions'] },
-            worldBooks: { tables: ['worldBooks', 'worldBookCategories'] },
-            userStickers: { tables: ['userStickers', 'userStickerCategories'] },
-            charStickers: { tables: ['charStickers'] },
-            gameData: { tables: ['scriptKillScripts', 'ludoQuestionBanks', 'ludoQuestions'] },
-            appearance: { tables: ['themes', 'fontPresets', 'homeScreenPresets', 'customAvatarFrames', 'apiPresets', 'bubbleStylePresets'] }
-        };
-
-        // 1. 导出选中的App数据
-        for (const checkbox of appCheckboxes) {
-            const appId = checkbox.value;
-            const appInfo = appsToExportMap[appId];
-            if (appInfo) {
-                backupData.contains.push(appId);
-                for (const tableName of appInfo.tables) {
-                    backupData.data[tableName] = await db[tableName].toArray();
-                    console.log(`已打包App数据表: ${tableName}`);
-                }
-            }
-        }
-
-        // 2. 导出选中的角色数据
-        const charIds = Array.from(charCheckboxes).map(cb => cb.value);
-        if (charIds.length > 0) {
-            backupData.data.chats = await db.chats.bulkGet(charIds);
-            backupData.contains.push(...charIds.map(id => `character_${id}`));
-
-            // 打包所有与这些角色关联的数据
-            const relatedDataTables = ['memories', 'callRecords', 'qzonePosts', 'weiboPosts', 'datingHistory', 'pomodoroSessions'];
-            const relatedKey = {
-                'memories': 'chatId',
-                'callRecords': 'chatId',
-                'qzonePosts': 'authorId',
-                'weiboPosts': 'authorId',
-                'datingHistory': 'characterId',
-                'pomodoroSessions': 'chatId'
-            };
-
-            for (const tableName of relatedDataTables) {
-                const items = await db[tableName].where(relatedKey[tableName]).anyOf(charIds).toArray();
-                if (items.length > 0) {
-                    if (!backupData.data[tableName]) backupData.data[tableName] = [];
-                    // 使用Set去重，防止因多角色关联同一数据而重复打包
-                    const existingIds = new Set(backupData.data[tableName].map(i => i.id));
-                    items.forEach(item => {
-                        if (!existingIds.has(item.id)) {
-                            backupData.data[tableName].push(item);
-                            existingIds.add(item.id);
-                        }
-                    });
-                }
-            }
-            console.log(`已打包 ${charIds.length} 个角色的核心及关联数据。`);
-        }
-
-        // 3. 创建JSON文件并触发下载
-        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `EPhone-Partial-Backup-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        await showCustomAlert('导出成功', '已成功导出您选中的数据！');
-
-    } catch (error) {
-        console.error("分块导出失败:", error);
-        await showCustomAlert('导出失败', `发生错误: ${error.message}`);
-    } finally {
-        document.getElementById('advanced-transfer-modal').classList.remove('visible');
-    }
-}
-
-/**
- * 【V2 | 已修复NotFoundError】执行补充式导入
- * @param {File} file - 用户选择的JSON文件
- */
-async function importChunkedData(file) {
-    if (!file) return;
-
-    let data;
-    try {
-        const text = await file.text();
-        data = JSON.parse(text);
-    } catch (error) {
-        await showCustomAlert('导入失败', '文件读取或解析失败，请确保文件是有效的JSON格式。');
-        return;
-    }
-    
-    if (data.type !== 'EPhoneChunkedBackup') {
-        const confirmed = await showCustomConfirm(
-            '文件类型不匹配',
-            '这是一个【全量备份】文件，继续导入将会【覆盖】所有数据！是否要继续？',
-            { confirmButtonClass: 'btn-danger' }
-        );
-        if (confirmed) importBackup(file);
-        return;
-    }
-
-    const contentList = data.contains.map(item => {
-        const appNameMap = { weibo: '微博', forum: '圈子', taobao: '桃宝', worldBooks: '世界书', userStickers: '我的表情包', charStickers: '角色通用表情包', gameData: '游戏大厅数据', appearance: '通用外观预设' };
-        if(item.startsWith('character_')) {
-            const charId = item.replace('character_', '');
-            const charData = data.data.chats?.find(c => c.id === charId);
-            return `角色数据：${charData ? charData.name : '未知角色'}`;
-        }
-        return appNameMap[item] || item;
-    }).join('\n- ');
-
-    const confirmed = await showCustomConfirm(
-        '确认导入',
-        `即将导入以下内容：\n\n- ${contentList}\n\n注意：如果现有数据中已存在相同ID的内容（如同名角色），他们的数据将会被导入的数据【完全覆盖】。此操作不可撤销！`
-    );
-
-    if (!confirmed) return;
-
-    await showCustomAlert("请稍候...", "正在导入数据，请勿关闭页面...");
-
-    try {
-        // ★★★★★ 这就是修复 NotFoundError 的核心代码 ★★★★★
-
-        // 1. 获取导入文件中有哪些数据表
-        const tablesInBackup = Object.keys(data.data);
-        
-        // 2. 获取当前数据库中实际存在的所有数据表名称
-        const validTableNames = db.tables.map(t => t.name);
-
-        // 3. 找出二者的交集，这才是我们真正需要操作的数据表
-        const tablesToUpdate = tablesInBackup.filter(t => validTableNames.includes(t));
-        
-        console.log("即将操作的有效数据表:", tablesToUpdate);
-        
-        // 4. 只对这些有效的数据表开启一个数据库事务
-        await db.transaction('rw', tablesToUpdate, async () => {
-            for (const tableName of tablesToUpdate) {
-                if (Array.isArray(data.data[tableName])) {
-                    console.log(`正在向表格 "${tableName}" 中补充/覆盖 ${data.data[tableName].length} 条数据...`);
-                    await db[tableName].bulkPut(data.data[tableName]);
-                }
-            }
-        });
-        
-        // ★★★★★ 修复结束 ★★★★★
-
-        await loadAllDataFromDB();
-        await renderChatList();
-        
-        await showCustomAlert('导入成功', '数据已成功补充！应用将刷新以确保所有数据正确加载。');
-        setTimeout(() => window.location.reload(), 1500);
-
-    } catch (error) {
-        console.error("补充式导入失败:", error);
-        await showCustomAlert('导入失败', `写入数据库时发生错误: ${error.message}`);
-    } finally {
-        document.getElementById('advanced-transfer-modal').classList.remove('visible');
-    }
-}
-// ▼▼▼ 请用这整块【全新修复版】代码，完整替换你旧的 exportDataFor330 函数 ▼▼▼
-/**
- * 【全新 | V4.2 - 终极兼容修复版】将当前App的数据导出为兼容EPhone 330的格式
- */
-async function exportDataFor330() {
-    await showCustomAlert("请稍候...", "正在为你准备兼容性备份文件...");
-
-    const backupData = {
-        version: "330-compatible-v4.2", // 更新一下版本号
-        exportDate: Date.now(),
-        data: {}
-    };
-
-    try {
-        const [
-            chatsFromDB, 
-            worldBooksFromDB,
-            userStickersFromDB,
-            apiConfigFromDB, 
-            globalSettingsFromDB,
-            qzonePostsFromDB,
-            qzoneAlbumsFromDB,
-            qzonePhotosFromDB,
-            qzoneSettingsFromDB,
-            personaPresetsFromDB,
-            memoriesFromDB,
-            apiPresetsFromDB,
-            favoritesFromDB,
-        ] = await Promise.all([
-            db.chats.toArray(),
-            db.worldBooks.toArray(),
-            db.userStickers.toArray(),
-            db.apiConfig.get('main'),
-            db.globalSettings.get('main'),
-            db.qzonePosts.toArray(),
-            db.qzoneAlbums.toArray(),
-            db.qzonePhotos.toArray(),
-            db.qzoneSettings.get('main'),
-            db.personaPresets.toArray(),
-            db.memories.toArray(),
-            db.apiPresets.toArray(),
-            db.favorites.toArray(),
-        ]);
-
-        // 转换聊天数据 (这部分逻辑保持不变)
-        const transformedChats = chatsFromDB.map(chat => {
-            if (chat.isGroup) return chat;
-            const settingsFor330 = {
-                ...chat.settings,
-                'ai-persona': chat.settings.aiPersona,
-                'my-persona': chat.settings.myPersona,
-                'ai-avatar': chat.settings.aiAvatar,
-                'my-avatar': chat.settings.myAvatar,
-            };
-            return {
-                ...chat,
-                settings: settingsFor330
-            };
-        });
-
-        // 转换NPC数据 (这部分逻辑保持不变)
-        const transformedNpcs = [];
-        const npcIdSet = new Set();
-        for (const chat of chatsFromDB) {
-            if (!chat.isGroup && Array.isArray(chat.npcLibrary)) {
-                chat.npcLibrary.forEach(npc => {
-                    if (!npcIdSet.has(npc.id)) {
-                        transformedNpcs.push({ id: npc.id, name: npc.name, avatar: npc.avatar, persona: npc.persona });
-                        npcIdSet.add(npc.id);
-                    }
-                });
-            }
-        }
-        
-        // 构建 qzoneSettings 对象 (这部分逻辑保持不变)
-        const transformedQzoneSettings = {
-            id: 'main',
-            nickname: qzoneSettingsFromDB?.nickname || '你的昵称',
-            avatar: qzoneSettingsFromDB?.avatar || 'https://files.catbox.moe/q6z5fc.jpeg',
-            banner: qzoneSettingsFromDB?.banner || 'https://files.catbox.moe/r5heyt.gif'
-        };
-
-        // 组装最终数据
-        backupData.data = {
-            chats: transformedChats,
-            npcs: transformedNpcs,
-            // ▼▼▼ 核心修复：将 qzoneSettings 对象放入一个数组中！▼▼▼
-            qzoneSettings: [transformedQzoneSettings],
-            // ▲▲▲ 修复结束 ▲▲▲
-            worldBooks: worldBooksFromDB,
-            userStickers: userStickersFromDB,
-            // ▼▼▼ 核心修复2：apiConfig 和 globalSettings 也需要放入数组中！▼▼▼
-            apiConfig: apiConfigFromDB ? [apiConfigFromDB] : [],
-            globalSettings: globalSettingsFromDB ? [globalSettingsFromDB] : [],
-            // ▲▲▲ 修复结束 ▲▲▲
-            qzonePosts: qzonePostsFromDB,
-            qzoneAlbums: qzoneAlbumsFromDB,
-            qzonePhotos: qzonePhotosFromDB,
-            personaPresets: personaPresetsFromDB,
-            memories: memoriesFromDB,
-            apiPresets: apiPresetsFromDB,
-            favorites: favoritesFromDB,
-        };
-        
-        // 创建并下载JSON文件 (这部分逻辑保持不变)
-        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        const dateStr = new Date().toISOString().split('T')[0];
-        link.href = url;
-        link.download = `EPhone-Compatible-Backup-v330-${dateStr}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        await showCustomAlert('导出成功', '已成功生成兼容330版本的备份文件！现在你可以去330版本导入它了。');
-
-    } catch (error) {
-        console.error("兼容性导出失败:", error);
-        await showCustomAlert('导出失败', `发生了一个错误: ${error.message}`);
-    } finally {
-        const modal = document.getElementById('advanced-transfer-modal');
-        if (modal) {
-             modal.classList.remove('visible');
-        }
-    }
-}
-// ▲▲▲ 替换结束 ▲▲▲
-/**
- * 初始化默认的小组
- */
-async function initializeDefaultGroups() {
-  const groupCount = await db.forumGroups.count();
-  if (groupCount === 0) {
-    const defaultGroups = [
-      { name: '娱乐小组', description: '分享八卦和快乐', icon: '🍿' },
-      { name: '灵异小组', description: '分享你的灵异经历', icon: '👻' },
-      { name: '今天我crush了吗', description: '记录心动瞬间', icon: '💖' },
-      { name: '请帮我选择小组', description: '选择困难症患者互助', icon: '🤔' },
-      { name: '同人文小组', description: '为爱发电，创作故事', icon: '✍️' },
-      // ▼▼▼ 就是新增了下面这一行！ ▼▼▼
-      { name: '梦角小组', description: 'Char们分享关于user的梦境', icon: '🌙' },
-    ];
-    await db.forumGroups.bulkAdd(defaultGroups);
-    console.log('已成功创建默认小组（包含梦角小组）。');
-  }
-}
-
-// ▲▲▲ 替换结束 ▲▲▲
-/**
- * 渲染论坛主屏幕，显示所有小组及其分类（已支持筛选）
- */
-async function renderForumScreen() {
-  const listEl = document.getElementById('forum-group-list');
-  const allGroups = await db.forumGroups.toArray();
-  listEl.innerHTML = '';
-
-  // --- ▼▼▼ 【核心新增】筛选逻辑 ▼▼▼ ---
-  const globalFilters = activeForumFilters.global;
-  let groupsToRender = allGroups;
-
-  if (globalFilters && globalFilters.length > 0) {
-    groupsToRender = allGroups.filter(
-      group => group.categories && group.categories.some(cat => globalFilters.includes(cat)),
-    );
-  }
-  // --- ▲▲▲ 新增结束 ▲▲▲ ---
-
-  // 检查筛选后是否还有内容
-  if (groupsToRender.length === 0) {
-    const message =
-      globalFilters.length > 0 ? '没有找到符合筛选条件的小组哦' : '还没有任何小组，点击右上角“+”创建一个吧！';
-    listEl.innerHTML = `<p style="text-align:center; color: #8a8a8a; padding: 50px 0;">${message}</p>`;
-    return;
   }
 
-  // 使用筛选后的 groupsToRender 数组进行渲染
-  groupsToRender.forEach(group => {
-    const item = document.createElement('div');
-    item.className = 'forum-group-item';
-
-    let categoriesHtml = '';
-    if (group.categories && group.categories.length > 0) {
-      categoriesHtml = `
-                <div class="category-tag-container">
-                    ${group.categories.map(cat => `<span class="category-tag">#${cat}</span>`).join('')}
-                </div>
-            `;
-    }
-
-    item.innerHTML = `
-            <div class="forum-group-icon">${group.icon || '📁'}</div>
-            <div class="forum-group-name">${group.name}</div>
-            <div class="forum-group-desc">${group.description}</div>
-            ${categoriesHtml}
-        `;
-    item.addEventListener('click', () => openGroup(group.id, group.name));
-    addLongPressListener(item, () => showGroupActions(group.id, group.name));
-    listEl.appendChild(item);
-  });
-
-  // 更新筛选按钮状态
-  const filterBtn = document.getElementById('forum-filter-btn');
-  if (filterBtn) {
-    filterBtn.classList.toggle('active', globalFilters && globalFilters.length > 0);
-  }
-}
+  // ▲▲▲ 替换结束 ▲▲▲
 
         // ===================================================================
         // 4. 初始化函数 init()
@@ -56541,14 +56017,6 @@ if (state.globalSettings.enableBackgroundActivity) {
     console.log("后台活动模拟已停止。");
 }
 // ▲▲▲ 替换结束 ▲▲▲
-
-// 保存NovelAI配置到localStorage
-const novelaiEnabled = document.getElementById('novelai-switch').checked;
-const novelaiModel = document.getElementById('novelai-model').value;
-const novelaiApiKey = document.getElementById('novelai-api-key').value.trim();
-localStorage.setItem('novelai-enabled', novelaiEnabled);
-localStorage.setItem('novelai-model', novelaiModel);
-localStorage.setItem('novelai-api-key', novelaiApiKey);
 
 alert('API设置已保存!'); });
 
@@ -60895,12 +60363,7 @@ document.getElementById('clear-following-feed-btn').addEventListener('click', cl
     document.getElementById('weibo-user-preset-select').addEventListener('change', handleWeiboUserPresetSelection);
     document.getElementById('manage-weibo-user-presets-btn').addEventListener('click', openWeiboUserPresetManager);
 // ▲▲▲ 替换结束 ▲▲▲
-// ▼▼▼ 【全新】论坛功能事件监听器 ▼▼▼
 
-// 1. 初始化时创建默认小组
-await initializeDefaultGroups();
-// 2. 当用户点击“圈子”App图标时，渲染小组列表
-document.querySelector('.desktop-app-icon[onclick="showScreen(\'forum-screen\')"]').addEventListener('click', renderForumScreen);
 // ▼▼▼ 把这一整块全新的事件监听器代码，粘贴到 init() 函数的末尾，就在 init(); 的正上方 ▼▼▼
 
 // --- 塔罗牌占卜功能事件绑定 ---
@@ -60930,7 +60393,8 @@ document.getElementById('tarot-history-list').addEventListener('click', (e) => {
 });
 
 // --- 塔罗牌占卜功能事件绑定结束 ---
-
+// 1. 初始化时创建默认小组
+await initializeDefaultGroups();
 // ▲▲▲ 粘贴结束 ▲▲▲
 // ▼▼▼ 【全新】情侣空间功能事件监听器 ▼▼▼
 // ▼▼▼ 第3步.3：在这里粘贴新代码 ▼▼▼
@@ -61582,6 +61046,7 @@ document.getElementById('remove-home-font-shadow-toggle').addEventListener('chan
     document.getElementById('phone-screen').classList.toggle('no-home-font-shadow', e.target.checked);
 });
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
+
 
 
 
@@ -62904,30 +62369,8 @@ document.getElementById('cancel-sticker-category-btn').addEventListener('click',
 document.getElementById('confirm-sticker-category-btn').addEventListener('click', handleMoveStickers);
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
-// ▼▼▼ 【全新】高级导入/导出功能事件监听器 v2.0 ▼▼▼
-document.getElementById('advanced-transfer-btn').addEventListener('click', openAdvancedTransferModal);
 
-document.getElementById('close-advanced-transfer-btn').addEventListener('click', () => {
-    document.getElementById('advanced-transfer-modal').classList.remove('visible');
-});
 
-document.getElementById('export-selected-data-btn').addEventListener('click', exportChunkedData);
-
-document.getElementById('import-chunked-data-btn').addEventListener('click', () => {
-    document.getElementById('import-chunked-data-input').click();
-});
-
-document.getElementById('import-chunked-data-input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        importChunkedData(file);
-    }
-    e.target.value = null; // 清空以便下次选择
-});
-// ▲▲▲ 事件监听器粘贴结束 ▲▲▲
-// ▼▼▼ 在 init() 的事件监听器区域粘贴 ▼▼▼
-document.getElementById('export-for-330-btn').addEventListener('click', exportDataFor330);
-// ▲▲▲ 粘贴结束 ▲▲▲
 
 // ▲▲▲ 新增代码粘贴结束 ▲▲▲
 
