@@ -43,65 +43,6 @@ function addLongPressListener(element, callback) {
 }
 
 /**
- * 渲染论坛主屏幕，显示所有小组及其分类（已支持筛选）
- */
-async function renderForumScreen() {
-  const listEl = document.getElementById('forum-group-list');
-  const allGroups = await db.forumGroups.toArray();
-  listEl.innerHTML = '';
-
-  // --- ▼▼▼ 【核心新增】筛选逻辑 ▼▼▼ ---
-  const globalFilters = activeForumFilters.global;
-  let groupsToRender = allGroups;
-
-  if (globalFilters && globalFilters.length > 0) {
-    groupsToRender = allGroups.filter(
-      group => group.categories && group.categories.some(cat => globalFilters.includes(cat)),
-    );
-  }
-  // --- ▲▲▲ 新增结束 ▲▲▲ ---
-
-  // 检查筛选后是否还有内容
-  if (groupsToRender.length === 0) {
-    const message =
-      globalFilters.length > 0 ? '没有找到符合筛选条件的小组哦' : '还没有任何小组，点击右上角“+”创建一个吧！';
-    listEl.innerHTML = `<p style="text-align:center; color: #8a8a8a; padding: 50px 0;">${message}</p>`;
-    return;
-  }
-
-  // 使用筛选后的 groupsToRender 数组进行渲染
-  groupsToRender.forEach(group => {
-    const item = document.createElement('div');
-    item.className = 'forum-group-item';
-
-    let categoriesHtml = '';
-    if (group.categories && group.categories.length > 0) {
-      categoriesHtml = `
-                <div class="category-tag-container">
-                    ${group.categories.map(cat => `<span class="category-tag">#${cat}</span>`).join('')}
-                </div>
-            `;
-    }
-
-    item.innerHTML = `
-            <div class="forum-group-icon">${group.icon || '📁'}</div>
-            <div class="forum-group-name">${group.name}</div>
-            <div class="forum-group-desc">${group.description}</div>
-            ${categoriesHtml}
-        `;
-    item.addEventListener('click', () => openGroup(group.id, group.name));
-    addLongPressListener(item, () => showGroupActions(group.id, group.name));
-    listEl.appendChild(item);
-  });
-
-  // 更新筛选按钮状态
-  const filterBtn = document.getElementById('forum-filter-btn');
-  if (filterBtn) {
-    filterBtn.classList.toggle('active', globalFilters && globalFilters.length > 0);
-  }
-}
-
-/**
  * 【全新】长按小组时显示操作菜单（编辑或删除）
  * @param {number} groupId - 小组的ID
  * @param {string} groupName - 小组的名称
@@ -1541,12 +1482,6 @@ async function applyForumFilter() {
   document.getElementById('forum-filter-modal').classList.remove('visible');
 }
 function initForum() {
-  // ▲▲▲ 新增函数结束 ▲▲▲
-  // 2. 当用户点击“圈子”App图标时，渲染小组列表
-  document
-    .querySelector('.desktop-app-icon[onclick="showScreen(\'forum-screen\')"]')
-    .addEventListener('click', renderForumScreen);
-
   // 3. 绑定小组页和帖子页的返回按钮
   document.getElementById('back-to-forum-list').addEventListener('click', () => showScreen('forum-screen'));
   document
