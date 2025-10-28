@@ -22,6 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
+  function resetCreatePostModal() {
+    document.getElementById('post-public-text').value = '';
+    document.getElementById('post-image-preview').src = '';
+    document.getElementById('post-image-description').value = '';
+    document.getElementById('post-image-preview-container').classList.remove('visible');
+    document.getElementById('post-image-desc-group').style.display = 'none';
+    document.getElementById('post-local-image-input').value = '';
+    document.getElementById('post-hidden-text').value = '';
+
+    // 【核心修复】我们不再模拟点击，而是直接、安全地设置状态
+    const imageModeBtn = document.getElementById('switch-to-image-mode');
+    const textImageModeBtn = document.getElementById('switch-to-text-image-mode');
+    const imageModeContent = document.getElementById('image-mode-content');
+    const textImageModeContent = document.getElementById('text-image-mode-content');
+
+    imageModeBtn.classList.add('active');
+    textImageModeBtn.classList.remove('active');
+    imageModeContent.classList.add('active');
+    textImageModeContent.classList.remove('active');
+  }
+
   // ▲▲▲ 粘贴结束 ▲▲▲
   function addLongPressListener(element, callback) {
     let pressTimer;

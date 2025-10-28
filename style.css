@@ -17272,6 +17272,41 @@ body {
 #sticker-panel-footer button {
   flex: 1; /* 让两个按钮平分宽度 */
 }
+/* --- ▼▼▼ 在这里粘贴下面的新样式 ▼▼▼ --- */
+
+/* 分类标签上的删除按钮 "×" */
+.sticker-category-delete-btn {
+    display: inline-block;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 18px;
+    height: 18px;
+    background-color: rgba(255, 59, 48, 0.9); /* 醒目的红色 */
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transform: scale(0); /* 默认隐藏 */
+    transition: transform 0.2s ease;
+    z-index: 1;
+}
+
+/* 当进入编辑模式时，让删除按钮显示出来 */
+.selection-mode .sticker-category-btn:not(:first-child) .sticker-category-delete-btn {
+    transform: scale(1);
+}
+
+/* 当鼠标悬浮在删除按钮上时，给一个反馈效果 */
+.sticker-category-delete-btn:hover {
+    background-color: #ff3b30;
+}
+
+/* --- ▲▲▲ 新样式粘贴结束 ▲▲▲ --- */
+
 /* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
 /* ▼▼▼ 【全新】为角色表情面板单独设置更小的尺寸 ▼▼▼ */
 
