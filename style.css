@@ -1,4 +1,3 @@
-
 :root {
   --screen-width: 350px;
   --screen-height: 650px;
@@ -8395,41 +8394,63 @@ body {
 }
 
 /* ▲▲▲ 粘贴结束 ▲▲▲ */
-/* ▼▼▼ 【全新】这是为“查手机”内容添加的删除按钮样式 ▼▼▼ */
+/* --- “查手机”悬停删除按钮样式 开始 --- */
+
+/* 1. 让“查手机”功能里的所有列表项都成为可以定位删除按钮的容器 */
 .character-data-item,
 .character-cart-item,
 .character-browser-item,
 .character-bank-transaction,
 .character-trajectory-item,
 .character-app-usage-item,
+.character-chat-bubble-container,
 .character-album-item {
-  position: relative; /* 让删除按钮可以相对于它定位 */
-  padding-right: 35px; /* 在右边给删除按钮留出位置 */
+  position: relative; /* 这是让按钮可以基于它来定位的关键 */
 }
 
-.item-delete-btn {
+/* 2. 美化删除按钮，并将它定位到右上角，默认隐藏 */
+.item-delete-btn,
+.message-delete-btn {
   position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
+  top: 8px; /* 距离顶部8像素 */
+  right: 8px; /* 距离右侧8像素 */
   width: 24px;
   height: 24px;
-  background-color: #f0f0f0;
-  color: #888;
-  border-radius: 50%;
+  border-radius: 50%; /* 圆形按钮 */
+  background-color: rgba(0, 0, 0, 0.4); /* 半透明黑色背景，更美观 */
+  color: white;
   border: none;
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 24px;
-  text-align: center;
-  transition: all 0.2s ease;
+  display: flex; /* 使用flex布局让叉号"×"完美居中 */
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer; /* 鼠标放上去时显示小手图标 */
+  z-index: 10; /* 确保按钮在最上层 */
+
+  /* 核心：默认状态下隐藏按钮 */
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.8); /* 配合动画，让出现效果更自然 */
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
-.item-delete-btn:hover {
-  background-color: #ff3b30;
-  color: white;
+/* 3. 当鼠标悬停在任何一个列表项上时，显示它内部的删除按钮 */
+.character-data-item:hover .item-delete-btn,
+.character-cart-item:hover .item-delete-btn,
+.character-browser-item:hover .item-delete-btn,
+.character-bank-transaction:hover .item-delete-btn,
+.character-trajectory-item:hover .item-delete-btn,
+.character-app-usage-item:hover .item-delete-btn,
+.character-chat-bubble-container:hover .message-delete-btn,
+.character-album-item:hover .item-delete-btn {
+  opacity: 1; /* 变得完全可见 */
+  visibility: visible;
+  transform: scale(1); /* 恢复正常大小 */
 }
-/* ▲▲▲ 新增样式结束 ▲▲▲ */
+
+/* --- “查手机”悬停删除按钮样式 结束 --- */
+
 /* ▼▼▼ 【全新】角色手机微信消息删除按钮样式 ▼▼▼ */
 .character-chat-bubble-container {
   position: relative; /* 让删除按钮可以相对于它定位 */
@@ -17276,33 +17297,33 @@ body {
 
 /* 分类标签上的删除按钮 "×" */
 .sticker-category-delete-btn {
-    display: inline-block;
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 18px;
-    height: 18px;
-    background-color: rgba(255, 59, 48, 0.9); /* 醒目的红色 */
-    color: white;
-    border-radius: 50%;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-    font-weight: bold;
-    cursor: pointer;
-    transform: scale(0); /* 默认隐藏 */
-    transition: transform 0.2s ease;
-    z-index: 1;
+  display: inline-block;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  background-color: rgba(255, 59, 48, 0.9); /* 醒目的红色 */
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  transform: scale(0); /* 默认隐藏 */
+  transition: transform 0.2s ease;
+  z-index: 1;
 }
 
 /* 当进入编辑模式时，让删除按钮显示出来 */
 .selection-mode .sticker-category-btn:not(:first-child) .sticker-category-delete-btn {
-    transform: scale(1);
+  transform: scale(1);
 }
 
 /* 当鼠标悬浮在删除按钮上时，给一个反馈效果 */
 .sticker-category-delete-btn:hover {
-    background-color: #ff3b30;
+  background-color: #ff3b30;
 }
 
 /* --- ▲▲▲ 新样式粘贴结束 ▲▲▲ --- */

@@ -1282,9 +1282,7 @@
 <div id="icon-rename-grid" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 15px 20px;">
     <!-- App 名称输入框将由JS动态生成在这里 -->
 </div>
-<!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-
-<!-- ▼▼▼ 将这段新代码，粘贴到“保存所有外观设置”按钮的【上方】 ▼▼▼ -->
+<button class="form-button form-button-secondary" id="reset-app-names-btn" style="margin-top: 15px;">恢复默认App名字</button>
 <hr style="width: 80%; opacity: 0.3; margin: 30px 0;">
 <div style="width:100%; text-align: left; margin-bottom: 15px;">
     <label style="font-weight: 500; color: var(--text-secondary);">铃声设置</label>
@@ -1293,15 +1291,10 @@
     <label for="ringtone-url-input">来电铃声 URL (.mp3, .wav, etc.)</label>
     <input type="text" id="ringtone-url-input" placeholder="输入音频文件的网络链接...">
 </div>
-<!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
 <div class="form-group" style="width: 100%; margin-top: 15px;">
     <label for="notification-sound-url-input">消息提示音 URL (.mp3, .wav, etc.)</label>
     <input type="text" id="notification-sound-url-input" placeholder="输入音频文件的网络链接...">
 </div>
-<!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-
-<!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-<!-- ▼▼▼ 从这里开始，把下面这一整块全新的代码，粘贴到“保存所有外观设置”按钮的【上方】 ▼▼▼ -->
 <hr style="width: 80%; opacity: 0.3; margin: 30px 0;">
 <div style="width:100%; text-align: left; margin-bottom: 15px;">
     <label style="font-weight: 500; color: var(--text-secondary);">全局聊天背景</label>
@@ -1311,7 +1304,6 @@
 <input type="file" id="global-bg-upload-input" accept="image/*" hidden>
 <button class="form-button form-button-secondary" id="remove-global-bg-btn" style="margin-top: 10px;">移除全局背景</button>
 <button class="form-button form-button-secondary" id="clear-all-single-bgs-btn" style="margin-top: 10px; border-color: #ff3b30; color: #ff3b30;">一键清空所有单人聊天背景</button>
-<!-- ▲▲▲ 粘贴到这里结束 ▲▲▲ -->
         
         <!-- 【核心修改3】按钮文字也改一下 -->
         <button class="form-button" id="save-wallpaper-btn" style="margin-top: 30px;">保存所有外观设置</button>
@@ -9304,8 +9296,6 @@ function getEventCoords(e) {
     return { x: e.pageX, y: e.pageY };
 }
 
-
-// ▼▼▼ 用这块【最终修复版】的代码，完整替换你旧的 showScreen 函数 ▼▼▼
 function showScreen(screenId) {
     if (!document.getElementById('logistics-screen').classList.contains('active')) {
         logisticsUpdateTimers.forEach(timerId => clearTimeout(timerId));
@@ -12359,6 +12349,90 @@ function renderStickerPanel() {
     renderStickerCategories();
 }
 // ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 把这一整块全新的功能函数，粘贴到你的JS功能函数定义区 ▼▼▼
+
+/**
+ * 【全新】处理删除表情包分类的核心函数
+ * @param {number} categoryId - 要删除的分类ID
+ * @param {string} categoryName - 要删除的分类名称
+ */
+async function handleDeleteStickerCategory(categoryId, categoryName) {
+    // 1. 使用你已有的 showChoiceModal 函数，让用户选择删除方式
+    const choice = await showChoiceModal(
+        `删除分类 "${categoryName}"`,
+        [
+            { text: '删除分类及所有表情', value: 'delete_all' },
+            { text: '仅删除分类(表情移至未分类)', value: 'delete_category_only' }
+        ]
+    );
+
+    if (!choice) return; // 如果用户点击了取消，则什么也不做
+
+    // 2. 如果用户选择“删除分类及所有表情”
+    if (choice === 'delete_all') {
+        const confirmed = await showCustomConfirm(
+            '严重警告',
+            `确定要永久删除分类 "${categoryName}" 及其中的【所有】表情吗？此操作不可撤销！`,
+            { confirmButtonClass: 'btn-danger' }
+        );
+        if (confirmed) {
+            // 使用数据库事务来确保数据一致性
+            await db.transaction('rw', db.userStickers, db.userStickerCategories, async () => {
+                // 找到该分类下的所有表情
+                const stickersToDelete = await db.userStickers.where('categoryId').equals(categoryId).toArray();
+                const stickerIdsToDelete = stickersToDelete.map(s => s.id);
+                if (stickerIdsToDelete.length > 0) {
+                    // 批量删除表情
+                    await db.userStickers.bulkDelete(stickerIdsToDelete);
+                }
+                // 删除分类本身
+                await db.userStickerCategories.delete(categoryId);
+            });
+
+            // 更新内存中的数据
+            state.userStickers = state.userStickers.filter(s => s.categoryId !== categoryId);
+            
+            // 如果删除的是当前正在查看的分类，就自动切换到“未分类”
+            if (activeStickerCategoryId === categoryId) {
+                activeStickerCategoryId = 'uncategorized';
+            }
+            renderStickerPanel(); // 重新渲染表情面板
+            alert('分类及所有表情已删除。');
+        }
+    } 
+    // 3. 如果用户选择“仅删除分类”
+    else if (choice === 'delete_category_only') {
+        const confirmed = await showCustomConfirm(
+            '确认操作',
+            `确定要删除分类 "${categoryName}" 吗？该分类下的表情将被移至“未分类”。`
+        );
+        if (confirmed) {
+            await db.transaction('rw', db.userStickers, db.userStickerCategories, async () => {
+                // 将该分类下所有表情的 categoryId 更新为 null
+                await db.userStickers.where('categoryId').equals(categoryId).modify({ categoryId: null });
+                // 删除分类本身
+                await db.userStickerCategories.delete(categoryId);
+            });
+
+            // 更新内存中的数据
+            state.userStickers.forEach(sticker => {
+                if (sticker.categoryId === categoryId) {
+                    sticker.categoryId = null;
+                }
+            });
+
+            // 同样，如果删除的是当前分类，就切换到“未分类”
+            if (activeStickerCategoryId === categoryId) {
+                activeStickerCategoryId = 'uncategorized';
+            }
+            
+            renderStickerPanel();
+            alert('分类已删除，表情已移至“未分类”。');
+        }
+    }
+}
+
+// ▲▲▲ 新函数粘贴结束 ▲▲▲
 
 
 
@@ -28524,6 +28598,7 @@ function renderHomeScreenProfileFrame() {
  * 【V2 修复版】保存当前的主屏幕设置为一个新的预设
  */
 async function saveCurrentHomeScreenAsPreset() {
+   saveAppLabels(); 
     const presetName = await showCustomPrompt("保存预设", "请为这个主屏幕美化方案起个名字：");
     if (!presetName || !presetName.trim()) {
         if (presetName !== null) alert("名字不能为空！");
@@ -28578,10 +28653,8 @@ async function saveCurrentHomeScreenAsPreset() {
     alert(`预设 "${presetName.trim()}" 已保存！`);
 }
 
-/**
- * 【V2 修复版】更新当前选中的预设
- */
 async function updateSelectedHomeScreenPreset() {
+  saveAppLabels(); 
     if (!activeHomePresetId) {
         alert("请先选择一个要更新的预设。");
         return;
@@ -28628,6 +28701,7 @@ async function updateSelectedHomeScreenPreset() {
             'new-widget-text-3': document.getElementById('new-widget-text-3').textContent,
             'widget-month-display': document.getElementById('widget-month-display').textContent,
             'appIcons': { ...state.globalSettings.appIcons },
+            'appLabels': { ...state.globalSettings.appLabels }, 
             'wallpaper': state.globalSettings.wallpaper
         };
 
@@ -34243,15 +34317,26 @@ async function startDatingScene(scene, targetCharId) {
     // 4. 显示游戏界面
     showScreen('dating-game-screen');
 
-    // 5. 并行加载背景图和第一段剧情
+// 5. 加载背景图和第一段剧情
+const uiSettings = chat.settings.datingUISettings || {};
+
+// 优先使用用户在设置中保存的背景
+if (uiSettings.backgroundUrl) {
+    console.log("检测到自定义约会背景，正在加载...");
+    backgroundEl.style.backgroundImage = `url(${uiSettings.backgroundUrl})`;
+} else {
+    // 如果没有设置，才调用AI生成
+    console.log("未检测到自定义背景，将由AI生成...");
     const imagePrompt = scene.imagePrompt + ", vertical, phone wallpaper, cinematic lighting, masterpiece, best quality, beautiful anime style art";
     generateAndLoadImage(imagePrompt)
         .then(imageUrl => { backgroundEl.style.backgroundImage = `url(${imageUrl})`; })
         .catch(error => { 
             console.error("约会背景图加载失败:", error);
-            backgroundEl.style.backgroundColor = '#1c1e26';
+            backgroundEl.style.backgroundColor = '#1c1e26'; // 失败时的备用背景
         });
-    // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
+}
+
+
     // 重置数值
     datingGameState.romance = 0;
     datingGameState.lust = 0;
@@ -35771,12 +35856,7 @@ async function handleSaveCustomDatingScene() {
 }
 // ▲▲▲ 替换结束 ▲▲▲
 
-// ▼▼▼ 把下面这3个【全新】的函数，粘贴到你的JS代码功能区 ▼▼▼
-
-// ▼▼▼ 使用这块【新代码】替换旧的 renderStickerCategories 函数 ▼▼▼
-/**
- * 【V2 - 未分类版】渲染表情面板底部的分类页签栏
- */
+// ▼▼▼ 使用这块【已添加删除按钮】的新代码替换旧的 renderStickerCategories 函数 ▼▼▼
 async function renderStickerCategories() {
     const tabsContainer = document.getElementById('sticker-category-tabs');
     if (!tabsContainer) return;
@@ -35785,20 +35865,18 @@ async function renderStickerCategories() {
     const categories = await db.userStickerCategories.orderBy('name').toArray();
     userStickerCategories = categories;
 
-    // ★ 核心修改1：创建“未分类”按钮，而不是“全部”
     const uncategorizedBtn = document.createElement('button');
     uncategorizedBtn.className = 'sticker-category-btn';
-    uncategorizedBtn.textContent = '未分类'; // 文字改变
-    if (activeStickerCategoryId === 'uncategorized') { // 检查的ID也改变
+    uncategorizedBtn.textContent = '未分类';
+    if (activeStickerCategoryId === 'uncategorized') {
         uncategorizedBtn.classList.add('active');
     }
     uncategorizedBtn.addEventListener('click', () => {
-        activeStickerCategoryId = 'uncategorized'; // 点击后设置的ID也改变
+        activeStickerCategoryId = 'uncategorized';
         renderStickerPanel(); 
     });
     tabsContainer.appendChild(uncategorizedBtn);
 
-    // 其他分类按钮的逻辑保持不变
     categories.forEach(category => {
         const btn = document.createElement('button');
         btn.className = 'sticker-category-btn';
@@ -35810,6 +35888,19 @@ async function renderStickerCategories() {
             activeStickerCategoryId = category.id;
             renderStickerPanel();
         });
+
+        // ★★★ 这就是本次新增的核心代码 ★★★
+        // 在编辑模式下，为每个分类按钮添加一个删除图标
+        if (isUserStickerSelectionMode) {
+            const deleteBtn = document.createElement('span');
+            deleteBtn.className = 'sticker-category-delete-btn';
+            deleteBtn.textContent = '×';
+            deleteBtn.dataset.categoryId = category.id;
+            deleteBtn.dataset.categoryName = category.name; // 把名字也存起来，方便弹窗提示
+            btn.appendChild(deleteBtn);
+        }
+        // ★★★ 新增代码结束 ★★★
+
         tabsContainer.appendChild(btn);
     });
 }
@@ -36864,6 +36955,32 @@ async function exportDataStream() {
     
     // 关闭“请稍候”的弹窗
     hideCustomModal(); 
+}
+/**
+ * [全新] 恢复所有App名称为默认值
+ */
+async function resetAppNamesToDefault() {
+    // 1. 弹出确认框，防止误操作
+    const confirmed = await showCustomConfirm(
+        '恢复默认名称', 
+        '确定要将所有App的名称恢复为默认设置吗？此操作不可撤销。',
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (confirmed) {
+        // 2. 清空存储自定义名称的对象
+        state.globalSettings.appLabels = {};
+        
+        // 3. 将更改保存到数据库
+        await db.globalSettings.put(state.globalSettings);
+        
+        // 4. 立即应用更改到UI
+        applyAppLabels(); // 更新主屏幕上App的显示名称
+        renderAppNameSettings(); // 刷新外观设置页面的输入框，显示回默认名
+        
+        // 5. 给出成功提示
+        await showCustomAlert('操作成功', '所有App名称已恢复为默认。');
+    }
 }
 
 
@@ -42738,6 +42855,26 @@ document.getElementById('close-sticker-panel-btn').addEventListener('click', () 
     stickerPanel.classList.remove('visible');
 });
 // ▲▲▲ 添加结束 ▲▲▲
+// ▼▼▼ 在 init() 的事件监听器区域，粘贴这段新代码 ▼▼▼
+
+// 【全新】为表情分类标签栏添加事件委托，处理删除按钮的点击
+document.getElementById('sticker-category-tabs').addEventListener('click', (e) => {
+    // 检查被点击的元素是否是我们的删除按钮
+    if (e.target.classList.contains('sticker-category-delete-btn')) {
+        e.stopPropagation(); // 阻止事件冒泡，防止触发切换分类的逻辑
+        
+        const categoryId = parseInt(e.target.dataset.categoryId);
+        const categoryName = e.target.dataset.categoryName;
+
+        if (!isNaN(categoryId) && categoryName) {
+            // 调用我们新写的核心删除函数
+            handleDeleteStickerCategory(categoryId, categoryName);
+        }
+    }
+});
+
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
+
 // ▼▼▼ 在 init() 函数的事件监听区域添加 ▼▼▼
 // 绑定角色表情管理页的批量删除按钮
 document.getElementById('edit-char-stickers-btn').addEventListener('click', toggleCharStickerSelectionMode);
@@ -43102,15 +43239,13 @@ document.getElementById('import-from-330-input').addEventListener('change', (e) 
 
 document.getElementById('compress-all-images-btn').addEventListener('click', compressAllImagesInDB);
 document.getElementById('export-data-stream-btn').addEventListener('click', exportDataStream);
+// 在 init() 函数的事件监听器区域末尾，粘贴下面这行代码
+document.getElementById('reset-app-names-btn').addEventListener('click', resetAppNamesToDefault);
 
-
-
-// ▲▲▲ 新增代码粘贴结束 ▲▲▲
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
 initLoversSpace();
 initTaobao();
 
-// ▲▲▲ 新增代码粘贴结束 ▲▲▲
+
 
 
 // ===================================================================
