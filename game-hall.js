@@ -3211,6 +3211,7 @@ ${extraContext}
             <div class="item-title">${script.name}</div>
             <div class="item-content">${(script.storyBackground || '暂无简介').substring(0, 50)}...</div>
         `;
+      // ▼▼▼ 将其修改为 ▼▼▼
       // 为整个列表项添加点击事件，用于编辑
       item.addEventListener('click', () => openScriptEditorForEdit(script.id));
       // 为列表项添加长按事件，用于删除
