@@ -479,6 +479,7 @@
     <input type="range" id="temperature-slider" min="0" max="2" step="0.1" value="0.8" style="width: 100%;">
 </div>
 <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
+ 
 <button class="form-button" id="fetch-models-btn">拉取模型</button>
 
 <!-- ▼▼▼ 从这里开始，是全新的后台活动设置区 ▼▼▼ -->
@@ -642,12 +643,28 @@
     </div>
 </div>
 <!-- ▲▲▲ NovelAI 图像生成系统配置结束 ▲▲▲ -->
+<!-- ▼▼▼ 请将这段【全新的HTML代码】粘贴到 “模型” 下拉框的 form-group 之后 ▼▼▼ -->
+<hr style="margin:20px 0; opacity:.3">
+<div class="form-group">
+    <label for="image-quality-slider">发送图片压缩质量 (0.1=高压缩, 1.0=不压缩): <span id="image-quality-value">0.7</span></label>
+    <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px; margin-bottom: 10px;">
+        数值越低，图片压缩率越高，体积越小，但画质越差。此功能对所有上传的图片生效（如聊天发图、换头像、壁纸等）。推荐值: 0.5 - 0.8。
+    </p>
+    <input type="range" id="image-quality-slider" min="0.1" max="1.0" step="0.1" value="0.7" style="width: 100%;">
+</div>
+<!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
+<!-- ▼▼▼ 请用这段【新代码】替换掉你旧的“计算图片大小”按钮和文本区域 ▼▼▼ -->
+<button class="form-button form-button-secondary" id="compress-all-images-btn" style="margin-top: 10px; background-color:#ffc107; border-color:#ffaf00; color: #333;">一键压缩全部现有图片</button>
+<p id="image-data-size-display" style="text-align: center; color: var(--text-secondary); margin-top: 5px;">正在计算图片数据大小...</p>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
 
 <button class="form-button" id="save-api-settings-btn">保存设置</button>
 			<hr style="margin:20px 0; opacity:.3">
 <button class="form-button form-button-secondary" id="clear-orphaned-data-btn" style="margin-top: 10px; border-color: #ff9966; color: #ff9966;">🧹 清理失效数据</button>
 			<button class="form-button" id="export-data-btn">导出数据</button>
-
+<!-- ▼▼▼ 在这里粘贴下面的新按钮 ▼▼▼ -->
+<button class="form-button form-button-secondary" id="export-data-stream-btn" style="margin-top: 10px;">流式导出 (大数据专用)</button>
 <!-- ① 普通按钮，和“导出”一个 class -->
 <button class="form-button" id="import-btn">导入备份文件</button>
 <button class="form-button" id="advanced-transfer-btn" style="background-color: #6f42c1; margin-top: 10px;">高级导入/导出</button>
@@ -1262,7 +1279,7 @@
 <div style="width:100%; text-align: left; margin-bottom: 15px;">
     <label style="font-weight: 500; color: var(--text-secondary);">主屏幕 App 名称</label>
 </div>
-<div id="icon-rename-grid" style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
+<div id="icon-rename-grid" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 15px 20px;">
     <!-- App 名称输入框将由JS动态生成在这里 -->
 </div>
 <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
@@ -10639,6 +10656,7 @@ homeAvatarFrame: '', // 为主屏幕头像框添加默认空值
 
     globalChatBackground: '',
     homeIconWidgetTextColor: '#FFFFFF', // <-- 修改这里的名字
+    imageCompressionQuality: 0.7,
     userBalance: 520,
   // ▼▼▼ 在这里粘贴新代码 ▼▼▼
     homeAvatarFrame: '' // 为主屏幕头像框添加默认空值
@@ -10664,7 +10682,9 @@ if (!state.globalSettings.appLabels) {
     state.globalSettings.appLabels = {};
 }
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
-
+if (typeof state.globalSettings.imageCompressionQuality === 'undefined') {
+    state.globalSettings.imageCompressionQuality = 0.7;
+}
     // ▼▼▼ 在这里添加下面这行代码 ▼▼▼
     // 【核心新增】加载歌词栏设置，如果不存在则使用默认值
     lyricsBarSettings = state.globalSettings.lyricsBarSettings || lyricsBarSettings;
@@ -11543,7 +11563,22 @@ async function generateNovelAIImage() {
         tempValueDisplay.textContent = parseFloat(tempSlider.value).toFixed(1);
     });
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
+    // ▼▼▼ 在函数末尾添加下面这块新代码 ▼▼▼
+    const qualitySlider = document.getElementById('image-quality-slider');
+    const qualityValue = document.getElementById('image-quality-value');
+    const currentQuality = state.globalSettings.imageCompressionQuality || 0.7;
+    
+    if (qualitySlider && qualityValue) {
+        qualitySlider.value = currentQuality;
+        qualityValue.textContent = parseFloat(currentQuality).toFixed(1);
 
+        // 添加实时更新显示值的事件
+        qualitySlider.addEventListener('input', () => {
+            qualityValue.textContent = parseFloat(qualitySlider.value).toFixed(1);
+        });
+    }
+     calculateTotalImageSize();
+    // ▲▲▲ 新代码粘贴结束 ▲▲▲
 }
 
 // ▼▼▼ 【全新】粘贴这个完整的函数 ▼▼▼
@@ -12008,8 +12043,7 @@ if (subsequentMessageTimestamp) {
 // ▲▲▲ 粘贴结束 ▲▲▲
 currentRenderedCount += messagesToPrepend.length; const newScrollHeight = messagesContainer.scrollHeight; messagesContainer.scrollTop += (newScrollHeight - oldScrollHeight); if (totalMessages > currentRenderedCount) { prependLoadMoreButton(messagesContainer); } }
 
-// ▼▼▼ 用这块【修复版】代码，替换你旧的 renderWallpaperScreen 函数 ▼▼▼
-function renderWallpaperScreen() { 
+async function renderWallpaperScreen() { 
     // 锁屏开关
     const lockScreenEnabled = localStorage.getItem('lockScreenEnabled') !== 'false';
     const toggle = document.getElementById('enable-lock-screen-toggle');
@@ -12017,10 +12051,8 @@ function renderWallpaperScreen() {
         toggle.checked = lockScreenEnabled;
     }
 
-    // 主屏幕字体颜色
+    // 主屏幕字体颜色和阴影
     document.getElementById('home-icon-widget-text-color-picker').value = state.globalSettings.homeIconWidgetTextColor || '#FFFFFF';
-    
-    // 主屏幕字体阴影开关
     document.getElementById('remove-home-font-shadow-toggle').checked = !!state.globalSettings.removeHomeFontShadow;
 
     // 主屏幕壁纸预览
@@ -12062,11 +12094,35 @@ function renderWallpaperScreen() {
         globalBgPreview.textContent = '点击下方上传';
     }
     
-    // ★★★★★ 这就是我们本次修复的核心！ ★★★★★
-    // 在这里，我们新增了下面这2行，用来加载铃声和提示音
+    // 铃声和提示音
     document.getElementById('ringtone-url-input').value = state.globalSettings.ringtoneUrl || '';
     document.getElementById('notification-sound-url-input').value = state.globalSettings.notificationSoundUrl || '';
-    // ★★★★★ 修复结束 ★★★★★
+
+    // ★★★ 核心修复3：在这里添加加载CSS代码到编辑器的逻辑 ★★★
+    await loadThemesToDropdown(); // 确保主题列表已加载
+    const editor = document.getElementById('theme-css-editor');
+    const selector = document.getElementById('theme-selector');
+
+    // 优先加载 activeCustomCss
+    if (state.globalSettings.activeCustomCss) {
+        editor.value = state.globalSettings.activeCustomCss;
+        // 如果自定义CSS存在，则将下拉框重置为“未选择”状态
+        selector.value = '';
+    } 
+    // 如果没有自定义CSS，但有选中的主题ID
+    else if (state.globalSettings.activeThemeId) {
+        const theme = await db.themes.get(state.globalSettings.activeThemeId);
+        if (theme) {
+            editor.value = theme.css;
+            selector.value = theme.id; // 自动选中该主题
+        } else {
+            editor.value = THEME_CSS_TEMPLATE; // 如果ID无效，则显示模板
+        }
+    } 
+    // 如果什么都没保存，显示模板
+    else {
+        editor.value = THEME_CSS_TEMPLATE;
+    }
 
     // 渲染App图标和名称设置
     renderIconSettings();
@@ -12075,9 +12131,7 @@ function renderWallpaperScreen() {
     // 加载预设下拉框
     loadHomeScreenPresetsToDropdown(); 
 }
-// ▲▲▲ 替换结束 ▲▲▲
 
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
         window.renderWallpaperScreenProxy = renderWallpaperScreen;
 
         function applyGlobalWallpaper() { const homeScreen = document.getElementById('home-screen'); const wallpaper = state.globalSettings.wallpaper; if (wallpaper && wallpaper.startsWith('data:image')) homeScreen.style.backgroundImage = `url(${wallpaper})`; else if (wallpaper) homeScreen.style.backgroundImage = wallpaper; }
@@ -28402,7 +28456,7 @@ function handleHomePresetSelection() {
     toggleHomePresetButtons(!!activeHomePresetId);
 }
 
-// 这是修改后的新代码
+// ▼▼▼ 请用这整块【修复版】代码，完整替换你旧的 applySelectedHomeScreenPreset 函数 ▼▼▼
 async function applySelectedHomeScreenPreset() {
     if (!activeHomePresetId) {
         alert("请先从下拉框中选择一个要应用的预设。");
@@ -28420,15 +28474,14 @@ async function applySelectedHomeScreenPreset() {
             state.globalSettings.appIcons = { ...preset.data.appIcons };
         }
 
-        // ★★★★★ 这就是我们本次唯一需要添加的核心代码！ ★★★★★
         // 检查预设中是否有appLabels数据，如果有，就加载它
         if (preset.data.appLabels) {
             state.globalSettings.appLabels = { ...preset.data.appLabels };
         } else {
-            // 如果旧的预设没有这个数据，就清空当前的自定义名称，恢复默认
+            // 如果这个旧的预设里没有保存App名字，就清空当前的自定义名字，以恢复默认
             state.globalSettings.appLabels = {};
         }
-        // ★★★★★ 添加结束 ★★★★★
+        // ★★★★★ 修复结束 ★★★★★
 
         // 保存所有更新到数据库
         await db.globalSettings.put(state.globalSettings);
@@ -28443,6 +28496,7 @@ async function applySelectedHomeScreenPreset() {
         showScreen('home-screen');
     }
 }
+
 
 /**
  * 【全新】渲染主屏幕个人资料卡的头像框
@@ -36501,6 +36555,316 @@ async function importFrom330Format(file) {
     }
 }
 // ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 请用这个【全新的、能识别GIF】的版本，完整替换旧的 compressImage 函数 ▼▼▼
+
+/**
+ * 【全新V2 | 修复GIF问题】压缩图片至指定质量并返回Base64，同时跳过GIF
+ * @param {string} base64Str - 原始图片的Base64字符串 (data:...)
+ * @param {number} quality - 压缩质量 (0.1 - 1.0)
+ * @returns {Promise<string>} - 返回压缩后的JPEG格式的Base64字符串，或原始的GIF/PNG字符串
+ */
+function compressImage(base64Str, quality) {
+    return new Promise((resolve, reject) => {
+        // ★★★ 核心修复1：在这里添加对 GIF 的判断！ ★★★
+        // 如果是 GIF，或者质量设置为1.0（不压缩），直接返回原图，不进行任何处理。
+        if (base64Str.startsWith('data:image/gif') || quality >= 1.0 || !base64Str.startsWith('data:image')) {
+            resolve(base64Str);
+            return;
+        }
+
+        const img = new Image();
+        img.src = base64Str;
+
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            // ★★★ 核心修复2：依然输出为JPEG，但我们已经提前排除了GIF ★★★
+            // 这确保了 PNG 和其他静态图能被正确压缩。
+            const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+            resolve(compressedBase64);
+        };
+
+        img.onerror = (err) => {
+            console.error("图片加载失败，无法压缩:", err);
+            reject(new Error('图片加载失败，无法压缩'));
+        };
+    });
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+/**
+ * 【全新】通用文件上传并压缩处理函数
+ * @param {File} file - 用户选择的文件
+ * @returns {Promise<string>} - 返回压缩后的Base64字符串
+ */
+async function handleImageUploadAndCompress(file) {
+    const base64Url = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+
+    const quality = state.globalSettings.imageCompressionQuality || 0.7;
+    console.log(`准备压缩图片，质量: ${quality}`);
+    
+    const compressedBase64 = await compressImage(base64Url, quality);
+    console.log(`图片压缩完成。原始大小: ${base64Url.length}, 压缩后大小: ${compressedBase64.length}`);
+
+    return compressedBase64;
+}
+
+/**
+ * 【全新】计算Base64字符串的近似文件大小
+ * @param {string} base64Str - Base64字符串 (可以带'data:...'前缀)
+ * @returns {number} - 字节大小
+ */
+function getBase64Size(base64Str) {
+    if (!base64Str || typeof base64Str !== 'string' || !base64Str.startsWith('data:image')) return 0;
+    const base64 = base64Str.split(',')[1] || base64Str;
+    const padding = (base64.endsWith('==') ? 2 : (base64.endsWith('=') ? 1 : 0));
+    return (base64.length * 3 / 4) - padding;
+}
+
+/**
+ * 【全新】将字节数格式化为易读的字符串 (KB, MB, GB)
+ * @param {number} bytes - 字节数
+ * @returns {string} - 格式化后的字符串
+ */
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// ▼▼▼ 用这块【新代码】替换旧的 calculateTotalImageSize 函数 ▼▼▼
+/**
+ * 【全新V2】计算并显示数据库中所有图片的总大小，并返回数值
+ * @returns {Promise<number>} - 返回总字节数
+ */
+async function calculateTotalImageSize() {
+    const displayEl = document.getElementById('image-data-size-display');
+    displayEl.textContent = '正在计算中...';
+
+    let totalSize = 0;
+    const processedUrls = new Set(); 
+
+    const calculateSize = (url) => {
+        if (!url || typeof url !== 'string' || !url.startsWith('data:image') || processedUrls.has(url)) {
+            return 0;
+        }
+        const size = getBase64Size(url);
+        processedUrls.add(url);
+        return size;
+    };
+
+    try {
+        const allTables = db.tables.map(table => table.name);
+        for (const tableName of allTables) {
+            try {
+                const items = await db[tableName].toArray();
+                for (const item of items) {
+                    const findImagesRecursive = (obj) => {
+                        for (const key in obj) {
+                            if (typeof obj[key] === 'string') {
+                                totalSize += calculateSize(obj[key]);
+                            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                findImagesRecursive(obj[key]);
+                            }
+                        }
+                    };
+                    findImagesRecursive(item);
+                }
+            } catch(e) {
+                console.warn(`扫描表 ${tableName} 出错:`, e);
+            }
+        }
+        
+        displayEl.textContent = `当前图片数据总量约: ${formatBytes(totalSize)}`;
+        return totalSize; // 返回计算出的总大小
+
+    } catch (error) {
+        console.error("计算图片大小时出错:", error);
+        displayEl.textContent = '计算失败，请查看控制台。';
+        return 0;
+    }
+}
+// ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 用这块【修复了无限转圈问题】的代码，替换旧的 compressAllImagesInDB 函数 ▼▼▼
+
+/**
+ * 【全新V2 | 修复转圈问题】一键压缩数据库中所有图片的核心函数
+ */
+async function compressAllImagesInDB() {
+    const confirmed = await showCustomConfirm(
+        '高风险操作确认',
+        '此操作将扫描并【永久性地】压缩数据库中的【所有静态图片（PNG/JPG等）】。<br><br>【GIF动图会被自动跳过，不会被压缩】。<br><br>压缩是不可逆的，建议在操作前先【导出数据】进行备份！<br><br>确定要继续吗？',
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (!confirmed) return;
+
+    const loadingOverlay = document.getElementById('generation-overlay');
+    const loadingText = loadingOverlay.querySelector('p');
+    loadingText.textContent = '正在全力压缩图片，请耐心等待...';
+    loadingOverlay.classList.add('visible');
+
+    try {
+        const quality = parseFloat(document.getElementById('image-quality-slider').value) || 0.7;
+        const originalTotalSize = await calculateTotalImageSize();
+        let itemsProcessed = 0;
+        let compressedCount = 0;
+
+        const findAndCompressImagesInObject = async (obj) => {
+            let hasCompressed = false;
+            for (const key in obj) {
+                if (typeof obj[key] === 'string' && obj[key].startsWith('data:image')) {
+                    const originalUrl = obj[key];
+                    const compressedUrl = await compressImage(originalUrl, quality);
+                    if (originalUrl !== compressedUrl) {
+                        obj[key] = compressedUrl;
+                        hasCompressed = true;
+                        compressedCount++; // 记录压缩了多少张图片
+                    }
+                } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    if (await findAndCompressImagesInObject(obj[key])) {
+                        hasCompressed = true;
+                    }
+                }
+            }
+            return hasCompressed;
+        };
+
+        const allTables = db.tables.map(table => table.name);
+        for (const tableName of allTables) {
+            loadingText.textContent = `正在扫描表: ${tableName}...`;
+            const itemsToUpdate = [];
+            const allItems = await db[tableName].toArray();
+
+            for (const item of allItems) {
+                if (await findAndCompressImagesInObject(item)) {
+                    itemsToUpdate.push(item);
+                }
+                itemsProcessed++;
+                if (itemsProcessed % 20 === 0) {
+                   loadingText.textContent = `已处理 ${itemsProcessed} 条数据... 压缩了 ${compressedCount} 张图片...`;
+                }
+            }
+
+            if (itemsToUpdate.length > 0) {
+                loadingText.textContent = `正在保存 ${tableName} 的压缩结果...`;
+                await db[tableName].bulkPut(itemsToUpdate);
+                console.log(`表 ${tableName} 中有 ${itemsToUpdate.length} 条记录的图片被压缩。`);
+            }
+        }
+
+        // ★★★ 核心修复：在这里先隐藏加载动画，再去弹窗 ★★★
+        loadingOverlay.classList.remove('visible');
+
+        const newTotalSize = await calculateTotalImageSize();
+        const savedSize = originalTotalSize - newTotalSize;
+
+        await showCustomAlert('压缩完成！', `操作成功！\n原始大小: ${formatBytes(originalTotalSize)}\n压缩后大小: ${formatBytes(newTotalSize)}\n成功为您节省了 ${formatBytes(savedSize)} 的空间！\n\n应用即将刷新以应用所有更改。`);
+        
+        setTimeout(() => window.location.reload(), 2000);
+
+    } catch (error) {
+        // 出错时也要确保加载动画被隐藏
+        loadingOverlay.classList.remove('visible');
+        console.error("压缩全部图片时出错:", error);
+        await showCustomAlert('压缩失败', `发生了一个错误: ${error.message}`);
+    } 
+}
+// ▲▲▲ 替换结束 ▲▲▲
+/**
+ * 【全新】流式导出函数 (大数据专用)
+ * 原理：不再一次性读取所有数据库表到内存，而是逐个表读取、写入，
+ * 利用 ReadableStream 和 Response 流式传输给用户，从而极大降低内存占用。
+ */
+async function exportDataStream() {
+    await showCustomAlert("请稍候...", "正在准备流式导出，这可能需要一些时间，但不会使浏览器崩溃。");
+
+    // 定义所有需要备份的数据库表名
+    const tablesToExport = [
+        'chats', 'apiConfig', 'globalSettings', 'userStickers', 'charStickers', 
+        'worldBooks', 'musicLibrary', 'personaPresets', 'qzoneSettings', 'qzonePosts',
+        'qzoneAlbums', 'qzonePhotos', 'favorites', 'qzoneGroups', 'memories',
+        'worldBookCategories', 'callRecords', 'customAvatarFrames', 'themes',
+        'apiPresets', 'bubbleStylePresets', 'fontPresets', 'homeScreenPresets', 'weiboPosts',
+        'forumGroups', 'forumPosts', 'forumComments', 'forumCategories', 'tarotReadings', 
+        'pomodoroSessions', 'scriptKillScripts', 'taobaoProducts', 'taobaoOrders', 
+        'taobaoCart', 'userWalletTransactions', 'userStickerCategories', 'datingScenes',
+        'datingPresets', 'datingSpriteGroups', 'datingSprites', 'datingHistory'
+    ];
+
+    const stream = new ReadableStream({
+        async start(controller) {
+            const encoder = new TextEncoder();
+
+            // 1. 写入JSON文件的开头
+            controller.enqueue(encoder.encode('{\n'));
+
+            // 2. 添加版本和时间戳元数据
+            const metaData = `"version": 1,\n"timestamp": ${Date.now()},\n`;
+            controller.enqueue(encoder.encode(metaData));
+
+            // 3. 逐个处理数据库表
+            for (let i = 0; i < tablesToExport.length; i++) {
+                const tableName = tablesToExport[i];
+                console.log(`流式导出：正在处理表 ${tableName}...`);
+                
+                try {
+                    const tableData = await db[tableName].toArray();
+                    const jsonString = JSON.stringify(tableData);
+                    
+                    // 写入 "tableName": [...]
+                    controller.enqueue(encoder.encode(`"${tableName}": ${jsonString}`));
+                    
+                    // 如果不是最后一个表，就加上逗号和换行符
+                    if (i < tablesToExport.length - 1) {
+                        controller.enqueue(encoder.encode(',\n'));
+                    } else {
+                        controller.enqueue(encoder.encode('\n'));
+                    }
+                } catch (e) {
+                    console.error(`流式导出时，处理表 ${tableName} 失败:`, e);
+                    // 即使某个表失败，也继续尝试下一个
+                }
+            }
+
+            // 4. 写入JSON文件的结尾
+            controller.enqueue(encoder.encode('}'));
+            
+            // 5. 通知流已经结束
+            controller.close();
+            console.log("流式导出：所有数据写入完成。");
+        }
+    });
+
+    // 6. 使用 Response 将流包装成可下载的文件
+    const response = new Response(stream, {
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    // 7. 创建并触发下载链接
+    const url = URL.createObjectURL(await response.blob());
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `EPhone-Stream-Backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    // 关闭“请稍候”的弹窗
+    hideCustomModal(); 
+}
 
 
 
@@ -36546,6 +36910,21 @@ async function importFrom330Format(file) {
             window.renderWorldBookScreenProxy = renderWorldBookScreen;
 
             await loadAllDataFromDB();
+                // ★★★ 核心修复2：在这里添加启动时加载CSS的逻辑 ★★★
+    // 优先应用保存在 activeCustomCss 里的代码
+    if (state.globalSettings.activeCustomCss) {
+        applyThemeCss(state.globalSettings.activeCustomCss);
+    } 
+    // 如果没有自定义CSS，再尝试应用上次选中的主题
+    else if (state.globalSettings.activeThemeId) {
+        const activeTheme = await db.themes.get(state.globalSettings.activeThemeId);
+        if (activeTheme) {
+            console.log(`正在应用已保存的主题: "${activeTheme.name}"`);
+            applyThemeCss(activeTheme.css);
+        }
+    }
+    // ★★★ 修复结束 ★★★
+
             // 在 loadAllDataFromDB 函数末尾，init(); 调用之前添加
 if (typeof state.globalSettings.notificationSoundUrl === 'undefined') {
     state.globalSettings.notificationSoundUrl = 'https://files.catbox.moe/k369mf.mp3';
@@ -37104,7 +37483,7 @@ document.getElementById('send-btn').addEventListener('click', async () => {
             chatInput.addEventListener('input', () => { chatInput.style.height = 'auto'; chatInput.style.height = (chatInput.scrollHeight) + 'px'; });
 
             document.getElementById('wallpaper-upload-input').addEventListener('change', async (event) => { const file = event.target.files[0]; if(file) { const dataUrl = await new Promise((res, rej) => { const reader = new FileReader(); reader.onload = () => res(reader.result); reader.onerror = () => rej(reader.error); reader.readAsDataURL(file); }); newWallpaperBase64 = dataUrl; renderWallpaperScreen(); } });
-// ▼▼▼ 用这整块【修复版】代码，替换你旧的 save-wallpaper-btn 事件监听器 ▼▼▼
+// ▼▼▼ 请用这整块【修复版】代码，替换你旧的 'save-wallpaper-btn' 事件监听器 ▼▼▼
 document.getElementById('save-wallpaper-btn').addEventListener('click', async () => {
     let changesMade = false;
 
@@ -37129,39 +37508,43 @@ document.getElementById('save-wallpaper-btn').addEventListener('click', async ()
         changesMade = true;
     }
 
+    // ★★★ 核心修复1：在这里保存CSS编辑框的当前内容 ★★★
+    // 我们将CSS代码保存到一个新属性 activeCustomCss 中
+    state.globalSettings.activeCustomCss = document.getElementById('theme-css-editor').value;
+    // 同时，保存当前选择的【主题ID】，如果用户没选，就保存null
+    const activeThemeSelector = document.getElementById('theme-selector');
+    state.globalSettings.activeThemeId = activeThemeSelector.value ? parseInt(activeThemeSelector.value) : null;
+    changesMade = true; // 只要点击保存，就认为CSS有变动
+    // ★★★ 修复结束 ★★★
+
     // 保存密码
     const newPassword = document.getElementById('password-set-input').value;
     state.globalSettings.password = newPassword;
 
-    // 保存铃声
+    // 保存铃声和提示音
     state.globalSettings.ringtoneUrl = document.getElementById('ringtone-url-input').value.trim();
-
-    // ★★★★★ 这就是我们本次修复的核心！ ★★★★★
-    // 在这里，我们新增了下面这一行，用来保存消息提示音的URL
     state.globalSettings.notificationSoundUrl = document.getElementById('notification-sound-url-input').value.trim();
-    // ★★★★★ 修复结束 ★★★★★
-
-    const activeThemeSelector = document.getElementById('theme-selector');
-    if (activeThemeSelector.value) {
-        state.globalSettings.activeThemeId = parseInt(activeThemeSelector.value);
-    } else {
-        state.globalSettings.activeThemeId = null;
-    }
     
+    // 保存锁屏和状态栏开关状态
     const isLockEnabled = document.getElementById('enable-lock-screen-toggle').checked;
     state.globalSettings.enableLockScreen = isLockEnabled;
     localStorage.setItem('lockScreenEnabled', isLockEnabled);
-
+    
+    // 保存主屏幕字体颜色和阴影设置
     state.globalSettings.homeIconWidgetTextColor = document.getElementById('home-icon-widget-text-color-picker').value;
     state.globalSettings.removeHomeFontShadow = document.getElementById('remove-home-font-shadow-toggle').checked;
+    
+    // 保存App名称
     saveAppLabels();
 
+    // 将所有设置一次性写入数据库
     await db.globalSettings.put(state.globalSettings);
 
     // 应用所有更改
     if (changesMade) {
         applyGlobalWallpaper();        
         applyLockscreenWallpaper(); 
+        applyThemeCss(state.globalSettings.activeCustomCss); // 应用刚刚保存的CSS
         newWallpaperBase64 = null;        
         newLockscreenWallpaperBase64 = null; 
         newGlobalBgBase64 = null; 
@@ -37169,11 +37552,10 @@ document.getElementById('save-wallpaper-btn').addEventListener('click', async ()
     applyAppIcons(); 
     applyAppLabels();
     
-    alert('外观设置已保存并应用！');
+    alert('所有外观设置已保存并应用！');
     showScreen('home-screen');
 });
 // ▲▲▲ 替换结束 ▲▲▲
-
 
             document.getElementById('save-api-settings-btn').addEventListener('click', async () => { 
 
@@ -37199,7 +37581,7 @@ await db.apiConfig.put(state.apiConfig);
 
 // 在 'save-api-settings-btn' 的 click 事件监听器内部
 // await db.apiConfig.put(state.apiConfig); 这行之后
-
+state.globalSettings.imageCompressionQuality = parseFloat(document.getElementById('image-quality-slider').value);
 // ▼▼▼ 将之前那段保存后台活动设置的逻辑，替换为下面这个增强版 ▼▼▼
 
 const backgroundSwitch = document.getElementById('background-activity-switch');
@@ -38380,7 +38762,26 @@ document.getElementById('import-chat-history-input').addEventListener('change', 
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
 
-            const setupFileUpload = (inputId, callback) => { document.getElementById(inputId).addEventListener('change', async (event) => { const file = event.target.files[0]; if (file) { const dataUrl = await new Promise((res, rej) => { const reader = new FileReader(); reader.onload = () => res(reader.result); reader.onerror = () => rej(reader.error); reader.readAsDataURL(file); }); callback(dataUrl); event.target.value = null; } }); };
+            // ▼▼▼ 用这块【增强版】代码，完整替换旧的 setupFileUpload 函数 ▼▼▼
+const setupFileUpload = (inputId, callback) => {
+    document.getElementById(inputId).addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            try {
+                // 调用新的通用压缩函数
+                const compressedDataUrl = await handleImageUploadAndCompress(file);
+                callback(compressedDataUrl); // 将压缩后的结果传给回调
+            } catch (error) {
+                console.error(`处理文件 ${file.name} 失败:`, error);
+                alert(`处理图片失败: ${error.message}`);
+            } finally {
+                 event.target.value = null;
+            }
+        }
+    });
+};
+// ▲▲▲ 替换结束 ▲▲▲
+
             setupFileUpload('ai-avatar-input', (base64) => document.getElementById('ai-avatar-preview').src = base64);
             setupFileUpload('my-avatar-input', (base64) => document.getElementById('my-avatar-preview').src = base64);
             setupFileUpload('group-avatar-input', (base64) => document.getElementById('group-avatar-preview').src = base64);
@@ -42567,7 +42968,6 @@ document.getElementById('summary-share-btn').addEventListener('click', shareDati
 
 // 3. 关闭按钮 (已修复，支持不同场景)
 document.getElementById('summary-close-btn').addEventListener('click', async () => {
-    // ▼▼▼ 核心修改在这里 ▼▼▼
     if (datingGameState.isActive) {
         // 如果在约会中，走原来的确认并结束约会的流程
         const confirmed = await showCustomConfirm(
@@ -42587,7 +42987,6 @@ document.getElementById('summary-close-btn').addEventListener('click', async () 
             card.classList.remove('is-flipped');
         }
     }
-    // ▲▲▲ 修改结束 ▲▲▲
 });
 
 
@@ -42637,9 +43036,6 @@ document.getElementById('dating-history-list').addEventListener('click', e => {
     }
 });
 
-// ▲▲▲ 新增事件绑定结束 ▲▲▲
-// 在 init() 函数的事件监听器区域粘贴
-
 // ▼▼▼ 【全新】约会大作战-创建场景功能事件绑定 ▼▼▼
 document.getElementById('create-dating-scene-btn').addEventListener('click', () => {
     // 打开创建弹窗，并清空输入框
@@ -42654,12 +43050,10 @@ document.getElementById('cancel-create-scene-btn').addEventListener('click', () 
 });
 
 document.getElementById('save-custom-scene-btn').addEventListener('click', handleSaveCustomDatingScene);
-// ▲▲▲ 新增事件绑定结束 ▲▲▲
+
 
 /* --- 约会结算事件绑定结束 --- */
 
-// ▲▲▲ 新增事件监听器结束 ▲▲▲
-// ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴下面这段新代码 ▼▼▼
 
 // --- 表情分类功能事件绑定 ---
 document.getElementById('move-selected-stickers-btn').addEventListener('click', openStickerCategoryModal);
@@ -42687,12 +43081,7 @@ document.getElementById('import-chunked-data-input').addEventListener('change', 
     }
     e.target.value = null; // 清空以便下次选择
 });
-// ▲▲▲ 事件监听器粘贴结束 ▲▲▲
-// ▼▼▼ 在 init() 的事件监听器区域粘贴 ▼▼▼
 document.getElementById('export-for-330-btn').addEventListener('click', exportDataFor330);
-// ▲▲▲ 粘贴结束 ▲▲▲
-// ▼▼▼ 在 init() 函数的事件监听器区域粘贴 ▼▼▼
-// ▼▼▼ 在 init() 函数的事件监听器区域粘贴 ▼▼▼
 
 // 【全新】为“兼容330格式导入”按钮绑定事件
 document.getElementById('import-from-330-btn').addEventListener('click', () => {
@@ -42711,7 +43100,9 @@ document.getElementById('import-from-330-input').addEventListener('change', (e) 
     e.target.value = null;
 });
 
-// ▲▲▲ 代码粘贴结束 ▲▲▲
+document.getElementById('compress-all-images-btn').addEventListener('click', compressAllImagesInDB);
+document.getElementById('export-data-stream-btn').addEventListener('click', exportDataStream);
+
 
 
 // ▲▲▲ 新增代码粘贴结束 ▲▲▲
