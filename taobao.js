@@ -514,9 +514,7 @@ async function openTaobaoApp() {
 
 // ▼▼▼ 请将这一整块全新的功能函数，完整地粘贴到 // 桃宝 App 功能函数区的末尾 ▼▼▼
 
-/**
- * 【全新】切换“桃宝”App内的不同视图（首页、购物车、订单、我的）
- */
+// ▼▼▼ 用这块新代码，替换你旧的 switchTaobaoView 函数 ▼▼▼
 function switchTaobaoView(viewId) {
   document.querySelectorAll('.taobao-view').forEach(v => v.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
@@ -525,15 +523,205 @@ function switchTaobaoView(viewId) {
     t.classList.toggle('active', t.dataset.view === viewId);
   });
 
-  // 根据切换的视图，执行对应的渲染函数
   if (viewId === 'orders-view') {
     renderTaobaoOrders();
   } else if (viewId === 'my-view') {
     renderBalanceDetails();
   } else if (viewId === 'cart-view') {
-    renderTaobaoCart(); // ★★★ 新增：切换到购物车时，渲染购物车内容
+    renderTaobaoCart();
+  }
+  // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
+  else if (viewId === 'eleme-view') {
+    renderElemeFoods(); // 切换到饿了么视图时，渲染美食列表
+  }
+  // ▲▲▲ 新代码粘贴结束 ▲▲▲
+}
+// ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 把下面这一整块全新的功能函数，粘贴到 taobao.js 的文件末尾 ▼▼▼
+
+/**
+ * 【全新】渲染“饿了么”页面的美食列表
+ */
+async function renderElemeFoods() {
+  const gridEl = document.getElementById('eleme-grid');
+  gridEl.innerHTML = '';
+  const foods = await db.elemeFoods.toArray();
+
+  if (foods.length === 0) {
+    gridEl.innerHTML =
+      '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary);">还没有美食哦，点击上方“AI生成”来发现美味吧！</p>';
+    return;
+  }
+
+  foods.forEach(food => {
+    const card = document.createElement('div');
+    card.className = 'product-card'; // 复用商品卡片样式
+    card.innerHTML = `
+            <img src="${food.imageUrl}" class="product-image" alt="${food.name}">
+            <div class="product-info">
+                <div class="product-name">${food.name}</div>
+                <div class="product-price">¥${food.price.toFixed(2)}</div>
+            </div>
+            <!-- 核心区别：按钮是“给Ta点单” -->
+            <button class="add-cart-btn" data-food-id="${food.id}">给Ta点单</button>
+        `;
+    gridEl.appendChild(card);
+  });
+}
+
+/**
+ * 【全新 | AI核心】为“饿了么”生成美食
+ */
+async function handleGenerateFoodsAI() {
+  await showCustomAlert('请稍候...', 'AI正在搜罗全城美食...');
+  const { proxyUrl, apiKey, model } = state.apiConfig;
+  if (!proxyUrl || !apiKey || !model) {
+    alert('请先配置API！');
+    return;
+  }
+
+  const prompt = `
+# 任务
+你是一个美食App“饿了么”的编辑。请为我推荐5-8款诱人的美食。
+
+# 核心规则
+1.  **美食多样性**: 包含主食、小吃、甜品、饮料等不同类型。
+2.  **名称诱人**: 商品名称要听起来就很好吃。
+3.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON数组，每个对象代表一款美食，并包含以下字段:
+    -   \`"name"\`: 美食名称
+    -   \`"price"\`: 价格 (数字)
+    -   \`"restaurant"\`: 虚拟的店铺名称
+    -   \`"imageUrl"\`: 从 'https://i.postimg.cc/mD8DB9Q7/food1.jpg' 或 'https://i.postimg.cc/W12WqgJp/food2.jpg' 中随机挑选一张作为图片。
+
+# JSON输出格式示例:
+[
+  {
+    "name": "爆汁芝士和牛汉堡",
+    "price": 38.5,
+    "restaurant": "汉堡王牌",
+    "imageUrl": "https://i.postimg.cc/mD8DB9Q7/food1.jpg"
+  }
+]`;
+
+  try {
+    const messagesForApi = [{ role: 'user', content: prompt }];
+    const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: model,
+        messages: messagesForApi,
+        temperature: 1.1, // 提高温度让结果更有创意
+        response_format: { type: 'json_object' },
+      }),
+    });
+
+    if (!response.ok) throw new Error(`API请求失败: ${await response.text()}`);
+
+    const data = await response.json();
+    const rawContent = data.choices[0].message.content;
+    const cleanedContent = rawContent.replace(/^```json\s*|```$/g, '').trim();
+    const newFoods = JSON.parse(cleanedContent);
+
+    if (Array.isArray(newFoods) && newFoods.length > 0) {
+      await db.elemeFoods.bulkAdd(newFoods);
+      await renderElemeFoods(); // 刷新列表
+      await showCustomAlert('生成成功！', `已成功为您推荐 ${newFoods.length} 款美食！`);
+    } else {
+      throw new Error('AI返回的数据格式不正确。');
+    }
+  } catch (error) {
+    console.error('AI生成美食失败:', error);
+    await showCustomAlert('生成失败', `发生错误: ${error.message}`);
   }
 }
+
+/**
+ * 【全新】处理用户点击“给Ta点单”的逻辑
+ */
+async function handleOrderForChar(foodId) {
+  const food = await db.elemeFoods.get(foodId);
+  if (!food) return;
+
+  // 1. 检查用户余额
+  if ((state.globalSettings.userBalance || 0) < food.price) {
+    alert('你的余额不足，无法为Ta点单！');
+    return;
+  }
+
+  // 2. 打开角色选择器
+  const targetCharId = await openCharSelectorForCart(); // 复用这个选择器
+  if (!targetCharId) return; // 用户取消选择
+
+  const char = state.chats[targetCharId];
+  if (!char) return;
+
+  // 3. 弹出最终确认框
+  const confirmed = await showCustomConfirm(
+    '确认点单',
+    `确定要花费 ¥${food.price.toFixed(2)} 为“${char.name}”点一份“${food.name}”吗？`,
+    { confirmText: '立即下单' },
+  );
+
+  if (confirmed) {
+    await showCustomAlert('正在下单...', `正在为“${char.name}”下单...`);
+
+    // 4. 扣除用户余额
+    await updateUserBalanceAndLogTransaction(-food.price, `为 ${char.name} 点外卖: ${food.name}`);
+
+    // 5. 创建外卖订单记录 (这个订单是给角色的)
+    await db.elemeOrders.add({
+      foodId: foodId,
+      quantity: 1,
+      timestamp: Date.now(),
+      status: '已下单',
+      recipientId: targetCharId, // 记录接收人是哪个角色
+    });
+
+    // 6. 发送卡片通知给角色
+    await sendElemeOrderNotificationToChar(targetChatId, food);
+
+    await showCustomAlert('下单成功！', `已为“${char.name}”点好外卖，并已通过私信通知对方啦！`);
+    renderChatList(); // 刷新聊天列表以显示未读消息
+  }
+}
+
+/**
+ * 【全新】发送外卖订单通知到指定角色的聊天
+ */
+async function sendElemeOrderNotificationToChar(targetChatId, food) {
+  const chat = state.chats[targetChatId];
+  if (!chat) return;
+
+  // 创建一个包含所有信息的文本内容，用于AI理解上下文
+  const textContent = `[外卖订单] 我给你点了一份来自“${food.restaurant}”的“${food.name}”，记得吃哦！`;
+
+  // 创建消息对象
+  const notificationMessage = {
+    role: 'user',
+    type: 'eleme_order_notification', // 自定义的新消息类型
+    timestamp: Date.now(),
+    content: textContent, // 给AI看的文本
+    payload: {
+      // 给UI渲染卡片用的数据
+      foodName: food.name,
+      foodImageUrl: food.imageUrl,
+      senderName: state.qzoneSettings.nickname || '我',
+    },
+  };
+
+  // 将消息添加到聊天记录并更新数据库
+  chat.history.push(notificationMessage);
+  chat.unreadCount = (chat.unreadCount || 0) + 1; // 未读+1
+  await db.chats.put(chat);
+
+  // 如果不在当前聊天，就发横幅通知
+  if (state.activeChatId !== targetChatId) {
+    showNotification(targetChatId, '你收到了一份外卖！');
+  }
+}
+
+// ▲▲▲ 新增功能函数结束 ▲▲▲
 
 /**
  * 【全新】渲染购物车页面
@@ -1359,9 +1547,63 @@ async function updateUserBalanceAndLogTransaction(amount, description) {
 
   console.log(`用户钱包已更新: 金额=${amount.toFixed(2)}, 新余额=${state.globalSettings.userBalance.toFixed(2)}`);
 }
+/**
+ * 【全新增强版】处理删除单条交易记录（收入或支出）
+ * @param {number} transactionId - 要删除的交易记录的ID
+ */
+async function handleDeleteTransaction(transactionId) {
+  // 1. 在弹出确认框之前，先从数据库获取这条记录的详细信息
+  const transaction = await db.userWalletTransactions.get(transactionId);
+  if (!transaction) {
+    await showCustomAlert('错误', '找不到该条交易记录，可能已被删除。');
+    return;
+  }
+
+  // ★★★ 核心修改1：根据记录类型，生成动态的、更清晰的提示信息 ★★★
+  const actionText = transaction.type === 'income' ? '扣除' : '返还';
+  const confirmMessage = `确定要删除这条【${
+    transaction.type === 'income' ? '收入' : '支出'
+  }】记录吗？<br><br>此操作会将 <strong>¥${transaction.amount.toFixed(2)}</strong> 从您的余额中**${actionText}**。`;
+
+  const confirmed = await showCustomConfirm('确认删除', confirmMessage, {
+    confirmButtonClass: 'btn-danger',
+  });
+
+  if (!confirmed) {
+    return; // 如果用户取消，则不执行任何操作
+  }
+
+  try {
+    // 2. 使用数据库事务来保证数据安全
+    await db.transaction('rw', db.globalSettings, db.userWalletTransactions, async () => {
+      // ★★★ 核心修改2：根据记录类型，决定是加余额还是减余额 ★★★
+      if (transaction.type === 'income') {
+        // 如果删除的是一笔收入，那么总余额应该减少
+        state.globalSettings.userBalance -= transaction.amount;
+      } else if (transaction.type === 'expense') {
+        // 如果删除的是一笔支出，那么总余额应该增加（钱被“退回”了）
+        state.globalSettings.userBalance += transaction.amount;
+      }
+
+      // 3. 更新全局设置
+      await db.globalSettings.put(state.globalSettings);
+
+      // 4. 从交易记录表中删除这条记录
+      await db.userWalletTransactions.delete(transactionId);
+    });
+
+    // 5. 操作成功后，刷新UI
+    await renderBalanceDetails();
+
+    await showCustomAlert('操作成功', '该条记录已删除，余额已更新。');
+  } catch (error) {
+    console.error('删除交易记录时出错:', error);
+    await showCustomAlert('操作失败', `发生错误: ${error.message}`);
+  }
+}
 
 /**
- * 【全新】渲染“我的”页面的余额和交易明细
+ * 【全新 | V2版】渲染“我的”页面的余额和交易明细 (支持删除所有记录)
  */
 async function renderBalanceDetails() {
   // 1. 渲染当前余额
@@ -1388,19 +1630,25 @@ async function renderBalanceDetails() {
     itemEl.className = 'transaction-item';
     const sign = item.type === 'income' ? '+' : '-';
 
+    // ★★★ 核心修改：我们移除了 if 判断，现在为每一条记录都生成删除按钮 ★★★
+    const deleteButtonHtml = `<button class="delete-transaction-btn" data-transaction-id="${item.id}">×</button>`;
+
     itemEl.innerHTML = `
             <div class="transaction-info">
                 <div class="description">${item.description}</div>
                 <div class="timestamp">${new Date(item.timestamp).toLocaleString()}</div>
             </div>
-            <div class="transaction-amount ${item.type}">
-                ${sign} ${item.amount.toFixed(2)}
+            <div class="transaction-amount-wrapper">
+                <div class="transaction-amount ${item.type}">
+                    ${sign} ${item.amount.toFixed(2)}
+                </div>
+                ${deleteButtonHtml} 
             </div>
         `;
     listEl.appendChild(itemEl);
   });
 }
-// ▲▲▲ 新函数粘贴结束 ▲▲▲
+
 // ▼▼▼ 在 init() 函数的上方，粘贴下面这 3 个新函数 ▼▼▼
 
 /**
@@ -2156,7 +2404,16 @@ function initTaobao() {
   // 2. 使用事件委托，处理商品列表和购物车列表中的所有点击
   document.getElementById('taobao-screen').addEventListener('click', async e => {
     const target = e.target;
-
+    // 【全新】处理“我的”页面中删除交易记录按钮的点击
+    if (target.classList.contains('delete-transaction-btn')) {
+      const transactionId = parseInt(target.dataset.transactionId, 10);
+      if (!isNaN(transactionId)) {
+        // 调用我们刚刚创建的核心删除函数
+        await handleDeleteTransaction(transactionId);
+      }
+      return; // 处理完后直接返回
+    }
+    // ▲▲▲ 新代码粘贴结束 ▲▲▲
     // 点击“加入购物车”按钮
     if (target.classList.contains('add-cart-btn')) {
       const productId = parseInt(target.dataset.productId);

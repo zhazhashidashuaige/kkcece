@@ -17295,38 +17295,35 @@ body {
 }
 /* --- ▼▼▼ 在这里粘贴下面的新样式 ▼▼▼ --- */
 
-/* 分类标签上的删除按钮 "×" */
+/* ▼▼▼ 用这块【美化版】代码替换旧的 .sticker-category-delete-btn 样式 ▼▼▼ */
 .sticker-category-delete-btn {
-  display: inline-block;
+  display: none;
   position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 18px;
-  height: 18px;
-  background-color: rgba(255, 59, 48, 0.9); /* 醒目的红色 */
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  /* ★ 核心修改1：背景色从红色改为半透明的深灰色，更有质感 */
+  background-color: rgba(0, 0, 0, 0.4); 
   color: white;
   border-radius: 50%;
   font-size: 14px;
-  line-height: 18px;
-  text-align: center;
   font-weight: bold;
+  line-height: 20px;
+  text-align: center;
   cursor: pointer;
-  transform: scale(0); /* 默认隐藏 */
-  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background-color 0.2s; /* 添加背景色过渡 */
   z-index: 1;
 }
 
-/* 当进入编辑模式时，让删除按钮显示出来 */
-.selection-mode .sticker-category-btn:not(:first-child) .sticker-category-delete-btn {
-  transform: scale(1);
-}
-
-/* 当鼠标悬浮在删除按钮上时，给一个反馈效果 */
+/* ★ 核心修改2：鼠标悬停时，背景色加深，而不是变红 */
 .sticker-category-delete-btn:hover {
-  background-color: #ff3b30;
+  background-color: rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
 }
+/* ▲▲▲ 替换结束 ▲▲▲ */
 
-/* --- ▲▲▲ 新样式粘贴结束 ▲▲▲ --- */
 
 /* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
 /* ▼▼▼ 【全新】为角色表情面板单独设置更小的尺寸 ▼▼▼ */
@@ -17466,3 +17463,451 @@ body {
   transform: scale(1.05);
 }
 /* ▲▲▲ RealImag多图布局样式结束 ▲▲▲ */
+/* --- 桃宝“我的”页面交易明细样式优化 --- */
+.transaction-item {
+  /* 将主轴对齐方式改为居中，让左右两边能垂直对齐 */
+  align-items: center;
+}
+
+.transaction-amount-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 在金额和删除按钮之间增加一点间距 */
+  margin-left: auto; /* 关键！让这个容器自动推到最右边 */
+}
+
+.delete-transaction-btn {
+  background-color: #ffdddd;
+  color: #ff3b30;
+  border: 1px solid #ffc2d1;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 22px; /* 垂直居中叉号 */
+  padding: 0;
+  flex-shrink: 0; /* 防止按钮被挤压变形 */
+}
+
+.delete-transaction-btn:hover {
+  background-color: #ffc2d1;
+}
+#send-location-btn {
+  display: flex !important; /* 确保按钮本身是可见的 */
+  background-image: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>');
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* ▼▼▼ 这是为“表情分类删除”功能新增的CSS ▼▼▼ */
+
+/* 1. 让每个分类按钮成为删除按钮的定位参考点 */
+.sticker-category-btn {
+  position: relative; /* 关键！*/
+  display: inline-flex; /* 让按钮内部的文字和删除图标能对齐 */
+  align-items: center;
+  padding-right: 10px; /* 为右侧的删除按钮留出一点空间 */
+}
+
+/* 2. 编辑模式下，为分类按钮添加一个视觉提示 */
+#sticker-panel.selection-mode .sticker-category-btn:not(:first-child):hover {
+    background-color: #ffe5e5;
+    border-color: #ffc2d1;
+}
+
+/* ▼▼▼ 用这块【美化版】代码替换旧的 .sticker-category-delete-btn 样式 ▼▼▼ */
+.sticker-category-delete-btn {
+  display: none;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  /* ★ 核心修改1：背景色从红色改为半透明的深灰色，更有质感 */
+  background-color: rgba(0, 0, 0, 0.4); 
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background-color 0.2s; /* 添加背景色过渡 */
+  z-index: 1;
+}
+
+/* ★ 核心修改2：鼠标悬停时，背景色加深，而不是变红 */
+.sticker-category-delete-btn:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
+}
+/* ▲▲▲ 替换结束 ▲▲▲ */
+
+
+/* 4. 【核心】当表情面板处于编辑模式时，才显示删除按钮 */
+#sticker-panel.selection-mode .sticker-category-btn:not(:first-child) .sticker-category-delete-btn {
+  display: block; /* 在编辑模式下显示 */
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* 1. 亲密记录按钮 ✨ */
+.intimacy-panel-btn {
+    font-size: 14px; /* 图标大小 */
+    margin-left: 6px; /* 和火花图标的间距 */
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    vertical-align: middle; /* 确保和火花图标垂直对齐 */
+    display: inline-block; /* 允许 transform */
+}
+.intimacy-panel-btn:hover {
+    opacity: 1;
+    transform: scale(1.3) rotate(20deg); /* 悬浮时放大并旋转，增加趣味性 */
+}
+
+/* 2. 亲密记录面板整体 */
+#intimacy-panel .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 各个区块之间的间距 */
+    padding: 15px 20px;
+}
+
+/* 3. 面板内的各个区块 */
+.intimacy-summary {
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.intimacy-summary h3 {
+    margin: 0 0 5px 0;
+    color: var(--accent-color); /* 使用你的主题色 */
+    font-size: 24px;
+}
+.intimacy-summary p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+.intimacy-section h4 {
+    margin-bottom: 15px;
+    border-left: 4px solid var(--accent-color);
+    padding-left: 10px;
+    font-size: 16px;
+}
+
+/* 4. 每日互动记录列表 */
+#intimacy-daily-log {
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+}
+#intimacy-daily-log .log-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+#intimacy-daily-log .log-item:last-child {
+    border-bottom: none;
+}
+#intimacy-daily-log .date {
+    color: var(--text-secondary);
+}
+#intimacy-daily-log .count {
+    font-weight: 500;
+}
+
+/* 5. 成就徽章网格 */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 20px;
+    text-align: center;
+}
+.achievement-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.achievement-item .icon {
+    font-size: 36px;
+    line-height: 1;
+}
+.achievement-item .name {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+/* 给未获得的成就一个置灰效果 */
+.achievement-item.locked {
+    opacity: 0.3;
+    filter: grayscale(1);
+}
+/* ▼▼▼ 【全新】亲密值系统相关CSS样式 ▼▼▼ */
+
+/* 聊天列表里的亲密值按钮 */
+.intimacy-btn {
+    font-size: 14px; /* 图标大小 */
+    margin-left: 8px; /* 和火花图标拉开一点距离 */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    filter: grayscale(0.5); /* 默认是灰色，看起来不突兀 */
+}
+.intimacy-btn:hover {
+    transform: scale(1.2);
+    filter: grayscale(0); /* 悬浮时变彩色 */
+}
+
+/* 亲密值面板整体样式 */
+#intimacy-panel .modal-content {
+    background-color: #f7f3f8; /* 温柔的淡紫色背景 */
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
+    border: 1px solid #e1dbe6;
+    max-width: 340px;
+    width: 90%;
+    height: auto;
+    max-height: 85vh;
+}
+#intimacy-panel .modal-header span {
+    font-weight: 600;
+    color: #6a4c95;
+}
+#intimacy-panel .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+#intimacy-panel hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #e1dbe6;
+    margin: 5px 0;
+}
+#intimacy-panel h3 {
+    font-size: 16px;
+    color: #6a4c95;
+    margin: 0 0 10px 0;
+    border-left: 3px solid #8e6ac5;
+    padding-left: 8px;
+}
+
+/* 亲密值分数显示区域 */
+#intimacy-display {
+    text-align: center;
+    padding: 10px 0;
+}
+#intimacy-display p {
+    margin: 0;
+    font-size: 14px;
+    color: #8a8a8a;
+}
+#intimacy-score-display {
+    font-size: 48px;
+    font-weight: 700;
+    color: #ff69b4; /* 浪漫的粉红色 */
+    text-shadow: 0 2px 8px rgba(255, 105, 180, 0.4);
+    margin: 5px 0;
+}
+
+/* 详细数据展示区域 */
+#intimacy-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+}
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+.detail-item span:last-child {
+    font-weight: 500;
+    color: #4a4a4a;
+}
+
+/* 徽章列表区域 */
+#symbol-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+.symbol-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+}
+.symbol-icon {
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #e9e4ed;
+    color: #a9a9a9;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+.symbol-item.unlocked .symbol-icon {
+    background-color: #ffeff7;
+    color: #ff69b4;
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+}
+.symbol-name {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+}
+.symbol-item.unlocked .symbol-name {
+    color: #333;
+    font-weight: 500;
+}
+.symbol-level {
+    font-size: 10px;
+    color: #aaa;
+}
+
+/* 解锁记录区域 */
+#unlocked-symbols-record {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+}
+.record-item {
+    font-size: 13px;
+    color: #555;
+}
+.record-item .symbol {
+    margin-right: 8px;
+}
+.record-item .date {
+    float: right;
+    color: #999;
+    font-size: 12px;
+}
+
+/* ▲▲▲ 新增CSS样式结束 ▲▲▲ */
+/* ▼▼▼ 【全新】亲密值徽章系统 v2.1 (尺寸调整版) CSS样式 ▼▼▼ */
+
+/* 聊天列表里佩戴的徽章图片 - 基础样式 */
+.intimacy-badge-display img {
+    height: 1.1em; /* 默认大小，适用于“星光闪烁”和“热情如火” */
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+/* ★★★ 这就是我们本次新增的核心代码 ★★★ */
+/* 为需要缩小的徽章设置一个更小的高度 */
+.intimacy-badge-display img.first_heartbeat,
+.intimacy-badge-display img.only_crown,
+.intimacy-badge-display img.eternal_diamond {
+    height: 0.9em; /* 你可以调整这个值，比如 0.95em 或 1em */
+}
+/* ★★★ 新增代码结束 ★★★ */
+
+/* 亲密值面板 - 徽章列表容器 */
+#symbol-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* 亲密值面板 - 单个徽章项目 */
+.symbol-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.symbol-item:hover {
+    transform: translateY(-3px);
+}
+
+/* 亲密值面板 - 徽章图标容器 */
+.symbol-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #e9e4ed;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+.symbol-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.symbol-icon.not-unlocked img {
+    filter: grayscale(1);
+    opacity: 0.6;
+}
+
+/* 解锁后的徽章样式 */
+.symbol-item.unlocked .symbol-icon {
+    background-color: #ffeff7;
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+}
+.symbol-item.unlocked .symbol-icon img {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+/* 被佩戴的徽章的特殊样式 */
+.symbol-item.selected .symbol-icon {
+    border-color: #ff69b4;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+}
+
+/* 徽章名称 */
+.symbol-name {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+}
+.symbol-item.unlocked .symbol-name {
+    color: #333;
+    font-weight: 500;
+}
+
+/* 解锁等级 */
+.symbol-level {
+    font-size: 10px;
+    color: #aaa;
+}
+
+/* "不佩戴" 按钮的特殊样式 */
+.symbol-icon.no-badge {
+    font-size: 32px;
+    background: #ddd; 
+    color: #fff;
+}
+/* ▲▲▲ 新增CSS样式结束 ▲▲▲ */
+
+
+

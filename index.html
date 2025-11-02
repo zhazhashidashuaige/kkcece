@@ -38,17 +38,16 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
     <script src="https://phoebeboo.github.io/mewoooo/pp.js" defer></script>
-    <script src="style.css" defer></script>
     <script src="main-app.js" defer></script>
     <script src="game-hall.js" defer></script>
     <script src="forum.js" defer></script>
     <script src="lovers-space.js" defer></script>
     <script src="taobao.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.84/darkreader.min.js"></script>
 
 
 
     <style>
-
     </style>
     <!-- ▼▼▼ 在这里添加下面这行 ▼▼▼ -->
     <style id="custom-theme-style"></style>
@@ -565,6 +564,18 @@
 </div>
 <!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
 <div class="form-group">
+    <label for="minimax-api-region-select">Minimax API 地区</label>
+    <select id="minimax-api-region-select">
+        <option value="domestic">国内版 (api.minimax.chat)</option>
+        <option value="overseas">海外版 (api.minimax.ai)</option>
+    </select>
+    <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px;">
+        如果使用海外版，只需填写上方的 API Key 即可，无需填写 Group ID。
+    </p>
+</div>
+<!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
+<!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
+<div class="form-group">
     <label for="minimax-speech-model-select">Minimax 语音模型 (TTS Model)</label>
     <select id="minimax-speech-model-select">
         <!-- 选项将由JS填充 -->
@@ -945,13 +956,15 @@
             <button id="group-video-call-btn" class="chat-action-icon-btn action-button" title="群视频通话"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></button>
             <button id="send-poll-btn" class="chat-action-icon-btn action-button" title="发起投票"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h10"/><path d="M6 6h.01"/><path d="M8 12h10"/><path d="M6 12h.01"/><path d="M8 18h10"/><path d="M6 18h.01"/></svg></button>
             <button id="share-link-btn" class="chat-action-icon-btn action-button" title="分享链接"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg></button>
-            <button id="send-location-btn" class="chat-action-icon-btn action-button" title="发送定位">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-            </button>
-<!-- ▼▼▼ 用下面这整块代码，替换你原来的那个 <button id="open-tarot-btn">...</button> ▼▼▼ -->
+<!-- ▼▼▼ 请将这段【缺失的】按钮代码，粘贴到下方“分享链接”和“塔罗牌”按钮之间 ▼▼▼ -->
+<button id="send-location-btn" class="chat-action-icon-btn action-button" title="发送定位">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+    </svg>
+</button>
+<!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
+            <!-- ▼▼▼ 用下面这整块代码，替换你原来的那个 <button id="open-tarot-btn">...</button> ▼▼▼ -->
 <button id="open-tarot-btn" class="chat-action-icon-btn action-button" title="塔罗占卜">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- 背景左侧卡牌 -->
@@ -965,7 +978,6 @@
     </svg>
 </button>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
-
 <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
 <!-- ▼▼▼ 【歪头杀·满分可爱猫】请用这块代码替换旧的宠物按钮 <button> ▼▼▼ -->
 <button id="pet-action-btn" class="chat-action-icon-btn action-button" title="我的宠物">
@@ -984,9 +996,6 @@
     </svg>
 </button>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
-
-
-
 
 
         </div>
@@ -1024,12 +1033,14 @@
 <div id="sticker-category-tabs">
     <!-- 分类胶囊将由JS动态生成在这里 -->
 </div>
+<!-- ▼▼▼ 用这块新代码替换旧的 #sticker-panel-footer ▼▼▼ -->
 <div id="sticker-panel-footer" style="display: none;">
-    <!-- ★ 新增：“移动到分类”按钮 -->
+    <!-- 这是移动表情的按钮，保留 -->
     <button id="move-selected-stickers-btn">移动到分类...</button>
-    <!-- 这是你已有的删除按钮 -->
+    <!-- 这是删除表情的按钮，保留 -->
     <button id="delete-selected-user-stickers-btn">删除已选 (0)</button>
 </div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
 </div>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
 <input type="file" id="sticker-upload-input" accept="image/*" style="display: none;" multiple>
@@ -1173,6 +1184,13 @@
     </label>
 </div>
 <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
+<div class="form-group">
+    <label for="dark-mode-toggle" class="toggle-switch-label">
+        <span class="toggle-switch-text">夜间模式</span>
+        <input type="checkbox" id="dark-mode-toggle">
+        <span class="toggle-switch-slider"></span>
+    </label>
+</div>
 
 
         <button class="form-button" onclick="document.getElementById('wallpaper-upload-input').click();">上传壁纸</button>
@@ -2491,10 +2509,9 @@
         </div>
     </div>
 </div>
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-<!-- ▼▼▼ 用这块【功能增强版】代码，替换旧的续火花设置区 ▼▼▼ -->
+<!-- ▼▼▼ 在 index.html 中，用这块代码替换旧的 id="streak-settings-section" 的 div ▼▼▼ -->
 <div class="form-group" id="streak-settings-section">
-    <!-- 火花总开关 -->
+    <!-- 火花总开关 (保持不变) -->
     <label for="streak-enabled-toggle" class="toggle-switch-label">
         <span class="toggle-switch-text">
             开启续火花
@@ -2506,15 +2523,16 @@
         <span class="toggle-switch-slider"></span>
     </label>
 
-    <!-- 火花详细设置 (默认隐藏) -->
+    <button id="open-intimacy-panel-btn" class="form-button form-button-secondary" style="width: 100%; margin-top: 10px; display: none;">
+        🏅 
+    </button>
+
+    <!-- 火花详细设置 (保持不变) -->
     <div id="streak-details-container" style="display: none; margin-top: 15px; padding-left: 10px; border-left: 3px solid var(--accent-color);">
-        <!-- 【全新】初始天数输入框 -->
         <div class="form-group">
             <label for="streak-initial-days-input">初始火花天数</label>
             <input type="number" id="streak-initial-days-input" value="0" min="0">
         </div>
-
-        <!-- 【已修改】熄灭规则选择器 -->
         <div class="form-group">
             <label for="streak-extinguish-threshold-select">火花熄灭规则</label>
             <select id="streak-extinguish-threshold-select">
@@ -2524,25 +2542,22 @@
                 <option value="-1">永不熄灭 🔥</option>
             </select>
         </div>
-        <!-- ▼▼▼ 在 id="streak-details-container" 的 </div> 闭合标签前，粘贴下面这行 ▼▼▼ -->
-<!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
-<!-- 【全新】自定义火花图标和颜色 -->
-<div class="form-group">
-    <label for="streak-lit-icon-url">点亮的火花图片 URL (可选)</label>
-    <input type="text" id="streak-lit-icon-url" placeholder="留空则默认显示🔥">
-</div>
-<div class="form-group">
-    <label for="streak-extinguished-icon-url">熄灭的火花图片 URL (可选)</label>
-    <input type="text" id="streak-extinguished-icon-url" placeholder="留空则默认显示🧊">
-</div>
-<div class="form-group">
-    <label for="streak-font-color-picker">天数字体颜色 (可选)</label>
-    <input type="color" id="streak-font-color-picker" value="#ff6f00" style="width: 100%; height: 40px;">
-</div>
-<!-- ▲▲▲ 新增代码粘贴结束 ▲▲▲ -->
+        <div class="form-group">
+            <label for="streak-lit-icon-url">点亮的火花图片 URL (可选)</label>
+            <input type="text" id="streak-lit-icon-url" placeholder="留空则默认显示🔥">
+        </div>
+        <div class="form-group">
+            <label for="streak-extinguished-icon-url">熄灭的火花图片 URL (可选)</label>
+            <input type="text" id="streak-extinguished-icon-url" placeholder="留空则默认显示🧊">
+        </div>
+        <div class="form-group">
+            <label for="streak-font-color-picker">天数字体颜色 (可选)</label>
+            <input type="color" id="streak-font-color-picker" value="#ff6f00" style="width: 100%; height: 40px;">
+        </div>
     </div>
 </div>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
 
 
 <div class="form-group"><label for="max-memory">上下文记忆条数</label><input type="number" id="max-memory" value="10"></div><div class="form-group"><label>聊天气泡主题 <button id="reset-theme-btn" type="button">重置</button></label><div class="theme-selector"><label><input type="radio" name="theme-select" value="default" id="theme-default"> 默认</label><label><input type="radio" name="theme-select" value="pink_blue"> 粉蓝</label><label><input type="radio" name="theme-select" value="blue_white"> 蓝白</label><label><input type="radio" name="theme-select" value="purple_yellow"> 紫黄</label><label><input type="radio" name="theme-select" value="black_white"> 黑白</label><label><input type="radio" name="theme-select" value="yellow_white"> 黄白</label><label><input type="radio" name="theme-select" value="red_black"> 红黑</label><label><input type="radio" name="theme-select" value="blue_yellow"> 蓝黄</label><label><input type="radio" name="theme-select" value="pink_yellow"> 粉黄</label><label><input type="radio" name="theme-select" value="pink_purple"> 粉紫</label><label><input type="radio" name="theme-select" value="gray_white"> 灰白</label><label><input type="radio" name="theme-select" value="blue_green"> 蓝绿</label><label><input type="radio" name="theme-select" value="pink_white"> 粉白</label><label><input type="radio" name="theme-select" value="pink_black"> 粉黑</label><label><input type="radio" name="theme-select" value="pink_green"> 粉绿</label><label><input type="radio" name="theme-select" value="green_black"> 绿黑</label></div></div>
@@ -6208,6 +6223,49 @@
 <!-- ▼▼▼ 【全新】这是为新按钮准备的隐藏文件选择器，请粘贴到上面那个div的后面 ▼▼▼ -->
 <input id="import-from-330-input" type="file" accept="application/json" hidden>
 <!-- ▲▲▲ HTML修改结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】这是亲密值面板的HTML，请粘贴到 </body> 标签前 ▼▼▼ -->
+<div id="intimacy-panel" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>亲密关系</span>
+            <span id="close-intimacy-panel" class="close-btn" style="cursor: pointer;">&times;</span>
+        </div>
+        <div class="modal-body" id="intimacy-panel-body">
+            <div id="intimacy-display">
+                <p>当前亲密值</p>
+                <h2 id="intimacy-score-display">--</h2>
+            </div>
+            <div id="intimacy-details">
+                <div class="detail-item">
+                    <span>🔥 火花天数</span>
+                    <span id="intimacy-streak-days">-- 天</span>
+                </div>
+                <div class="detail-item">
+                    <span>💬 今日消息</span>
+                    <span id="intimacy-today-msgs">-- 条</span>
+                </div>
+                <div class="detail-item">
+                    <span>📈 累计消息</span>
+                    <span id="intimacy-total-msgs">-- 条</span>
+                </div>
+            </div>
+            <div id="intimacy-symbol-unlocks">
+                <h3>亲密徽章</h3>
+                <div id="symbol-list-container">
+                    <!-- JS会在这里生成所有可解锁的徽章 -->
+                </div>
+            </div>
+            <div id="intimacy-records">
+                <h3>解锁记录</h3>
+                <div id="unlocked-symbols-record">
+                    <!-- JS会在这里生成已解锁徽章的记录 -->
+                    <p>暂无记录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 
 
 
@@ -6768,12 +6826,13 @@ let currentDatingSummary = null; // 用于暂存当前结算卡片的数据
                 },
                 body: JSON.stringify({
                     contents: messagesForDecision.map((item) => {
-                        let  includesImages = false;
-                        if(Array.isArray(item.content) && item.content.length === 2){
-                              includesImages =  item.content.some((sub)=>{
-                                return sub.type === 'image_url' && sub.image_url.url
-                            })
-                        }
+// ▼▼▼ 【修复后的代码】 ▼▼▼
+let includesImages = false;
+if (Array.isArray(item.content)) {
+    includesImages = item.content.some((sub) => {
+        return sub.type === 'image_url' && sub.image_url.url;
+    });
+}
                         return {
                             role: roleType[item.role], // 现在 'system' 会被正确转换为 'user'
                             parts: includesImages ? isImage(item.content[0],item.content[1]) : transformChatData(item)
@@ -8221,14 +8280,15 @@ const THEME_CSS_TEMPLATE = `
   background-repeat: no-repeat;
 }
 
-/* 发送定位按钮 */
-#send-location-btn { display: none; }
+/* 发送定位按钮 (已修复) */
+#send-location-btn svg { display: none; } /* 隐藏按钮内部原始的SVG图标 */
 #send-location-btn {
-  background-image: url('data:image/svg+xml;utf8,    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>');
   background-size: 60%;
   background-position: center;
   background-repeat: no-repeat;
 }
+
 
 /* === 6. 更多界面背景色 === */
 /* 适用于所有设置、编辑、选择等二级页面 */
@@ -8453,13 +8513,13 @@ function getRandomItem(arr) {
         // 2. 数据库结构定义
         // ===================================================================
 
-// ▼▼▼ 使用这块新代码替换旧的 db.version(...).stores(...) ▼▼▼
-db.version(48).stores({ // 版本号从 47 升级到 48
-    chats: '&id, isGroup, groupId, ownerId, isPinned, characterPhoneData, latestInnerVoice, innerVoiceHistory, loversSpaceData.emotionDiaries, settings.summary, settings.weiboNickname, settings.innerVoiceHideHeaderBorder, settings.innerVoiceAdopterLabelFormat', 
+// ▼▼▼ 在 main-app.js 中，用这块新代码替换旧的 db.version(...).stores(...) ▼▼▼
+db.version(51).stores({ // 版本号从 50 升级到 51
+    chats: '&id, isGroup, groupId, ownerId, isPinned, characterPhoneData, latestInnerVoice, innerVoiceHistory, loversSpaceData.emotionDiaries, settings.summary, settings.weiboNickname, settings.innerVoiceHideHeaderBorder, settings.innerVoiceAdopterLabelFormat, interactionStats, unlockedSymbols, settings.selectedIntimacyBadge', // <-- 在末尾添加了 settings.selectedIntimacyBadge
     apiConfig: '&id',
     globalSettings: '&id, activeThemeId', 
-    userStickers: '&id, url, name, categoryId', // ★★★ 在这里新增了 categoryId 索引 ★★★
-    userStickerCategories: '++id, &name',     // ★★★ 这是我们新增的分类表 ★★★
+    userStickers: '&id, url, name, categoryId',
+    userStickerCategories: '++id, &name',
     charStickers: '&id, url, name', 
     worldBooks: '&id, name, categoryId', 
     worldBookCategories: '++id, name',
@@ -8498,11 +8558,10 @@ db.version(48).stores({ // 版本号从 47 升级到 48
     datingPresets: '++id, name, settings.spriteGroupId',
     datingSpriteGroups: '++id, name',
     datingSprites: '++id, groupId, description, url',
-    datingHistory: '++id, characterId, timestamp'
+    datingHistory: '++id, characterId, timestamp',
+    offlinePresets: '++id, name'
 });
 // ▲▲▲ 替换结束 ▲▲▲
-
-
 
 
 window.db = db;
@@ -9814,18 +9873,18 @@ function displayFilteredFavorites(items) {
         // 用户消息的逻辑保持不变
         senderName = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
         senderAvatar = chat.settings.myAvatar || (chat.isGroup ? defaultMyGroupAvatar : defaultAvatar);
+//...
     } else { // AI/成员消息
-
          if (chat.isGroup) {
-            // ★★★★★ 这就是唯一的、核心的修改！ ★★★★★
-            // 我们现在使用 originalName 去匹配，而不是旧的 name
             const member = chat.members.find(m => m.originalName === msg.senderName);
-            // ★★★★★ 修改结束 ★★★★★
             
-            senderName = msg.senderName;
-            // 因为现在能正确找到 member 对象了，所以也能正确获取到他的头像
+            // ★★★【核心修复】★★★
+            // 如果找到了成员信息，就用他的“群昵称”；如果没找到（比如成员被踢了），就还是用消息里的名字作为备用。
+            senderDisplayName = member ? member.groupNickname : (msg.senderName || '未知成员');
+            
             senderAvatar = member ? member.avatar : defaultGroupMemberAvatar;
         } else {
+
             // 单聊的逻辑保持不变
             senderName = chat.name;
             senderAvatar = chat.settings.aiAvatar || defaultAvatar;
@@ -10240,7 +10299,8 @@ async function loadAllDataFromDB() {
         apiPresets,
         bubbleStylePresets,
         datingScenes, // <--- 在这里新增
-        localUserStickerCategories
+        localUserStickerCategories,
+        offlinePresetsFromDB
     ] = await Promise.all([
         db.chats.toArray(),
         db.apiConfig.get('main'),
@@ -10255,9 +10315,10 @@ async function loadAllDataFromDB() {
         db.apiPresets.toArray(),
         db.bubbleStylePresets.toArray(),
         db.datingScenes.toArray(), // <--- 在这里新增
-        db.userStickerCategories.toArray()
+        db.userStickerCategories.toArray(),
+        db.offlinePresets.toArray()
     ]);
-
+state.offlinePresets = offlinePresetsFromDB || [];
     state.chats = chatsArr.reduce((acc, chat) => {
             // 【全新】为旧的群聊数据兼容专属表情库
         if (chat.isGroup && (!chat.settings || !chat.settings.stickerLibrary)) {
@@ -10600,21 +10661,37 @@ if (chat.settings.innerVoiceStyles && typeof chat.settings.innerVoiceStyles.icon
     chat.settings.innerVoiceStyles.iconColor = '#ff8a80'; // 默认粉红色
 }
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
+    // 兼容亲密值系统：为旧数据添加互动统计和已解锁徽章
+    if (!chat.interactionStats) {
+        chat.interactionStats = {};
+    }
+    if (!chat.unlockedSymbols) {
+        chat.unlockedSymbols = [];
+    }
+    // ▲▲▲ 新代码粘贴结束 ▲▲▲
+    // 兼容亲密值系统：为旧数据添加佩戴徽章的字段
+    if (chat.settings && typeof chat.settings.selectedIntimacyBadge === 'undefined') {
+        chat.settings.selectedIntimacyBadge = ''; // 默认为空，不佩戴
+    }
+    // ▲▲▲ 新代码粘贴结束 ▲▲▲
+
         // ▲▲▲ 新代码粘贴结束 ▲▲▲
         acc[chat.id] = chat;
         return acc;
     }, {});
-// ▼▼▼ 请用这段新代码替换旧的 state.apiConfig 初始化代码 ▼▼▼
-    state.apiConfig = apiConfig || { 
-        id: 'main', 
-        proxyUrl: '', 
-        apiKey: '', 
-        model: '',
-        temperature: 0.8, // 新增：为温度设置一个默认值 0.8
-        minimaxGroupId: '',
-        minimaxApiKey: '',
-        minimaxSpeechModel: 'speech-01' 
-    };
+// ▼▼▼ 使用这块新代码替换 ▼▼▼
+state.apiConfig = apiConfig || { 
+    id: 'main', 
+    proxyUrl: '', 
+    apiKey: '', 
+    model: '',
+    temperature: 0.8,
+    minimaxGroupId: '',
+    minimaxApiKey: '',
+    minimaxApiRegion: 'domestic', // <-- ★★★ 在这里新增了地区字段，默认为国内版
+    minimaxSpeechModel: 'speech-01' 
+};
+// ▲▲▲ 替换结束 ▲▲▲
     // 兼容旧数据，如果加载的设置里没有温度，也给一个默认值
     if (typeof state.apiConfig.temperature === 'undefined') {
         state.apiConfig.temperature = 0.8;
@@ -11506,6 +11583,7 @@ async function generateNovelAIImage() {
         // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
     // 【核心新增】加载 Minimax 设置
     document.getElementById('minimax-group-id').value = state.apiConfig.minimaxGroupId || '';
+document.getElementById('minimax-api-region-select').value = state.apiConfig.minimaxApiRegion || 'domestic';
     document.getElementById('minimax-api-key').value = state.apiConfig.minimaxApiKey || '';
     document.getElementById('minimax-speech-model-select').value = state.apiConfig.minimaxSpeechModel || 'speech-01';
     // ▲▲▲ 粘贴结束 ▲▲▲
@@ -11702,13 +11780,11 @@ async function renderChatList() {
 }
 // ▲▲▲ 替换结束 ▲▲▲
 
-
-// ▼▼▼ 用这块【V3 - Emoji图标版】代码，完整替换你旧的 createChatListItem 函数 ▼▼▼
+// ▼▼▼ 在 main-app.js 中，用这块【V2 - 图片徽章版】代码替换旧的 createChatListItem 函数 ▼▼▼
 function createChatListItem(chat) {
     const lastMsgObj = chat.history.filter(msg => !msg.isHidden).slice(-1)[0] || {};
     let lastMsgDisplay;
 
-    // --- 消息预览的逻辑 (这部分保持不变) ---
     if (!chat.isGroup && chat.relationship?.status === 'pending_user_approval') {
         lastMsgDisplay = `<span style="color: #ff8c00;">[好友申请] ${chat.relationship.applicationReason || '请求添加你为好友'}</span>`;
     } else if (!chat.isGroup && chat.relationship?.status === 'blocked_by_ai') {
@@ -11722,7 +11798,9 @@ function createChatListItem(chat) {
         else if (Array.isArray(lastMsgObj.content)) { lastMsgDisplay = `[图片]`; }
         else { lastMsgDisplay = String(lastMsgObj.content || '...').substring(0, 20); }
         if (lastMsgObj.senderName && lastMsgObj.type !== 'pat_message') {
-            lastMsgDisplay = `${lastMsgObj.senderName}: ${lastMsgDisplay}`;
+            const member = chat.members.find(m => m.originalName === lastMsgObj.senderName);
+            const displayName = member ? member.groupNickname : lastMsgObj.senderName;
+            lastMsgDisplay = `${displayName}: ${lastMsgDisplay}`;
         }
     } else {
         const statusText = chat.status?.text || '在线';
@@ -11741,12 +11819,11 @@ function createChatListItem(chat) {
     
     const avatar = chat.isGroup ? chat.settings.groupAvatar : chat.settings.aiAvatar;
 
-    // ★★★★★ 这就是我们本次修改的核心！ ★★★★★
     let streakHtml = '';
-    // 检查是否为单聊、功能是否开启
+    let selectedBadgeHtml = '';
+
     if (!chat.isGroup && chat.settings.streak && chat.settings.streak.enabled) {
         const streak = chat.settings.streak;
-        
         let isExtinguished = false;
         if (streak.lastInteractionDate && streak.extinguishThreshold !== -1) {
             const lastDate = new Date(streak.lastInteractionDate);
@@ -11757,48 +11834,31 @@ function createChatListItem(chat) {
                 isExtinguished = true;
             }
         }
-        
-        // 准备图标和颜色
         const litIconUrl = streak.litIconUrl;
         const extinguishedIconUrl = streak.extinguishedIconUrl;
-        const fontColor = streak.fontColor || '#ff6f00'; // 如果没设置颜色，就用默认的橙色
-
+        const fontColor = streak.fontColor || '#ff6f00';
         let iconHtml = '';
-
         if (isExtinguished) {
-            // 如果熄灭了，优先用自定义熄灭图片，否则用默认 Emoji
-            iconHtml = extinguishedIconUrl 
-                ? `<img src="${extinguishedIconUrl}" style="height: 1.2em; vertical-align: middle;">`
-                : '🧊';
-        } else if (streak.currentDays > 0) {
-            // 如果在续，优先用自定义点亮图片，否则用默认 Emoji
-            iconHtml = litIconUrl 
-                ? `<img src="${litIconUrl}" style="height: 1.2em; vertical-align: middle;">`
-                : '🔥';
+            iconHtml = extinguishedIconUrl ? `<img src="${extinguishedIconUrl}" style="height: 1.2em; vertical-align: middle;">` : '🧊';
+        } else if (streak.currentDays > 0 || streak.initialDays > 0) {
+            iconHtml = litIconUrl ? `<img src="${litIconUrl}" style="height: 1.2em; vertical-align: middle;">` : '🔥';
         }
-
-        // 拼接最终的HTML
         if (iconHtml) {
-            // 【核心修改】在这里我们增加一个判断
-            // 如果火花已熄灭 (isExtinguished 为 true)
             if (isExtinguished) {
-                // 就只显示熄灭的图标，不显示天数
                 streakHtml = `<span class="streak-indicator" style="color: ${fontColor};">${iconHtml}</span>`;
-            } 
-            // 如果是永不熄灭模式（并且未熄灭）
-            else if (streak.currentDays === -1 || streak.initialDays === -1) {
+            } else if (streak.currentDays === -1 || streak.initialDays === -1) {
                  streakHtml = `<span class="streak-indicator" style="color: ${fontColor};">${iconHtml}∞</span>`;
-            }
-            // 其他所有情况（即，火花是点亮的）
-            else {
-                // 才显示图标和天数
+            } else {
                 streakHtml = `<span class="streak-indicator" style="color: ${fontColor};">${iconHtml}${streak.currentDays}</span>`;
             }
         }
     }
-    // ★★★★★ 修改结束 ★★★★★
+
+    // ★★★ 核心修改：使用 <img> 标签来显示佩戴的徽章图片 ★★★
+    if (!chat.isGroup && chat.settings.selectedIntimacyBadge) {
+        selectedBadgeHtml = `<span class="intimacy-badge-display"><img src="${chat.settings.selectedIntimacyBadge}" alt="badge"></span>`;
+    }
     
-    // 后续的HTML拼接部分保持不变
     content.innerHTML = `
         <div class="chat-list-item" data-chat-id="${chat.id}">
             <img src="${avatar || defaultAvatar}" class="avatar">
@@ -11807,6 +11867,7 @@ function createChatListItem(chat) {
                     <span class="name">${chat.name}</span>
                     ${chat.isGroup ? '<span class="group-tag">群聊</span>' : ''}
                     ${streakHtml}
+                    ${selectedBadgeHtml} <!-- 把徽章放在火花后面 -->
                 </div>
                 <div class="last-msg" style="color: ${chat.isGroup ? 'var(--text-secondary)' : '#b5b5b5'}; font-style: italic;">${lastMsgDisplay}</div>
             </div>
@@ -11819,7 +11880,7 @@ function createChatListItem(chat) {
         </div>
     `;
     
-    // 后续的所有代码都保持不变...
+    // ... 后续的滑动删除、事件绑定等代码保持不变 ...
     const actions = document.createElement('div');
     actions.className = 'swipe-actions';
     const pinButtonText = chat.isPinned ? '取消置顶' : '置顶';
@@ -11853,6 +11914,9 @@ function createChatListItem(chat) {
     return container;
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
+
+
 // ▼▼▼ 请用这个【带诊断功能的全新版本】替换旧的 renderChatInterface 函数 ▼▼▼
 function renderChatInterface(chatId) {
     cleanupWaimaiTimers();
@@ -12348,92 +12412,79 @@ function renderStickerPanel() {
     // 每次渲染表情列表后，都更新一次分类页签栏
     renderStickerCategories();
 }
-// ▲▲▲ 替换结束 ▲▲▲
-// ▼▼▼ 把这一整块全新的功能函数，粘贴到你的JS功能函数定义区 ▼▼▼
+// ▼▼▼ 把这一整块全新的函数，粘贴到你的JS功能函数定义区 ▼▼▼
 
 /**
- * 【全新】处理删除表情包分类的核心函数
+ * 处理删除表情分类的逻辑，提供两种删除方式
  * @param {number} categoryId - 要删除的分类ID
  * @param {string} categoryName - 要删除的分类名称
  */
 async function handleDeleteStickerCategory(categoryId, categoryName) {
-    // 1. 使用你已有的 showChoiceModal 函数，让用户选择删除方式
+    if (isNaN(categoryId) || !categoryName) {
+        alert('执行删除失败：传入的分类ID或名称无效！');
+        return;
+    }
+
+    // 弹窗让用户选择如何处理分类下的表情
     const choice = await showChoiceModal(
         `删除分类 "${categoryName}"`,
         [
-            { text: '删除分类及所有表情', value: 'delete_all' },
-            { text: '仅删除分类(表情移至未分类)', value: 'delete_category_only' }
+            { text: '仅删除分类 (表情移至“未分类”)', value: 'delete_category_only' },
+            { text: '删除分类及所有表情 (不可恢复)', value: 'delete_all' }
         ]
     );
 
-    if (!choice) return; // 如果用户点击了取消，则什么也不做
+    if (!choice) return; // 如果用户点击了取消，则不执行任何操作
 
-    // 2. 如果用户选择“删除分类及所有表情”
-    if (choice === 'delete_all') {
-        const confirmed = await showCustomConfirm(
-            '严重警告',
-            `确定要永久删除分类 "${categoryName}" 及其中的【所有】表情吗？此操作不可撤销！`,
-            { confirmButtonClass: 'btn-danger' }
-        );
-        if (confirmed) {
-            // 使用数据库事务来确保数据一致性
-            await db.transaction('rw', db.userStickers, db.userStickerCategories, async () => {
-                // 找到该分类下的所有表情
-                const stickersToDelete = await db.userStickers.where('categoryId').equals(categoryId).toArray();
-                const stickerIdsToDelete = stickersToDelete.map(s => s.id);
-                if (stickerIdsToDelete.length > 0) {
-                    // 批量删除表情
-                    await db.userStickers.bulkDelete(stickerIdsToDelete);
-                }
-                // 删除分类本身
-                await db.userStickerCategories.delete(categoryId);
-            });
-
-            // 更新内存中的数据
-            state.userStickers = state.userStickers.filter(s => s.categoryId !== categoryId);
+    try {
+        if (choice === 'delete_category_only') {
+            // 找到该分类下的所有表情
+            const stickersToUpdate = state.userStickers.filter(s => s.categoryId === categoryId);
             
-            // 如果删除的是当前正在查看的分类，就自动切换到“未分类”
-            if (activeStickerCategoryId === categoryId) {
-                activeStickerCategoryId = 'uncategorized';
+            if (stickersToUpdate.length > 0) {
+                // 将它们的分类ID设为 null 或 undefined，表示未分类
+                stickersToUpdate.forEach(sticker => {
+                    sticker.categoryId = null; 
+                });
+                await db.userStickers.bulkPut(stickersToUpdate);
             }
-            renderStickerPanel(); // 重新渲染表情面板
-            alert('分类及所有表情已删除。');
-        }
-    } 
-    // 3. 如果用户选择“仅删除分类”
-    else if (choice === 'delete_category_only') {
-        const confirmed = await showCustomConfirm(
-            '确认操作',
-            `确定要删除分类 "${categoryName}" 吗？该分类下的表情将被移至“未分类”。`
-        );
-        if (confirmed) {
-            await db.transaction('rw', db.userStickers, db.userStickerCategories, async () => {
-                // 将该分类下所有表情的 categoryId 更新为 null
-                await db.userStickers.where('categoryId').equals(categoryId).modify({ categoryId: null });
-                // 删除分类本身
-                await db.userStickerCategories.delete(categoryId);
-            });
-
-            // 更新内存中的数据
-            state.userStickers.forEach(sticker => {
-                if (sticker.categoryId === categoryId) {
-                    sticker.categoryId = null;
-                }
-            });
-
-            // 同样，如果删除的是当前分类，就切换到“未分类”
-            if (activeStickerCategoryId === categoryId) {
-                activeStickerCategoryId = 'uncategorized';
-            }
+            // 从数据库删除分类本身
+            await db.userStickerCategories.delete(categoryId);
             
-            renderStickerPanel();
-            alert('分类已删除，表情已移至“未分类”。');
+        } else if (choice === 'delete_all') {
+            // 找到该分类下的所有表情ID
+            const stickerIdsToDelete = state.userStickers
+                .filter(s => s.categoryId === categoryId)
+                .map(s => s.id);
+            
+            if (stickerIdsToDelete.length > 0) {
+                // 从数据库批量删除这些表情
+                await db.userStickers.bulkDelete(stickerIdsToDelete);
+            }
+            // 从数据库删除分类本身
+            await db.userStickerCategories.delete(categoryId);
         }
+
+        // 不论哪种方式，都需要从前端的 state 缓存中移除或更新数据
+        state.userStickers = await db.userStickers.toArray();
+
+        // 如果删除的是当前正在查看的分类，就切换回“未分类”
+        if (activeStickerCategoryId === categoryId) {
+            activeStickerCategoryId = 'uncategorized';
+        }
+        
+        // 重新渲染整个表情面板（这会自动刷新分类和表情列表）
+        renderStickerPanel();
+
+        await showCustomAlert('操作成功', `分类 "${categoryName}" 已成功删除。`);
+
+    } catch (error) {
+        console.error("删除分类时出错:", error);
+        alert(`操作失败，发生数据库错误: ${error.message}`);
     }
 }
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
-
 
 
 /**
@@ -13711,6 +13762,7 @@ ${chat.history.slice(-chat.settings.maxMemory).map(m => `${m.role === 'user' ? '
                 };
                 
                 chat.history.push(aiMessage);
+                await incrementMessageCount(chatId);
 
                 if (isViewingThisChat) {
                     appendMessage(aiMessage, chat);
@@ -13723,7 +13775,9 @@ ${chat.history.slice(-chat.settings.maxMemory).map(m => `${m.role === 'user' ? '
             await db.chats.put(chat);
             renderChatList();
 // ▲▲▲ 粘贴结束 ▲▲▲
-
+        // ▼▼▼ 在这里添加下面这行新代码 ▼▼▼
+        checkAndTriggerSummary(chatId);
+        // ▲▲▲ 新增代码结束 ▲▲▲
         } catch (error) {
             console.error("线下模式AI响应失败:", error);
             const errorMessage = { role: 'assistant', content: `[出错了: ${error.message}]`, timestamp: Date.now() };
@@ -13950,7 +14004,8 @@ const chatHeaderTitle = document.getElementById('chat-header-title');
 - **用户发送的申请理由**: “${chat.relationship.applicationReason}”
 - **被拉黑前的最后对话摘要**: 
 ${contextSummary || "（无有效对话记录）"}
-
+# 你的任务
+你【必须】仔细阅读并理解用户发送的申请理由。然后，结合你的角色人设和你们之前的过往，对这条申请做出回应。你的回应【必须】能体现出你考虑了用户的理由。
 # 你的唯一指令
 根据以上所有信息，你【必须】做出决定，并给出符合你人设的理由。你的回复【必须且只能】是一个JSON对象，格式如下:
 {"decision": "accept", "reason": "（在这里写下你同意的理由，比如：好吧，看在你这么真诚的份上，这次就原谅你啦。）"}
@@ -14620,6 +14675,7 @@ ${chat.settings.aiAvatarLibrary && chat.settings.aiAvatarLibrary.length > 0
 
 **3. 微博互动铁律:**
    - 当“# 最近的微博互动”出现内容时，你【**必须**】作出回应。
+   - **【【【回复禁令】】】**: 如果一条用户评论被标记为 \`[你已回复]\`，你【绝对不能】再次回复它。请选择其他未回复的评论，或执行其他操作。
    - **评论用户微博**: 使用 \`weibo_comment\` 指令。评论内容【**必须**】是正常文字。
    - **回复用户评论**: 使用 \`weibo_reply\` 指令。回复内容【**必须**】是正常文字。
    - **主动发布微博**: 微博是公开平台，内容需符合你的“微博职业”和“微博指令”。发布时，你必须自己编造真实的\`baseLikesCount\`和 \`baseCommentsCount\`，并生成 **20条** 虚拟路人评论。
@@ -28239,9 +28295,9 @@ async function openQZonePublisher(mode) {
 }
 // ▲▲▲ 替换结束 ▲▲▲
 
-// ▼▼▼ 用这整块【评论优化版】的代码，完整替换掉你旧的 generateWeiboComments 函数 ▼▼▼
+// ▼▼▼ 用这块【最终修复版】代码，完整替换掉你旧的 generateWeiboComments 函数 ▼▼▼
 /**
- * 【评论优化版 V2】AI生成微博评论的核心函数
+ * 【评论优化版 V3 - 禁止回复用户】AI生成微博评论的核心函数
  * @param {number} postId - 需要生成评论的微博ID
  */
 async function generateWeiboComments(postId) {
@@ -28259,9 +28315,12 @@ async function generateWeiboComments(postId) {
         return;
     }
     
+    // ★★★ 核心修复1：在这里获取用户的微博昵称 ★★★
+    const userNickname = state.qzoneSettings.weiboNickname || state.qzoneSettings.nickname || '我';
+
     let authorPersona = "一个普通用户。";
     let authorProfession = "未设定"; 
-    const authorName = post.authorId === 'user' ? (state.qzoneSettings.weiboNickname || '我') : post.authorNickname;
+    const authorName = post.authorId === 'user' ? userNickname : post.authorNickname;
     
     if (post.authorId === 'user') {
         authorPersona = state.qzoneSettings.weiboUserPersona || '一个普通的微博用户。';
@@ -28286,24 +28345,15 @@ async function generateWeiboComments(postId) {
 - **图片内容**: 这是一张文字图，上面的内容是：“${post.hiddenContent}”`;
     }
     
-    // ▼▼▼ 从这里开始，是我们新增的核心代码 ▼▼▼
-
-    // 1. 创建一个集合，用来存放评论区已出现的、有人设的角色信息
     const commenterPersonas = new Map();
-
-    // 2. 将微博作者本人的人设先加进去
     commenterPersonas.set(authorName, `[职业: ${authorProfession}] [人设: ${truncatedPersona}]`);
 
-    // 3. 遍历已有的评论，查找并添加其他角色的人设
     if (post.comments && post.comments.length > 0) {
         post.comments.forEach(comment => {
             const commenterName = comment.authorNickname;
-            // 如果这个人设还没被记录过
             if (!commenterPersonas.has(commenterName)) {
-                // 检查这个评论者是不是一个已知的AI角色
                 const commenterChat = Object.values(state.chats).find(c => c.name === commenterName);
                 if (commenterChat && !commenterChat.isGroup) {
-                    // 如果是，就把他/她的人设和职业也加到集合里
                     const profession = commenterChat.settings.weiboProfession || '未设定';
                     const persona = (commenterChat.settings.aiPersona || '无').substring(0, 200);
                     commenterPersonas.set(commenterName, `[职业: ${profession}] [人设: ${persona}]`);
@@ -28312,7 +28362,6 @@ async function generateWeiboComments(postId) {
         });
     }
     
-    // 4. 将收集到的人设信息，格式化成给AI看的文本
     let commenterContext = '';
     if (commenterPersonas.size > 0) {
         commenterContext += '\n# 评论区已有角色人设 (供你回复时参考)\n';
@@ -28321,8 +28370,7 @@ async function generateWeiboComments(postId) {
         });
     }
 
-    // ▲▲▲ 新增代码到此结束 ▲▲▲
-
+    // ★★★ 核心修复2：修改系统指令，明确禁止回复用户 ★★★
     const systemPrompt = `
 # 任务
 你是一个专业的“社交媒体模拟器”。你的任务是根据一个特定角色的“人设”，为他/她发布的一条微博生成一批真实的、符合情景的网友评论。
@@ -28337,15 +28385,16 @@ ${existingComments || "(暂无评论)"}
 ${commenterContext}
 
 # 【【【评论生成核心规则】】】
-1.  **【【【严禁使用】】】**: 绝对禁止使用 “路人甲”、“网友A”、“粉丝B” 这类代号作为评论者昵称。
-2.  **昵称多样化**: 评论者的昵称必须非常真实、多样化且符合微博生态。例如：“今天也要早睡”、“可乐加冰块”、“是小王不是小张”、“理性吃瓜第一线”。
-3.  **内容与人设强相关**: 评论内容必须与【微博内容(包括文字和图片)】和【作者以及被回复者的人设】高度相关。思考：什么样的粉丝会关注这样的人？他们会怎么说话？当回复一个有特定人设的角色时，你的回复必须考虑到对方的身份。
-4.  **风格多样化**: 生成的评论应包含不同立场和风格，例如：
+1.  **【【【回复禁令】】】**: 绝对禁止回复昵称为“**${userNickname}**”的任何评论。这是最高优先级的规则，因为用户会自己回复。你可以回复其他任何人的评论。
+2.  **【【【严禁使用】】】**: 绝对禁止使用 “路人甲”、“网友A”、“粉丝B” 这类代号作为评论者昵称。
+3.  **昵称多样化**: 评论者的昵称必须非常真实、多样化且符合微博生态。例如：“今天也要早睡”、“可乐加冰块”、“是小王不是小张”、“理性吃瓜第一线”。
+4.  **内容与人设强相关**: 评论内容必须与【微博内容(包括文字和图片)】和【作者以及被回复者的人设】高度相关。思考：什么样的粉丝会关注这样的人？他们会怎么说话？当回复一个有特定人设的角色时，你的回复必须考虑到对方的身份。
+5.  **风格多样化**: 生成的评论应包含不同立场和风格，例如：
     -   **粉丝**: “哥哥太帅了！新剧什么时候播？”
     -   **路人**: “这个地方看起来不错，求地址！”
     -   **黑粉/质疑者**: “就这？感觉p图有点过了吧...”
     -   **玩梗**: “楼上是不是XX派来的间谍（狗头）”
-5.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON数组，每个对象代表一条评论。
+6.  **格式铁律**: 你的回复【必须且只能】是一个严格的JSON数组，每个对象代表一条评论。
     -   发表新评论, 使用格式: \`{"author": "不吃香菜的仙女", "comment": "哇，这个好好看！"}\`
     -   回复已有评论, 使用格式: \`{"author": "爱吃瓜的猹", "comment": "我也觉得！", "replyTo": "不吃香菜的仙女"}\`
 
@@ -28356,7 +28405,6 @@ ${commenterContext}
         let isGemini = proxyUrl === GEMINI_API_URL;
         let messagesForApi = [{ role: 'user', content: systemPrompt }];
         let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi, isGemini, state.apiConfig.temperature);
-
 
         const response = isGemini 
             ? await fetch(geminiConfig.url, geminiConfig.data) 
@@ -28421,6 +28469,7 @@ ${commenterContext}
     }
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
 // ▼▼▼ 把这个新函数粘贴到 renderWeiboProfile 函数的上方 ▼▼▼
 /**
  * 【全新】删除一条微博评论
@@ -30384,38 +30433,37 @@ async function showMultiCharacterSelectorForWeibo() {
         modal.classList.add('visible');
     });
 }
-// ▼▼▼ 把这一整块全新的功能函数，粘贴到 <script> 内的功能函数定义区 ▼▼▼
+// ▼▼▼ 使用这【一整块】全新的代码，完整替换掉你旧的、所有与线下模式预设相关的函数 ▼▼▼
 
 /**
- * 【线下模式】渲染预设下拉框
+ * 【全局版】渲染线下模式预设的下拉框
  */
 function renderOfflinePresetsSelector() {
-    const chat = state.chats[state.activeChatId];
-    if (!chat || !chat.settings.offlineMode) return;
-
     const select = document.getElementById('offline-preset-select');
-    const presets = chat.settings.offlineMode.presets || [];
-    select.innerHTML = '<option value="">-- 使用自定义输入 --</option>'; // 默认选项
-    presets.forEach((preset, index) => {
+    // 直接从全局 state 读取预设
+    const presets = state.offlinePresets || []; 
+    select.innerHTML = '<option value="">-- 使用自定义输入 --</option>';
+    
+    presets.forEach(preset => {
         const option = document.createElement('option');
-        option.value = index; // 使用数组索引作为值
+        // 使用数据库的 ID 作为 option 的 value，这更可靠
+        option.value = preset.id; 
         option.textContent = preset.name;
         select.appendChild(option);
     });
 }
 
 /**
- * 【线下模式】当用户选择一个预设时，自动填充输入框
+ * 【全局版】当用户选择一个预设时，自动填充输入框
  */
 function handleOfflinePresetSelection() {
-    const chat = state.chats[state.activeChatId];
-    if (!chat || !chat.settings.offlineMode) return;
-    
     const select = document.getElementById('offline-preset-select');
-    const selectedIndex = select.value;
+    const selectedId = parseInt(select.value);
 
-    if (selectedIndex !== "") {
-        const preset = chat.settings.offlineMode.presets[parseInt(selectedIndex)];
+    // 如果选择的不是“自定义输入”
+    if (selectedId) {
+        // 从全局 state 中根据 ID 查找预设
+        const preset = state.offlinePresets.find(p => p.id === selectedId);
         if (preset) {
             document.getElementById('offline-prompt-input').value = preset.prompt;
             document.getElementById('offline-style-input').value = preset.style;
@@ -30424,38 +30472,37 @@ function handleOfflinePresetSelection() {
 }
 
 /**
- * 【线下模式】打开预设管理的操作菜单
+ * 【全局版】打开预设管理的操作菜单
  */
 async function openOfflinePresetManager() {
     const select = document.getElementById('offline-preset-select');
-    const selectedIndex = select.value;
+    // 获取当前选中的预设ID
+    const selectedId = select.value ? parseInt(select.value) : null;
 
-    // 弹出一个包含多个选项的菜单
     const choice = await showChoiceModal("管理线下模式预设", [
         { text: '💾 保存当前为新预设', value: 'save_new' },
-        { text: '✏️ 更新选中预设', value: 'update_selected', disabled: selectedIndex === "" },
-        { text: '🗑️ 删除选中预设', value: 'delete_selected', disabled: selectedIndex === "" }
+        { text: '✏️ 更新选中预设', value: 'update_selected', disabled: !selectedId },
+        { text: '🗑️ 删除选中预设', value: 'delete_selected', disabled: !selectedId }
     ]);
     
-    // 根据用户的选择执行操作
+    // 根据选择执行相应的全局操作函数
     switch (choice) {
         case 'save_new':
             await saveCurrentAsOfflinePreset();
             break;
         case 'update_selected':
-            if (selectedIndex !== "") await updateSelectedOfflinePreset(parseInt(selectedIndex));
+            if (selectedId) await updateSelectedOfflinePreset(selectedId);
             break;
         case 'delete_selected':
-            if (selectedIndex !== "") await deleteSelectedOfflinePreset(parseInt(selectedIndex));
+            if (selectedId) await deleteSelectedOfflinePreset(selectedId);
             break;
     }
 }
 
 /**
- * 【线下模式】将当前输入框的内容保存为一个新预设
+ * 【全局版】将当前输入框的内容保存为一个新预设
  */
 async function saveCurrentAsOfflinePreset() {
-    const chat = state.chats[state.activeChatId];
     const name = await showCustomPrompt("保存新预设", "请输入预设名称：");
     
     if (name && name.trim()) {
@@ -30464,53 +30511,64 @@ async function saveCurrentAsOfflinePreset() {
             prompt: document.getElementById('offline-prompt-input').value.trim(),
             style: document.getElementById('offline-style-input').value.trim()
         };
-        chat.settings.offlineMode.presets.push(newPreset);
-        await db.chats.put(chat); // 保存回数据库
+        // 直接添加到全局的 offlinePresets 表中
+        const newId = await db.offlinePresets.add(newPreset);
+        
+        // 更新内存中的 state
+        if (!state.offlinePresets) state.offlinePresets = [];
+        state.offlinePresets.push({ id: newId, ...newPreset });
+
         renderOfflinePresetsSelector(); // 刷新下拉框
+        document.getElementById('offline-preset-select').value = newId; // 自动选中新保存的
         alert(`预设 "${name.trim()}" 已保存！`);
     }
 }
 
 /**
- * 【线下模式】用当前输入框的内容更新选中的预设
+ * 【全局版】用当前输入框的内容更新选中的预设
  */
-async function updateSelectedOfflinePreset(index) {
-    const chat = state.chats[state.activeChatId];
-    const preset = chat.settings.offlineMode.presets[index];
+async function updateSelectedOfflinePreset(presetId) {
+    const preset = state.offlinePresets.find(p => p.id === presetId);
     if (!preset) return;
 
     const confirmed = await showCustomConfirm("确认更新", `确定要用当前内容覆盖预设 "${preset.name}" 吗？`);
     if (confirmed) {
-        preset.prompt = document.getElementById('offline-prompt-input').value.trim();
-        preset.style = document.getElementById('offline-style-input').value.trim();
-        await db.chats.put(chat);
+        const updatedData = {
+            prompt: document.getElementById('offline-prompt-input').value.trim(),
+            style: document.getElementById('offline-style-input').value.trim()
+        };
+        // 更新数据库
+        await db.offlinePresets.update(presetId, updatedData);
+        // 更新内存
+        preset.prompt = updatedData.prompt;
+        preset.style = updatedData.style;
         alert("预设已更新！");
     }
 }
 
 /**
- * 【线下模式】删除选中的预设
+ * 【全局版】删除选中的预设
  */
-async function deleteSelectedOfflinePreset(index) {
-    const chat = state.chats[state.activeChatId];
-    const preset = chat.settings.offlineMode.presets[index];
+async function deleteSelectedOfflinePreset(presetId) {
+    const preset = state.offlinePresets.find(p => p.id === presetId);
     if (!preset) return;
 
     const confirmed = await showCustomConfirm("确认删除", `确定要删除预设 "${preset.name}" 吗？`, { confirmButtonClass: 'btn-danger' });
     if (confirmed) {
-        chat.settings.offlineMode.presets.splice(index, 1);
-        await db.chats.put(chat);
+        // 从数据库删除
+        await db.offlinePresets.delete(presetId);
+        // 从内存中删除
+        state.offlinePresets = state.offlinePresets.filter(p => p.id !== presetId);
+        
         renderOfflinePresetsSelector(); // 刷新下拉框
-        // 删除后清空输入框
+        // 清空输入框
         document.getElementById('offline-prompt-input').value = '';
         document.getElementById('offline-style-input').value = '';
         alert("预设已删除。");
     }
 }
 
-// ▲▲▲ 新功能函数粘贴结束 ▲▲▲
-// ▼▼▼ 【全新】微博私信功能核心函数 ▼▼▼
-
+// ▲▲▲ 替换结束 ▲▲▲
 // ▼▼▼ 【全新】微博私信功能核心函数 ▼▼▼
 
 /**
@@ -31762,15 +31820,7 @@ function stopMinimaxAudio() {
 
 
 
-// ▼▼▼ 第3步：用这整块【V8 - 错误处理终极版】代码，完整替换旧的 playMinimaxAudio 函数 ▼▼▼
-
-// ▼▼▼ 用这块【新代码】替换旧的 playMinimaxAudio 函数 ▼▼▼
-/**
- * 【V9 - 全局模型版】调用 Minimax TTS API 生成语音并播放
- * @param {string} text - 要转换为语音的合并后的文本
- * @param {string} voiceId - Minimax 的语音 ID
- * @param {Array<HTMLElement>} bubblesToAnimate - 需要播放动画的所有语音气泡元素的数组
- */
+// ▼▼▼ 【海外版接口修复】用这整块代码，完整替换旧的 playMinimaxAudio 函数 ▼▼▼
 async function playMinimaxAudio(text, voiceId, bubblesToAnimate) {
     stopMinimaxAudio();
     await new Promise(resolve => setTimeout(resolve, 50));
@@ -31792,24 +31842,38 @@ async function playMinimaxAudio(text, voiceId, bubblesToAnimate) {
 
     const groupId = state.apiConfig.minimaxGroupId;
     const apiKey = state.apiConfig.minimaxApiKey;
-    if (!groupId || !apiKey) {
-        await showCustomAlert('语音播放失败', '尚未配置Minimax的Group ID和API Key。');
+    const apiRegion = state.apiConfig.minimaxApiRegion || 'domestic'; // 获取地区设置
+
+    // 根据地区检查配置是否完整
+    if ((apiRegion === 'domestic' && (!groupId || !apiKey)) || (apiRegion === 'overseas' && !apiKey)) {
+        await showCustomAlert('语音播放失败', '尚未配置完整的Minimax API信息。');
         stopMinimaxAudio();
         return;
     }
 
-    // ★★★ 核心修改：从全局 apiConfig 获取语音模型 ★★★
     const speechModel = state.apiConfig.minimaxSpeechModel || 'speech-01';
-    console.log(`正在使用 Minimax 语音模型: ${speechModel}`);
+
+    // --- ★★★ 核心修改：动态构建API地址 ★★★ ---
+    let apiUrl;
+    if (apiRegion === 'overseas') {
+        // 海外版接口地址，并且URL中【不包含】GroupId
+        apiUrl = 'https://api.minimax.ai/v1/text_to_speech';
+        console.log("正在使用 Minimax 海外版接口...");
+    } else {
+        // 国内版接口地址，URL中【必须包含】GroupId
+        apiUrl = `https://api.minimax.chat/v1/text_to_speech?GroupId=${groupId}`;
+        console.log("正在使用 Minimax 国内版接口...");
+    }
+    // --- ★★★ 修改结束 ★★★ ---
 
     try {
-        const response = await fetch(`https://api.minimax.chat/v1/text_to_speech?GroupId=${groupId}`, {
+        const response = await fetch(apiUrl, { // 使用我们动态生成的apiUrl
             method: 'POST',
             headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 text: text, 
                 voice_id: voiceId, 
-                model: speechModel, // ★★★ 使用我们获取到的模型变量 ★★★
+                model: speechModel,
                 speed: 1.0, 
                 pitch: 0, 
                 timber_list: [] 
@@ -31842,7 +31906,7 @@ async function playMinimaxAudio(text, voiceId, bubblesToAnimate) {
             }
         };
 
-       ttsPlayer.onended = cleanupAndReset;
+        ttsPlayer.onended = cleanupAndReset;
         
         ttsPlayer.onerror = (e) => {
              if (!isIntentionalStop) {
@@ -33100,7 +33164,6 @@ function parseTime(timeStr) {
 
     return hours * 60 + minutes;
 }
-// ▼▼▼ 【V2.2 | 修复熄灭重燃逻辑】请用这块新代码替换旧的 updateStreak 函数 ▼▼▼
 /**
  * 【火花 V2.2】检查并更新火花天数 (已修复熄灭后从1开始的问题)
  * @param {string} chatId - 要更新火花的聊天ID
@@ -33108,7 +33171,7 @@ function parseTime(timeStr) {
  */
 async function updateStreak(chatId) {
     const chat = state.chats[chatId];
-    // 如果不是单聊，或功能未开启，直接返回
+    // 如果不是单聊，或者功能未开启，直接返回
     if (!chat || chat.isGroup || !chat.settings.streak?.enabled) {
         return false;
     }
@@ -33134,8 +33197,7 @@ async function updateStreak(chatId) {
         const daysDiff = (todayDateUTC - lastDateUTC) / (1000 * 60 * 60 * 24);
 
         if (daysDiff >= streak.extinguishThreshold) {
-            // ★★★ 核心修改就在这里！★★★
-            // 将 currentDays 重置为 0，这样稍后的 ++ 操作就会让它变为 1
+            // 如果断联天数达到了你设置的阈值，就将当前火花天数归零。
             streak.currentDays = 0; 
             console.log(`🔥 与 ${chat.name} 的火花因超过 ${streak.extinguishThreshold} 天未联系而熄灭，将重新从 1 开始计算。`);
             changed = true;
@@ -33149,10 +33211,9 @@ async function updateStreak(chatId) {
         changed = true;
     }
     
-    // 更新最后互动日期为今天
+    // 无论火花是否熄灭，只要今天互动了，就把“最后互动日期”更新为今天。
     streak.lastInteractionDate = today;
 
-    // 只要是新的一天互动，就应该保存更新后的日期
     await db.chats.put(chat);
     
     if(changed) {
@@ -33161,7 +33222,8 @@ async function updateStreak(chatId) {
     
     return changed; // 返回是否发生了变化
 }
-// ▲▲▲ 替换结束 ▲▲▲
+
+
 
 // ▼▼▼ 用这块【修复后】的代码替换旧的 handleToggleAdmin 函数 ▼▼▼
 /**
@@ -33520,30 +33582,30 @@ async function getStreakContext(chat) {
 }
 // ▼▼▼ 【全新】这是用户表情包批量删除的JS核心函数 ▼▼▼
 
-// ▼▼▼ 使用这块【新代码】替换旧的 toggleUserStickerSelectionMode ▼▼▼
+// ▼▼▼ 使用这块【新代码】替换旧的 toggleUserStickerSelectionMode 函数 ▼▼▼
 function toggleUserStickerSelectionMode() {
     isUserStickerSelectionMode = !isUserStickerSelectionMode;
     const stickerPanel = document.getElementById('sticker-panel');
     
     selectedUserStickers.clear();
+    // 核心修改：在这里给父容器添加/移除一个class
     stickerPanel.classList.toggle('selection-mode', isUserStickerSelectionMode);
     
     document.getElementById('edit-user-stickers-btn').style.display = isUserStickerSelectionMode ? 'none' : 'block';
     document.getElementById('done-user-stickers-btn').style.display = isUserStickerSelectionMode ? 'block' : 'none';
-    document.getElementById('sticker-panel-footer').style.display = isUserStickerSelectionMode ? 'flex' : 'none'; // 改为flex
+    document.getElementById('sticker-panel-footer').style.display = isUserStickerSelectionMode ? 'flex' : 'none';
     
-    // 更新删除按钮
     const deleteBtn = document.getElementById('delete-selected-user-stickers-btn');
     deleteBtn.textContent = `删除已选 (0)`;
     deleteBtn.disabled = true;
 
-    // ★★★ 新增：更新移动按钮 ★★★
     const moveBtn = document.getElementById('move-selected-stickers-btn');
     moveBtn.disabled = true;
     
-    renderStickerPanel();
+    renderStickerPanel(); // 这一步会调用 renderStickerCategories，并根据新的模式重新渲染
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
 
 
 /**
@@ -35854,57 +35916,57 @@ async function handleSaveCustomDatingScene() {
         alert(`保存失败: ${error.message}`);
     }
 }
-// ▲▲▲ 替换结束 ▲▲▲
-
-// ▼▼▼ 使用这块【已添加删除按钮】的新代码替换旧的 renderStickerCategories 函数 ▼▼▼
+// ▼▼▼ 【V2 - 编辑模式版】用这块代码替换旧的 renderStickerCategories 函数 ▼▼▼
 async function renderStickerCategories() {
     const tabsContainer = document.getElementById('sticker-category-tabs');
     if (!tabsContainer) return;
 
-    tabsContainer.innerHTML = '';
+    tabsContainer.innerHTML = ''; // 清空旧的标签
     const categories = await db.userStickerCategories.orderBy('name').toArray();
-    userStickerCategories = categories;
+    userStickerCategories = categories; // 更新全局缓存
 
+    // 1. 渲染“未分类”按钮（这个按钮没有删除功能）
     const uncategorizedBtn = document.createElement('button');
     uncategorizedBtn.className = 'sticker-category-btn';
     uncategorizedBtn.textContent = '未分类';
+    uncategorizedBtn.dataset.categoryId = 'uncategorized';
     if (activeStickerCategoryId === 'uncategorized') {
         uncategorizedBtn.classList.add('active');
     }
-    uncategorizedBtn.addEventListener('click', () => {
-        activeStickerCategoryId = 'uncategorized';
-        renderStickerPanel(); 
-    });
     tabsContainer.appendChild(uncategorizedBtn);
 
-    categories.forEach(category => {
+    // 2. 渲染所有自定义分类
+    for (const category of categories) {
         const btn = document.createElement('button');
         btn.className = 'sticker-category-btn';
-        btn.textContent = category.name;
+        // ★ 核心修改1：将ID和名称都存储在父按钮上，方便事件委托获取
+        btn.dataset.categoryId = category.id;       
+        btn.dataset.categoryName = category.name;    
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = category.name;
+        btn.appendChild(nameSpan);
+
+        // 如果是当前激活的分类，添加高亮
         if (activeStickerCategoryId === category.id) {
             btn.classList.add('active');
         }
-        btn.addEventListener('click', () => {
-            activeStickerCategoryId = category.id;
-            renderStickerPanel();
-        });
-
-        // ★★★ 这就是本次新增的核心代码 ★★★
-        // 在编辑模式下，为每个分类按钮添加一个删除图标
+        
+        // ★★★ 核心修改2：只在编辑模式下，才创建和添加删除按钮 ★★★
         if (isUserStickerSelectionMode) {
             const deleteBtn = document.createElement('span');
             deleteBtn.className = 'sticker-category-delete-btn';
             deleteBtn.textContent = '×';
-            deleteBtn.dataset.categoryId = category.id;
-            deleteBtn.dataset.categoryName = category.name; // 把名字也存起来，方便弹窗提示
+            deleteBtn.title = `删除分类 "${category.name}"`; // 增加悬浮提示
             btn.appendChild(deleteBtn);
         }
-        // ★★★ 新增代码结束 ★★★
-
+        
         tabsContainer.appendChild(btn);
-    });
+    }
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
+
 
 /**
  * 【全新】打开移动表情到分类的模态框
@@ -36982,8 +37044,350 @@ async function resetAppNamesToDefault() {
         await showCustomAlert('操作成功', '所有App名称已恢复为默认。');
     }
 }
+// forum.js
+
+/**
+ * 【全新】将一个新创建的帖子元素添加到列表的顶部
+ * @param {object} post - 包含ID的完整帖子对象
+ */
+function prependNewPostElement(post) {
+  const listEl = document.getElementById('group-post-list');
+
+  // 检查列表当前是否显示“空空如也”的消息，如果是，就清空它
+  const emptyMessage = listEl.querySelector('p');
+  if (emptyMessage && (emptyMessage.textContent.includes('还没有帖子') || emptyMessage.textContent.includes('没有找到符合'))) {
+    listEl.innerHTML = '';
+  }
+
+  // 创建新帖子的DOM元素（这段代码与renderGroupPosts中的逻辑几乎一样）
+  const commentCount = 0; // 新帖子的评论数永远是0
+  const item = document.createElement('div');
+  item.className = 'forum-post-item';
+  item.dataset.postId = post.id;
+
+  let categoriesHtml = '';
+  if (post.categories && post.categories.length > 0) {
+    categoriesHtml = `
+      <div class="category-tag-container">
+          ${post.categories.map(cat => `<span class="category-tag">#${cat}</span>`).join('')}
+      </div>
+    `;
+  }
+
+  item.innerHTML = `
+      <div class="post-item-title">${post.title}</div>
+      ${categoriesHtml}
+      <div class="post-item-meta">
+          <span>作者: ${post.author}</span>
+          <span>评论: ${commentCount}</span>
+      </div>
+      <button class="forum-post-delete-btn" title="删除帖子">×</button>
+  `;
+
+  // 使用 prepend() 将新帖子添加到列表的【最前面】
+  listEl.prepend(item);
+}
+
+// forum.js
+
+// ▼▼▼ 用这个【已修复时序问题】的版本，完整替换你旧的 handleCreateForumPost 函数 ▼▼▼
+
+/**
+ * 【已修复】处理用户点击“发布”按钮，创建新帖子的逻辑
+ */
+async function handleCreateForumPost() {
+  const title = document.getElementById('forum-post-title-input').value.trim();
+  const content = document.getElementById('post-public-text').value.trim();
+  if (!title || !content) {
+    alert('帖子标题和内容都不能为空哦！');
+    return;
+  }
+
+  const categoryInput = document.getElementById('forum-post-category-input').value.trim();
+  const categories = categoryInput ? categoryInput.match(/#(\S+)/g)?.map(tag => tag.substring(1)) || [] : [];
+
+  const newPost = {
+    groupId: activeGroupId,
+    title: title,
+    content: content,
+    author: state.qzoneSettings.nickname || '我',
+    timestamp: Date.now(),
+    categories: categories,
+  };
+
+  // ★★★★★ 这就是本次修复的核心逻辑 ★★★★★
+
+  // 1. 将数据库 add() 操作返回的【ID】捕获到一个变量中。
+  const postId = await db.forumPosts.add(newPost);
+  // 2. 将这个ID赋值回我们的 newPost 对象，现在它是一个完整的、包含ID的对象了。
+  newPost.id = postId;
+
+  // 3. 关闭发帖弹窗。
+  document.getElementById('create-post-modal').classList.remove('visible');
+  
+  // 4. 【关键】不再调用可能出错的 renderGroupPosts，而是调用我们新的、可靠的 prependNewPostElement 函数。
+  prependNewPostElement(newPost);
+  
+  // 5. 给出成功提示。
+  alert('帖子发布成功！');
+
+  // ★★★★★ 修复结束 ★★★★★
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+let activeGroupId = null; // 记录当前打开的小组ID
+  /**
+   * 【已修复】渲染小组内的帖子列表及其分类（已支持筛选）
+   */
+  async function renderGroupPosts(groupId) {
+    const listEl = document.getElementById('group-post-list');
+    const allPosts = await db.forumPosts.where('groupId').equals(groupId).reverse().sortBy('timestamp');
+    listEl.innerHTML = '';
+
+    const groupFilters = activeForumFilters.group[groupId];
+    let postsToRender = allPosts;
+
+    if (groupFilters && groupFilters.length > 0) {
+      postsToRender = allPosts.filter(
+        post => post.categories && post.categories.some(cat => groupFilters.includes(cat)),
+      );
+    }
+
+    if (postsToRender.length === 0) {
+      const message = groupFilters && groupFilters.length > 0 ? '没有找到符合筛选条件的帖子哦' : '这个小组还没有帖子哦';
+      listEl.innerHTML = `<p style="text-align:center; color: #8a8a8a; padding: 50px 0;">${message}</p>`;
+      return;
+    }
+
+    for (const post of postsToRender) {
+      // ★★★★★ 这就是唯一的、核心的修复！ ★★★★★
+      // 在使用 post.id 查询前，先用 parseInt() 确保它一定是数字类型。
+      const commentCount = await db.forumComments.where('postId').equals(parseInt(post.id)).count();
+      // ★★★★★ 修复结束 ★★★★★
+
+      const item = document.createElement('div');
+      item.className = 'forum-post-item';
+      item.dataset.postId = post.id;
+
+      let categoriesHtml = '';
+      if (post.categories && post.categories.length > 0) {
+        categoriesHtml = `
+                <div class="category-tag-container">
+                    ${post.categories.map(cat => `<span class="category-tag">#${cat}</span>`).join('')}
+                </div>
+            `;
+      }
+
+      item.innerHTML = `
+            <div class="post-item-title">${post.title}</div>
+            ${categoriesHtml}
+            <div class="post-item-meta">
+                <span>作者: ${post.author}</span>
+                <span>评论: ${commentCount}</span>
+            </div>
+            <button class="forum-post-delete-btn" title="删除帖子">×</button>
+        `;
+      listEl.appendChild(item);
+    }
+
+    // 更新筛选按钮状态
+    const filterBtn = document.getElementById('group-filter-btn');
+    if (filterBtn) {
+      filterBtn.classList.toggle('active', groupFilters && groupFilters.length > 0);
+    }
+  }
+// ▼▼▼ 【全新】这是亲密值系统的所有核心JS代码，请粘贴到 init() 函数的正上方 ▼▼▼
+
+// ▼▼▼ 在 main-app.js 中，用这个新版本替换旧的 SYMBOL_THRESHOLDS 常量 ▼▼▼
+const SYMBOL_THRESHOLDS = [
+    { id: 'first_heartbeat', level: 100,  symbol: 'https://i.postimg.cc/DZSsNzMB/5BF06FFB38AAF2B394F89F6270D328D5.png', name: '初识心动', description: '心跳是故事的开始。' },
+    { id: 'shining_star',    level: 300,  symbol: 'https://i.postimg.cc/L47gJRb3/7227080E4BF5950D1B182043D1F734DB.png', name: '星光闪烁', description: '你们的关系像星光一样开始闪耀。' },
+    { id: 'burning_passion', level: 700,  symbol: 'https://i.postimg.cc/yNQcnRvT/BD0C0CC3C6692D736014BACE73C07F8E.png', name: '热情如火', description: '每一次互动都让感情升温。' },
+    { id: 'only_crown',      level: 1500, symbol: 'https://i.postimg.cc/B6jDzvVh/92DD1E30EFEEC589E3BE0FFB630F8B4E.png', name: '唯一王冠', description: '在彼此的世界里，对方是独一无二的存在。' },
+    { id: 'eternal_diamond', level: 5000, symbol: 'https://i.postimg.cc/C1RD2KQc/B0E2B3034728540DA4198357D5B8131C.png', name: '永恒之钻', description: '你们的关系如钻石般坚固而璀璨。' }
+];
+// ▲▲▲ 替换结束 ▲▲▲
 
 
+
+/**
+ * 核心：计算亲密值
+ * @param {object} chat - 聊天对象
+ * @returns {number} - 计算出的亲密值分数
+ */
+function calculateIntimacy(chat) {
+    if (!chat || !chat.settings.streak) return 0;
+    
+    // 基础分：火花天数，每天都很重要！
+    const streakDays = chat.settings.streak.currentDays || 0;
+    const streakScore = streakDays * 15; // 每天火花提供15点基础分
+
+    // 互动分：累计消息总数
+    const stats = chat.interactionStats || {};
+    const totalMessages = Object.values(stats).reduce((sum, count) => sum + count, 0);
+    const messageScore = totalMessages * 0.2; // 每条消息提供0.2点互动分
+
+    const intimacy = streakScore + messageScore;
+    return Math.floor(intimacy); // 返回整数
+}
+
+/**
+ * 核心：检查并解锁新的徽章
+ * @param {object} chat - 聊天对象
+ * @param {number} intimacyValue - 当前的亲密值
+ * @returns {Promise<boolean>} - 如果有新徽章解锁，返回true
+ */
+async function checkAndUnlockSymbols(chat, intimacyValue) {
+    let newUnlock = false;
+    if (!chat.unlockedSymbols) chat.unlockedSymbols = [];
+
+    SYMBOL_THRESHOLDS.forEach(threshold => {
+        // 检查：亲密值是否达标？这个徽章是不是还没解锁过？
+        if (intimacyValue >= threshold.level && !chat.unlockedSymbols.some(s => s.symbol === threshold.symbol)) {
+            // 如果都满足，就解锁！
+            chat.unlockedSymbols.push({
+                symbol: threshold.symbol,
+                name: threshold.name,
+                unlockedAt: Date.now() // 记录解锁的精确时间
+            });
+            newUnlock = true;
+            console.log(`徽章解锁！角色: ${chat.name}, 徽章: ${threshold.name}`);
+        }
+    });
+
+    // 如果有新解锁的徽章，就更新数据库并弹窗提示
+    if (newUnlock) {
+        await db.chats.put(chat);
+        // 找到最新解锁的那个徽章来显示通知
+        const latestUnlock = chat.unlockedSymbols[chat.unlockedSymbols.length - 1];
+        await showCustomAlert('新徽章已解锁！', `恭喜你和“${chat.name}”解锁了新的亲密徽章：${latestUnlock.name}`);
+    }
+    return newUnlock;
+}
+
+// ▼▼▼ 用这块【V2 - 图片佩戴版】代码，完整替换旧的 openIntimacyPanel 函数 ▼▼▼
+async function openIntimacyPanel(chatId) {
+    const chat = state.chats[chatId];
+    if (!chat) return;
+
+    // --- 数据计算 ---
+    const intimacyValue = calculateIntimacy(chat);
+    await checkAndUnlockSymbols(chat, intimacyValue);
+
+    // --- 填充UI (这部分逻辑不变) ---
+    document.getElementById('intimacy-score-display').textContent = intimacyValue;
+    const today = new Date().toISOString().split('T')[0];
+    const todayMsgs = chat.interactionStats?.[today] || 0;
+    const totalMsgs = Object.values(chat.interactionStats || {}).reduce((sum, count) => sum + count, 0);
+    document.getElementById('intimacy-streak-days').textContent = `${chat.settings.streak?.currentDays || 0} 天`;
+    document.getElementById('intimacy-today-msgs').textContent = `${todayMsgs} 条`;
+    document.getElementById('intimacy-total-msgs').textContent = `${totalMsgs} 条`;
+    
+    // --- ★★★ 核心改造：渲染可点击的徽章列表 ★★★ ---
+    const symbolListContainer = document.getElementById('symbol-list-container');
+    symbolListContainer.innerHTML = '';
+    
+    // 添加一个“不佩戴”的选项
+    const noneItem = document.createElement('div');
+    noneItem.className = 'symbol-item unlocked'; // 让它总是可点击
+    if (!chat.settings.selectedIntimacyBadge) {
+        noneItem.classList.add('selected'); // 如果当前没佩戴，就高亮这个
+    }
+    noneItem.innerHTML = `<div class="symbol-icon no-badge">🚫</div><div class="symbol-name">不佩戴</div>`;
+    noneItem.onclick = () => selectIntimacyBadge(chatId, ''); // 点击时，传入空字符串表示不佩戴
+    symbolListContainer.appendChild(noneItem);
+
+    // 渲染所有可解锁的徽章
+    SYMBOL_THRESHOLDS.forEach(threshold => {
+        const isUnlocked = intimacyValue >= threshold.level;
+        const isSelected = chat.settings.selectedIntimacyBadge === threshold.symbol;
+        
+        const item = document.createElement('div');
+        item.className = `symbol-item ${isUnlocked ? 'unlocked' : ''} ${isSelected ? 'selected' : ''}`;
+        
+        // ★★★ 核心修改：使用 <img> 标签来显示图片 ★★★
+        item.innerHTML = `
+            <div class="symbol-icon ${!isUnlocked ? 'not-unlocked' : ''}">
+                <img src="${threshold.symbol}" alt="${threshold.name}">
+            </div>
+            <div class="symbol-name">${threshold.name}</div>
+            <div class="symbol-level">${isUnlocked ? '已解锁' : `${threshold.level}分解锁`}</div>
+        `;
+
+        // 只有解锁了的徽章才能点击
+        if (isUnlocked) {
+            item.onclick = () => selectIntimacyBadge(chatId, threshold.symbol);
+        }
+        
+        symbolListContainer.appendChild(item);
+    });
+
+    // --- 渲染解锁记录 (这部分逻辑不变) ---
+    const recordsContainer = document.getElementById('unlocked-symbols-record');
+    recordsContainer.innerHTML = '';
+    if (chat.unlockedSymbols && chat.unlockedSymbols.length > 0) {
+        const sortedRecords = [...chat.unlockedSymbols].sort((a, b) => b.unlockedAt - a.unlockedAt);
+        sortedRecords.forEach(record => {
+            const recordItem = document.createElement('div');
+            recordItem.className = 'record-item';
+            recordItem.innerHTML = `<span class="symbol"><img src="${record.symbol}" style="height:1em; vertical-align:middle;"></span><span>${record.name}</span><span class="date">${new Date(record.unlockedAt).toLocaleDateString()}</span>`;
+            recordsContainer.appendChild(recordItem);
+        });
+    } else {
+        recordsContainer.innerHTML = '<p style="text-align:center; color:#999; font-size:13px;">暂无已解锁的徽章</p>';
+    }
+
+    // --- 显示面板 ---
+    document.getElementById('intimacy-panel').classList.add('visible');
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+// ▼▼▼ 在 openIntimacyPanel 函数的下方，粘贴这个新函数 ▼▼▼
+/**
+ * 【全新】选择并佩戴一个亲密徽章
+ * @param {string} chatId - 角色ID
+ * @param {string} symbol - 要佩戴的徽章符号，或''表示不佩戴
+ */
+async function selectIntimacyBadge(chatId, symbol) {
+    const chat = state.chats[chatId];
+    if (!chat) return;
+
+    // 更新选择
+    chat.settings.selectedIntimacyBadge = symbol;
+    
+    // 保存到数据库
+    await db.chats.put(chat);
+    
+    // 重新渲染面板，更新高亮状态
+    await openIntimacyPanel(chatId);
+    
+    // 重新渲染聊天列表，让徽章立刻显示出来
+    await renderChatList();
+}
+// ▲▲▲ 新增函数结束 ▲▲▲
+
+/**
+ * 核心：为指定聊天的今天消息数+1
+ * @param {string} chatId - 聊天ID
+ */
+async function incrementMessageCount(chatId) {
+    const chat = state.chats[chatId];
+    // 只为单人聊天计数
+    if (!chat || chat.isGroup) return;
+
+    const today = new Date().toISOString().split('T')[0]; // 获取 YYYY-MM-DD 格式的日期
+    
+    if (!chat.interactionStats) {
+        chat.interactionStats = {};
+    }
+    
+    chat.interactionStats[today] = (chat.interactionStats[today] || 0) + 1;
+
+    // 将更新后的聊天数据保存回数据库
+    await db.chats.put(chat);
+}
+
+// ▲▲▲ 新增JS代码结束 ▲▲▲
 
         // ===================================================================
         // 4. 初始化函数 init()
@@ -37585,6 +37989,7 @@ document.getElementById('send-btn').addEventListener('click', async () => {
     // --- 【修改结束】 ---
     
     chat.history.push(msg); 
+    await incrementMessageCount(state.activeChatId);
     await db.chats.put(chat); 
     appendMessage(msg, chat); 
     renderChatList(); 
@@ -37693,6 +38098,7 @@ state.apiConfig.temperature = parseFloat(document.getElementById('temperature-sl
     // 【核心新增】保存 Minimax 设置
     state.apiConfig.minimaxGroupId = document.getElementById('minimax-group-id').value.trim();
     state.apiConfig.minimaxApiKey = document.getElementById('minimax-api-key').value.trim();
+state.apiConfig.minimaxApiRegion = document.getElementById('minimax-api-region-select').value;
     state.apiConfig.minimaxSpeechModel = document.getElementById('minimax-speech-model-select').value;
 await db.apiConfig.put(state.apiConfig); 
 
@@ -38604,6 +39010,12 @@ const thresholdSelect = document.getElementById('streak-extinguish-threshold-sel
 
 streakToggle.checked = streakSettings.enabled;
 streakDetails.style.display = streakSettings.enabled ? 'block' : 'none';
+// ▼▼▼ 在这里添加下面这几行新代码 ▼▼▼
+const intimacyBtn = document.getElementById('open-intimacy-panel-btn');
+if (intimacyBtn) {
+    intimacyBtn.style.display = streakSettings.enabled ? 'block' : 'none';
+}
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
 initialDaysInput.value = streakSettings.initialDays || 0;
 thresholdSelect.value = streakSettings.extinguishThreshold || 1;
 
@@ -38803,48 +39215,40 @@ chat.settings.summary.mode = document.querySelector('input[name="summary-mode"]:
 chat.settings.summary.count = parseInt(document.getElementById('summary-count-input').value) || 20;
 chat.settings.summary.prompt = document.getElementById('summary-prompt-input').value.trim();
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
-// ▼▼▼ 用这块【新代码】替换旧的火花保存逻辑 ▼▼▼
-// --- 保存火花设置 ---
+// 在 'save-chat-settings-btn' 的 click 事件监听器内部...
+
+// ▼▼▼ 用这整块【新代码】替换旧的火花保存逻辑 ▼▼▼
 const isStreakEnabled = document.getElementById('streak-enabled-toggle').checked;
 const newInitialDays = parseInt(document.getElementById('streak-initial-days-input').value) || 0;
 const newThreshold = parseInt(document.getElementById('streak-extinguish-threshold-select').value);
 
-const oldStreak = chat.settings.streak || {};
+const oldStreak = chat.settings.streak || {}; // 安全地获取旧设置
 
-// ▼▼▼ 用这块【已添加新功能】的代码替换 ▼▼▼
 if (isStreakEnabled) {
-    // 检查是否是首次开启，或者初始天数被修改了
-    if (!oldStreak.enabled || oldStreak.initialDays !== newInitialDays) {
-        // 如果是，就重置当前天数为新的初始天数
-        chat.settings.streak = {
-            enabled: true,
-            initialDays: newInitialDays,
-            currentDays: newInitialDays,
-            extinguishThreshold: newThreshold,
-            lastInteractionDate: null,
-            // ★★★ 核心新增：在这里保存我们的新设置 ★★★
-            litIconUrl: document.getElementById('streak-lit-icon-url').value.trim(),
-            extinguishedIconUrl: document.getElementById('streak-extinguished-icon-url').value.trim(),
-            fontColor: document.getElementById('streak-font-color-picker').value
-        };
-    } else {
-        // 如果只是普通保存，只更新开关状态和熄灭规则以及新设置
-        chat.settings.streak.enabled = true;
-        chat.settings.streak.extinguishThreshold = newThreshold;
-        // ★★★ 核心新增：在这里保存我们的新设置 ★★★
-        chat.settings.streak.litIconUrl = document.getElementById('streak-lit-icon-url').value.trim();
-        chat.settings.streak.extinguishedIconUrl = document.getElementById('streak-extinguished-icon-url').value.trim();
-        chat.settings.streak.fontColor = document.getElementById('streak-font-color-picker').value;
-        // 保持 currentDays 和 lastInteractionDate 不变
-    }
+    // 检查是否是首次开启
+    const isFirstTimeEnabled = !oldStreak.enabled;
+
+    // 【核心】只有在首次开启时，才用“初始天数”覆盖“当前天数”。
+    // 否则，必须保留用户已经积累的 currentDays 和 lastInteractionDate。
+    chat.settings.streak = {
+        enabled: true,
+        currentDays: isFirstTimeEnabled ? newInitialDays : oldStreak.currentDays,
+        lastInteractionDate: isFirstTimeEnabled ? null : oldStreak.lastInteractionDate,
+        initialDays: newInitialDays,
+        extinguishThreshold: newThreshold,
+        litIconUrl: document.getElementById('streak-lit-icon-url').value.trim(),
+        extinguishedIconUrl: document.getElementById('streak-extinguished-icon-url').value.trim(),
+        fontColor: document.getElementById('streak-font-color-picker').value
+    };
 } else {
     // 如果用户关闭了功能，就重置所有设置
     chat.settings.streak = {
         enabled: false, initialDays: 0, currentDays: 0, extinguishThreshold: 1, lastInteractionDate: null,
-        litIconUrl: '', extinguishedIconUrl: '', fontColor: '#ff6f00' // 同时重置新设置
+        litIconUrl: '', extinguishedIconUrl: '', fontColor: '#ff6f00'
     };
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
 
 
     await db.chats.put(chat);
@@ -38855,7 +39259,30 @@ if (isStreakEnabled) {
     renderChatInterface(state.activeChatId);
     renderChatList();
 });
-            document.getElementById('clear-chat-btn').addEventListener('click', async () => { if (!state.activeChatId) return; const chat = state.chats[state.activeChatId]; const confirmed = await showCustomConfirm('清空聊天记录', '此操作将永久删除此聊天的所有消息，无法恢复。确定要清空吗？', { confirmButtonClass: 'btn-danger' }); if (confirmed) { chat.history = []; await db.chats.put(chat); renderChatInterface(state.activeChatId); renderChatList(); chatSettingsModal.classList.remove('visible'); } });
+
+document.getElementById('clear-chat-btn').addEventListener('click', async () => {
+    if (!state.activeChatId) return;
+    const chat = state.chats[state.activeChatId];
+    const confirmed = await showCustomConfirm('清空记录', '确定要清空此聊天的【消息和心声】吗？\n（聊天总结将被保留）', { confirmButtonClass: 'btn-danger' });
+    if (confirmed) {
+        // 【核心修改】使用 filter 方法，只保留类型为 'summary' 的消息
+        chat.history = chat.history.filter(msg => msg.type === 'summary');
+        
+        // 【新增】根据您的要求，同时清空心声记录
+        if (chat.innerVoiceHistory) {
+            chat.innerVoiceHistory = [];
+        }
+        chat.latestInnerVoice = null;
+
+        await db.chats.put(chat);
+        renderChatInterface(state.activeChatId);
+        renderChatList();
+        chatSettingsModal.classList.remove('visible');
+
+        alert('聊天消息和心声已清空！');
+    }
+});
+
             // ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴这段新代码 ▼▼▼
 
 // 导出聊天记录按钮
@@ -42854,24 +43281,38 @@ document.getElementById('close-sticker-panel-btn').addEventListener('click', () 
     exitUserStickerSelectionMode();
     stickerPanel.classList.remove('visible');
 });
-// ▲▲▲ 添加结束 ▲▲▲
-// ▼▼▼ 在 init() 的事件监听器区域，粘贴这段新代码 ▼▼▼
 
-// 【全新】为表情分类标签栏添加事件委托，处理删除按钮的点击
-document.getElementById('sticker-category-tabs').addEventListener('click', (e) => {
-    // 检查被点击的元素是否是我们的删除按钮
-    if (e.target.classList.contains('sticker-category-delete-btn')) {
-        e.stopPropagation(); // 阻止事件冒泡，防止触发切换分类的逻辑
-        
-        const categoryId = parseInt(e.target.dataset.categoryId);
-        const categoryName = e.target.dataset.categoryName;
+// 在 init() 函数中
+            // ▼▼▼ 请将这整块【全新的、修复后的代码】粘贴到原来的位置 ▼▼▼
 
-        if (!isNaN(categoryId) && categoryName) {
-            // 调用我们新写的核心删除函数
-            handleDeleteStickerCategory(categoryId, categoryName);
-        }
-    }
-});
+            // 辅助函数：处理删除分类按钮的点击
+            function onStickerCategoryDelete(deleteButtonElement) {
+                const categoryId = parseInt(deleteButtonElement.dataset.categoryId);
+                const categoryName = deleteButtonElement.dataset.categoryName;
+
+                // *** 调试关键点 (Debugging Point) ***
+                // 请在浏览器中按 F12 打开开发者工具，切换到 "Console" (控制台) 标签页。
+                // 点击删除按钮后，在这里查看输出的ID和名称是否是您点击的那一个。
+                console.log(`[调试] 准备删除分类: ID=${categoryId}, 名称='${categoryName}'`);
+
+                if (!isNaN(categoryId) && categoryName) {
+                    handleDeleteStickerCategory(categoryId, categoryName);
+                } else {
+                    console.error("[错误] 无法从按钮获取有效的分类ID或名称。", deleteButtonElement.dataset);
+                    alert("删除失败：无法获取分类信息，请检查代码或刷新页面。");
+                }
+            }
+
+            // 辅助函数：处理切换分类按钮的点击
+            function onStickerCategorySelect(categoryButtonElement) {
+                const categoryIdStr = categoryButtonElement.dataset.categoryId;
+                activeStickerCategoryId = (categoryIdStr === 'uncategorized') ? 'uncategorized' : parseInt(categoryIdStr);
+                renderStickerPanel(); // 切换分类并重新渲染表情列表
+            }
+
+
+
+
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
 
@@ -43241,6 +43682,95 @@ document.getElementById('compress-all-images-btn').addEventListener('click', com
 document.getElementById('export-data-stream-btn').addEventListener('click', exportDataStream);
 // 在 init() 函数的事件监听器区域末尾，粘贴下面这行代码
 document.getElementById('reset-app-names-btn').addEventListener('click', resetAppNamesToDefault);
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleCheckbox = document.getElementById("dark-mode-toggle");
+    const storageKey = 'darkModeManualPref'; 
+    const darkReaderOptions = {
+        brightness: 100,
+        contrast: 90,
+        sepia: 10
+    };
+    const manualPref = localStorage.getItem(storageKey);
+    if (manualPref === 'true') {
+        DarkReader.enable(darkReaderOptions);
+        toggleCheckbox.checked = true;
+    } else if (manualPref === 'false') {
+        DarkReader.disable();
+        toggleCheckbox.checked = false;
+    } else {
+        DarkReader.auto(darkReaderOptions);
+        setTimeout(() => {
+            toggleCheckbox.checked = DarkReader.isEnabled();
+        }, 100); 
+    }
+    toggleCheckbox.addEventListener("change", function () {  
+        if (this.checked) {
+            DarkReader.enable(darkReaderOptions);
+            localStorage.setItem(storageKey, 'true');
+        } else {
+            DarkReader.disable();
+            localStorage.setItem(storageKey, 'false');
+        }
+    });
+});
+// ▼▼▼ 用这块【修复后】的代码替换旧的 sticker-category-tabs 监听器 ▼▼▼
+document.getElementById('sticker-category-tabs').addEventListener('click', (event) => {
+    const target = event.target;
+    
+    // --- 委托处理【删除】按钮的点击 ---
+    if (target.classList.contains('sticker-category-delete-btn')) {
+        event.stopPropagation();
+        
+        const parentBtn = target.closest('.sticker-category-btn');
+        if (parentBtn) {
+            const categoryId = parseInt(parentBtn.dataset.categoryId);
+            const categoryName = parentBtn.dataset.categoryName;
+            
+            if (!isNaN(categoryId) && categoryName) {
+                handleDeleteStickerCategory(categoryId, categoryName);
+            }
+        }
+        return;
+    }
+
+    // --- 委托处理【切换分类】按钮的点击 ---
+    const categoryBtn = target.closest('.sticker-category-btn');
+    if (categoryBtn) {
+        // ★★★ 核心修改：我们已经删除了这里的 "if (isUserStickerSelectionMode) return;" 这行代码 ★★★
+        // 现在无论是否在编辑模式，点击分类标签都会切换视图。
+        
+        const categoryIdStr = categoryBtn.dataset.categoryId;
+        activeStickerCategoryId = (categoryIdStr === 'uncategorized') ? 'uncategorized' : parseInt(categoryIdStr);
+        renderStickerPanel(); // 切换分类并重新渲染表情列表
+    }
+});
+// ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 在 init() 函数的事件监听器区域，粘贴下面这段新代码 ▼▼▼
+
+// --- 【全新】亲密值面板事件绑定 ---
+
+// 1. 使用事件委托，为整个聊天列表绑定点击事件
+document.getElementById('chat-list').addEventListener('click', (e) => {
+    // 检查被点击的是否是我们的亲密值按钮
+    const intimacyBtn = e.target.closest('.intimacy-btn');
+    if (intimacyBtn) {
+        const chatId = intimacyBtn.dataset.chatId;
+        if (chatId) {
+            openIntimacyPanel(chatId);
+        }
+    }
+});
+
+// 2. 为面板的关闭按钮绑定事件
+document.getElementById('close-intimacy-panel').addEventListener('click', () => {
+    document.getElementById('intimacy-panel').classList.remove('visible');
+});
+
+// ▲▲▲ 新事件绑定结束 ▲▲▲
+// ▼▼▼ 在 init() 函数中，用这行代码替换旧的 open-intimacy-panel-btn 监听器 ▼▼▼
+document.getElementById('open-intimacy-panel-btn').addEventListener('click', () => openIntimacyPanel(state.activeChatId));
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 initLoversSpace();
 initTaobao();
